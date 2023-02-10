@@ -26,7 +26,7 @@ npm i
 npm start
 ```
 
-## To update requirements.txt
+## Update requirements.txt
 ```bash
 pip3 freeze > requirements.txt # Python3
 ```
