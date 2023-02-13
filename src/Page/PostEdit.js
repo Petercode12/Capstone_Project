@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "../Style/PostEditStyle.css";
-import { Row, Col } from "react-bootstrap";
+import { Row } from "react-bootstrap";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";

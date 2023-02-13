@@ -27,19 +27,21 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
 # Application definition
 
 INSTALLED_APPS = [
+    'src.apps.SrcConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -48,6 +50,10 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+# Settings for CORS issue
+CORS_ORIGIN_ALLOW_ALL = True
+# End settings for CORS issue
 
 ROOT_URLCONF = 'backend_src.urls'
 
@@ -69,14 +75,17 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backend_src.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',  
+        'NAME': 'capstone_project',  
+        'USER': 'root',  
+        'PASSWORD': 'tanphuoc1903',  
+        'HOST': 'localhost',  
+        'PORT': '3306'
     }
 }
 
