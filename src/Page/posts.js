@@ -19,17 +19,17 @@ import { RichTextInput } from "ra-input-rich-text";
 export const PostList = () => (
   <List>
     <Datagrid>
-      {/* <TextField source="id" />
+      <TextField source="id" />
       <TextField source="title" />
       <DateField source="published_at" />
       <TextField source="average_note" />
-      <TextField source="views" /> */}
-      <NumberField source="ID" />
+      <TextField source="views" />
+      {/* <NumberField source="ID" />
       <TextField source="Name" />
       <DateField source="Created_Date" />
       <DateField source="Last_Modified_Date" />
       <BooleanField source="Is_split" />
-      <NumberField source="User_id" />
+      <NumberField source="User_id" /> */}
       <EditButton />
     </Datagrid>
   </List>

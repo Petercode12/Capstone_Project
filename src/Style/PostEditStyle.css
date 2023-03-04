@@ -22,10 +22,6 @@
   position: relative;
 }
 
-.question-count {
-  margin-bottom: 20px;
-}
-
 .question-count span {
   font-size: 28px;
 }
@@ -97,5 +93,15 @@ form div.textAnswer {
 button.InsertMCQButton {
   float: left;
 }
-button.SaveButton {
+button.InsertConsButton {
+  float: left;
+  margin-left: 1.5em;
+}
+.InsertButton {
+  position: relative;
+  padding: 7px;
+  z-index: 10 !important;
+}
+div.css-46bh2p-MuiCardContent-root {
+  padding-top: 0;
 }
