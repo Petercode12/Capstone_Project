@@ -9,23 +9,39 @@ https://docs.djangoproject.com/en/4.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
-
+import os
+import environ
 from pathlib import Path
+os.environ["DB_ENGINE"] = "postgres"
+env = environ.Env(
+    # set casting, default value
+    DEBUG=(bool, True)
+)
+print(os.environ.get('DB_ENGINE'))
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).parent.parent
+CORE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
+# Take environment variables from .env file
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-pwmyu*1__)e^pqpa#t*8tw!0r5-xi_7&mk1kr@(x)q*u3tffu7'
+SECRET_KEY = env('SECRET_KEY', default='S#perS3crEt_007')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = []
+# Assets Management
+ASSETS_ROOT = os.getenv('ASSETS_ROOT', '/static/assets')
+
+# load production server from .env
+SECURE_CROSS_ORIGIN_OPENER_POLICY = None
+ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ['localhost', 'localhost:3000', '127.0.0.1']
+CSRF_TRUSTED_ORIGINS = ['http://localhost:3000', 'http://127.0.0.1',
+                        'https://' + env('SERVER', default='127.0.0.1')]
 
 # Application definition
 
@@ -38,24 +54,23 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'corsheaders',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
 
-# Settings for CORS issue
-CORS_ORIGIN_ALLOW_ALL = True
-# End settings for CORS issue
 
-ROOT_URLCONF = 'backend_src.urls'
+
 
 TEMPLATES = [
     {
@@ -68,6 +83,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'src.context_processors.cfg_assets_root',
             ],
         },
     },
@@ -83,7 +99,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',  
         'NAME': 'capstone_project',  
         'USER': 'root',  
-        'PASSWORD': 'tanphuoc1903',  
+        'PASSWORD': 'manhhung148635',  
         'HOST': 'localhost',  
         'PORT': '3306'
     }
@@ -130,3 +146,46 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Settings for CORS issue
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_WHITELIS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:8000",
+    "http://127.0.0.1:3000",
+    "https://127.0.0.1:8000",
+]
+# setting cors
+CORS_ALLOW_METHODS = [
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
+]
+CORS_ALLOW_HEADERS = [
+    "accept",
+    "accept-encoding",
+    "authorization",
+    "content-type",
+    "dnt",
+    "origin",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
+    "access-control-request-credentials",
+    "cache-control",
+    "access-control-request-methods",
+    "access-control-request-origin",
+    "access-control-expose-headers",
+    "x-total-count"
+]
+CORS_EXPOSE_HEADERS = ["*"]
+# End settings for CORS issue
+
+ROOT_URLCONF = 'backend_src.urls'
+# REST_FRAMEWORK = {
+#     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+#     'PAGE_SIZE': 10
+# }

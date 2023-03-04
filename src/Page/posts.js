@@ -15,7 +15,7 @@ import {
   useRecordContext,
 } from "react-admin";
 import { RichTextInput } from "ra-input-rich-text";
-
+console.log("Run post.js")
 export const PostList = () => (
   <List>
     <Datagrid>
@@ -34,7 +34,7 @@ export const PostList = () => (
     </Datagrid>
   </List>
 );
-
+console.log(PostList);
 const PostTitle = () => {
   const record = useRecordContext();
   return <span>Post {record ? `"${record.title}"` : ""}</span>;
