@@ -56,3 +56,9 @@ class TEST_RESULT(models.Model):
   Date = models.DateField()
   exam = models.ForeignKey(EXAMS_COLLECTION, on_delete=models.CASCADE)
   User = models.ForeignKey(USER, on_delete=models.CASCADE)
+  
+class TEST_API(models.Model):
+  userID = models.IntegerField()
+  id = models.AutoField(primary_key=True, null=False)
+  title = models.CharField(max_length=200, blank=False)
+  body =  models.CharField(max_length=200, blank=False)

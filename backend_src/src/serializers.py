@@ -10,4 +10,12 @@ class exams_collection_serializer (serializers.ModelSerializer):
                   'Last_Modified_Date',
                   'Is_split',
                   'User_id')
-        
+
+class test_serializer (serializers.ModelSerializer):
+    class Meta:
+        model = TEST_API
+        fields = ('userID',
+                  'id',
+                  'title',
+                  'body')
+
