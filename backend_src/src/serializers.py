@@ -4,7 +4,7 @@ from src.models import *
 class exams_collection_serializer (serializers.ModelSerializer):
     class Meta:
         model = EXAMS_COLLECTION
-        fields = ('ID',
+        fields = ('id',
                   'Name',
                   'Created_Date',
                   'Last_Modified_Date',

@@ -67,13 +67,29 @@ export function PostEdit() {
     </Toolbar>
   );
   //
+  const scrolltoId = (target) => {
+    var access = document.getElementById(target);
+    if (access !== null) {
+      console.log("hELLO");
+      access.scrollIntoView({ behavior: "smooth" }, true);
+    }
+  };
   const addNavigationMenu = () => {
     console.log("Question list length: ", questionList.length);
     let buttonGroupList = [];
     let buttonList = [];
     if (questionList.length < 4) {
       for (let i = 1; i <= questionList.length; i++) {
-        buttonList.push(<Button>{i}</Button>);
+        buttonList.push(
+          <Button
+            onClick={() => {
+              scrolltoId("question".concat(i));
+            }}
+            size="small"
+          >
+            {i}
+          </Button>
+        );
       }
       buttonGroupList.push(
         <ButtonGroup variant="outlined" aria-label="outlined button group">
@@ -83,9 +99,27 @@ export function PostEdit() {
     } else {
       for (let i = 1; i <= questionList.length; i++) {
         if (i % 4 !== 0) {
-          buttonList.push(<Button size="small">{i}</Button>);
+          buttonList.push(
+            <Button
+              onClick={() => {
+                scrolltoId("question".concat(i));
+              }}
+              size="small"
+            >
+              {i}
+            </Button>
+          );
         } else {
-          buttonList.push(<Button size="small">{i}</Button>);
+          buttonList.push(
+            <Button
+              onClick={() => {
+                scrolltoId("question".concat(i));
+              }}
+              size="small"
+            >
+              {i}
+            </Button>
+          );
           buttonGroupList.push(
             <ButtonGroup variant="outlined" aria-label="outlined button group">
               {buttonList}
@@ -133,11 +167,6 @@ export function PostEdit() {
               },
             }}
           >
-            {/* <ButtonGroup variant="outlined" aria-label="outlined button group">
-              {questionList.map((question, i) => {
-                return <Button>{i + 1}</Button>;
-              })}
-            </ButtonGroup> */}
             {addNavigationMenu()}
           </Box>
         </Paper>
@@ -156,7 +185,6 @@ export function PostEdit() {
             width: 490,
             height: 50,
             position: "fixed",
-            // bottom: "40em",
             bottom: "85%",
             zIndex: "10 !important",
           },
@@ -215,6 +243,7 @@ export function PostEdit() {
                         <div
                           className="question-count"
                           style={{ marginTop: "2em" }}
+                          id={"question".concat(i + 1)}
                         >
                           <span>Question {i + 1}</span>
                         </div>
@@ -324,6 +353,7 @@ export function PostEdit() {
                     return (
                       <div key={i}>
                         <div
+                          id={"question".concat(i + 1)}
                           className="question-count"
                           style={{ marginTop: "2em" }}
                         >

@@ -15,21 +15,21 @@ import {
   useRecordContext,
 } from "react-admin";
 import { RichTextInput } from "ra-input-rich-text";
-console.log("Run post.js")
+console.log("Run post.js");
 export const PostList = () => (
   <List>
     <Datagrid>
-      <TextField source="id" />
+      {/* <TextField source="id" />
       <TextField source="title" />
       <DateField source="published_at" />
       <TextField source="average_note" />
-      <TextField source="views" />
-      {/* <NumberField source="ID" />
+      <TextField source="views" /> */}
+      <NumberField source="id" />
       <TextField source="Name" />
       <DateField source="Created_Date" />
       <DateField source="Last_Modified_Date" />
       <BooleanField source="Is_split" />
-      <NumberField source="User_id" /> */}
+      <NumberField source="User_id" />
       <EditButton />
     </Datagrid>
   </List>

@@ -1,4 +1,5 @@
 from math import ceil, floor
+import json
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 from src.models import *
@@ -6,16 +7,34 @@ from django.http.response import JsonResponse
 from src.serializers import *
 from django.http import HttpResponse
 from django.core.paginator import Paginator
+from django.core import serializers as core_serializers
 # Create your views here.
 @csrf_exempt
 def query_all_exams_api(request):
     if request.method == 'GET':
         exams = EXAMS_COLLECTION.objects.all()
-        exams_serializer = exams_collection_serializer(exams, many=True)
-        return JsonResponse(status = 200, safe=False, headers = {'Access-Control-Expose-Headers': 'Content-Range','Content-Range': 'posts 0-24/319','Access-Control-Allow-Methods': 'GET,HEAD,OPTIONS,POST,PUT', 'Access-Control-Allow-Origin': '*'}, data = exams_serializer.data)
+        start = int(request.GET["_start"])
+        end = int(request.GET['_end'])
+        per_page = end-start
+        total = len(exams)
+        page = floor(end/per_page)
+        exams_paginator = Paginator(exams, per_page)
+        exams_serializer = exams_collection_serializer(exams_paginator.page(page), many=True)
+        content_range = len(exams)
+        headers = {"X-Total-Count": content_range}
+        # return JsonResponse(status = 200, safe=False, headers = {'Access-Control-Expose-Headers': 'Content-Range','Content-Range': 'posts 0-24/319','Access-Control-Allow-Methods': 'GET,HEAD,OPTIONS,POST,PUT', 'Access-Control-Allow-Origin': '*'}, data = exams_serializer.data)
         # headers = {'Access-Control-Expose-Headers': 'Content-Range','Content-Range': 'posts 0-24/319','Access-Control-Allow-Methods': 'GET,HEAD,OPTIONS,POST,PUT', 'Access-Control-Allow-Origin': '*'}, 
+        return JsonResponse(status = 200, headers = headers, data=exams_serializer.data, safe=False)
     
 @csrf_exempt
+def query_exam_by_id(request, event_id):
+    if request.method == 'GET':
+        print("Id is here", event_id)
+        exam = EXAMS_COLLECTION.objects.get(id=event_id)
+        exam_serializer = exams_collection_serializer(exam)
+        return JsonResponse(exam_serializer.data, safe=False)
+    
+@csrf_exempt 
 def test_api(request):
     if request.method == 'GET':
         tests = TEST_API.objects.all()
