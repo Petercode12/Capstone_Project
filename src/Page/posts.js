@@ -13,9 +13,11 @@ import {
   BooleanField,
   NumberField,
   useRecordContext,
+  NumberInput,
+  BooleanInput,
+  useCreate,
 } from "react-admin";
-import { RichTextInput } from "ra-input-rich-text";
-console.log("Run post.js");
+
 export const PostList = () => (
   <List>
     <Datagrid>
@@ -34,44 +36,23 @@ export const PostList = () => (
     </Datagrid>
   </List>
 );
-console.log(PostList);
-const PostTitle = () => {
-  const record = useRecordContext();
-  return <span>Post {record ? `"${record.title}"` : ""}</span>;
-};
 
-export function PostEdit() {
+export const PostCreate = () => {
+  const [create] = useCreate();
+  const postSave = (data) => {
+    console.log("Data: ", data);
+    create("save_exam/", { data });
+  };
   return (
-    <Edit title={<PostTitle />}>
-      <SimpleForm>
-        <button
-          className="btn btn-primary"
-          style={{ margin: "10px 5px 10px 30px" }}
-          type="button"
-        >
-          <i className="bi bi-plus"></i> Insert MCQ
-        </button>
-        <TextInput disabled source="id" />
-        <TextInput source="title" />
-        <TextInput source="teaser" options={{ multiline: true }} />
-        <TextInput multiline source="body" />
-        <DateInput label="Publication date" source="published_at" />
-        <TextInput source="average_note" />
-        <TextInput disabled label="Nb views" source="views" />
-        <RichTextInput source="body" />
+    <Create title="Create an exam">
+      <SimpleForm onSubmit={postSave}>
+        <NumberInput source="id" />
+        <TextInput source="Name" />
+        <DateInput label="Created Date" source="Created_Date" />
+        <DateInput label="Last Modified Date" source="Last_Modified_Date" />
+        <BooleanInput label="Is split?" source="Is_split" />
+        <NumberInput label="User ID" source="User_id" />
       </SimpleForm>
-    </Edit>
+    </Create>
   );
-}
-
-export const PostCreate = () => (
-  <Create title="Create a Post">
-    <SimpleForm>
-      <TextInput source="title" />
-      <TextInput source="teaser" options={{ multiline: true }} />
-      <TextInput multiline source="body" />
-      <TextInput label="Publication date" source="published_at" />
-      <TextInput source="average_note" />
-    </SimpleForm>
-  </Create>
-);
+};

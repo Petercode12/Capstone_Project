@@ -33,6 +33,20 @@ def query_exam_by_id(request, event_id):
         exam = EXAMS_COLLECTION.objects.get(id=event_id)
         exam_serializer = exams_collection_serializer(exam)
         return JsonResponse(exam_serializer.data, safe=False)
+
+@csrf_exempt
+def insert_new_exam(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        id = data['id']
+        Name = data['Name']
+        Created_Date = data['Created_Date']
+        Last_Modified_Date = data['Last_Modified_Date']
+        Is_split = data['Is_split']
+        User_id = data['User_id']
+        exam = EXAMS_COLLECTION(id=id, Name=Name, Created_Date=Created_Date, Last_Modified_Date=Last_Modified_Date, Is_split=Is_split, User_id = User_id)
+        exam.save()
+        return HttpResponse(status = 200)
     
 @csrf_exempt 
 def test_api(request):
