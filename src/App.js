@@ -9,9 +9,6 @@ import { HomePage } from "./Page/HomePage";
 import LibraryAddIcon from "@mui/icons-material/LibraryAdd";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import jsonServerProvider from "ra-data-json-server";
-import simpleRestProvider from "ra-data-simple-rest";
-import axios from "axios";
-import jsonapiClient from "ra-jsonapi-client";
 
 // A list of allowed origins that can access our backend API
 

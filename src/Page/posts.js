@@ -21,11 +21,6 @@ import {
 export const PostList = () => (
   <List>
     <Datagrid>
-      {/* <TextField source="id" />
-      <TextField source="title" />
-      <DateField source="published_at" />
-      <TextField source="average_note" />
-      <TextField source="views" /> */}
       <NumberField source="id" />
       <TextField source="Name" />
       <DateField source="Created_Date" />
@@ -40,13 +35,11 @@ export const PostList = () => (
 export const PostCreate = () => {
   const [create] = useCreate();
   const postSave = (data) => {
-    console.log("Data: ", data);
     create("save_exam/", { data });
   };
   return (
     <Create title="Create an exam">
       <SimpleForm onSubmit={postSave}>
-        <NumberInput source="id" />
         <TextInput source="Name" />
         <DateInput label="Created Date" source="Created_Date" />
         <DateInput label="Last Modified Date" source="Last_Modified_Date" />
