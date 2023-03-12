@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useParams } from "react-router-dom";
 import "../Style/PostEditStyle.css";
 import { Row } from "react-bootstrap";
 import Radio from "@mui/material/Radio";
@@ -8,31 +9,32 @@ import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import LoadingButton from "@mui/lab/LoadingButton";
 import Button from "@mui/material/Button";
-import { SimpleForm } from "react-admin";
+import { SaveButton, SimpleForm } from "react-admin";
 import { RichTextInput } from "ra-input-rich-text";
 import SaveIcon from "@mui/icons-material/Save";
-import { Toolbar, Edit } from "react-admin";
+import { Toolbar, Edit, useCreate, useNotify } from "react-admin";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import ButtonGroup from "@mui/material/ButtonGroup";
 
 export function PostEdit() {
   const [questionList, setQuestionList] = useState([]);
-  const [loading, setLoading] = React.useState(false);
-  function handleClick() {
-    setLoading(true);
-  }
+  const [valueMCQ, setValueMCQ] = useState("");
+  const [create, { error }] = useCreate();
+  const notify = useNotify();
+  const params = useParams();
   const insertQA_MCQ = () => {
     setQuestionList([
       ...questionList,
       {
         questionText: "",
         answerOptions: [
-          { answerText: "", isCorrect: false },
-          { answerText: "", isCorrect: false },
-          { answerText: "", isCorrect: false },
-          { answerText: "", isCorrect: false },
+          { answerText: "" },
+          { answerText: "" },
+          { answerText: "" },
+          { answerText: "" },
         ],
+        correctAnswer: "",
         type: "MCQ",
       },
     ]);
@@ -54,8 +56,10 @@ export function PostEdit() {
       <Box sx={{ "& > button": { m: 1 } }}>
         <LoadingButton
           color="secondary"
-          onClick={handleClick}
-          loading={loading}
+          onClick={() => {
+            questions_and_answers_Save();
+          }}
+          loading={false}
           loadingPosition="start"
           startIcon={<SaveIcon />}
           variant="contained"
@@ -66,16 +70,14 @@ export function PostEdit() {
       </Box>
     </Toolbar>
   );
-  //
+
   const scrolltoId = (target) => {
     var access = document.getElementById(target);
     if (access !== null) {
-      console.log("hELLO");
       access.scrollIntoView({ behavior: "smooth" }, true);
     }
   };
   const addNavigationMenu = () => {
-    console.log("Question list length: ", questionList.length);
     let buttonGroupList = [];
     let buttonList = [];
     if (questionList.length < 4) {
@@ -134,7 +136,6 @@ export function PostEdit() {
         </ButtonGroup>
       );
     }
-    console.log("This is buttonGroupList: ", buttonGroupList);
     return buttonGroupList;
   };
   const Aside = () => (
@@ -173,7 +174,93 @@ export function PostEdit() {
       </Box>
     </div>
   );
-  //
+
+  const saveDataGen = () => {
+    let saveData = [];
+    for (let i = 0; i < questionList.length; i++) {
+      if (questionList[i].type === "MCQ") {
+        let k = {
+          Ordinal: i + 1,
+          Question: questionList[i].questionText,
+          Answer_a: questionList[i].answerOptions[0].answerText,
+          Answer_b: questionList[i].answerOptions[1].answerText,
+          Answer_c: questionList[i].answerOptions[2].answerText,
+          Answer_d: questionList[i].answerOptions[3].answerText,
+          Correct_answer: questionList[i].correctAnswer,
+          Solution: null,
+          Is_MCQ: true,
+          exam_id: params.id,
+        };
+        saveData.push(k);
+      } else if (questionList[i].type === "Cons") {
+        let k = {
+          Ordinal: i + 1,
+          Question: questionList[i].questionText,
+          Answer_a: null,
+          Answer_b: null,
+          Answer_c: null,
+          Answer_d: null,
+          Correct_answer: null,
+          Solution: questionList[i].answerOptions,
+          Is_MCQ: false,
+          exam_id: params.id,
+        };
+        saveData.push(k);
+      }
+    }
+    return saveData;
+  };
+  const questions_and_answers_Save = () => {
+    const data = saveDataGen();
+    create("save_questions_and_answers/", { data });
+    if (error) {
+      notify("Cannot save!", { type: "error" });
+    } else {
+      notify("Save successfully!", { type: "success" });
+    }
+  };
+  const handleMCQChange = (event, i) => {
+    let newArr = [...questionList];
+    newArr[i].correctAnswer = event.target.value;
+    setValueMCQ(event.target.value);
+    setQuestionList(newArr);
+  };
+  const handleQuestionTextChange = (i) => {
+    let questionTextElement = document.getElementById("questionText".concat(i));
+    let newArr = [...questionList];
+    newArr[i].questionText = questionTextElement.innerHTML;
+    setQuestionList(newArr);
+  };
+  const handleTextFieldA_MCQChange = (i) => {
+    let textFieldA_Element = document.getElementById("textAnswerA".concat(i));
+    let newArr = [...questionList];
+    newArr[i].answerOptions[0].answerText = textFieldA_Element.value;
+    setQuestionList(newArr);
+  };
+  const handleTextFieldB_MCQChange = (i) => {
+    let textFieldB_Element = document.getElementById("textAnswerB".concat(i));
+    let newArr = [...questionList];
+    newArr[i].answerOptions[1].answerText = textFieldB_Element.value;
+    setQuestionList(newArr);
+  };
+  const handleTextFieldC_MCQChange = (i) => {
+    let textFieldC_Element = document.getElementById("textAnswerC".concat(i));
+    let newArr = [...questionList];
+    newArr[i].answerOptions[2].answerText = textFieldC_Element.value;
+    setQuestionList(newArr);
+  };
+  const handleTextFieldD_MCQChange = (i) => {
+    let textFieldD_Element = document.getElementById("textAnswerD".concat(i));
+    let newArr = [...questionList];
+    newArr[i].answerOptions[3].answerText = textFieldD_Element.value;
+    setQuestionList(newArr);
+  };
+  const handleTextField_ConsChange = (i) => {
+    let textFieldElement = document.getElementById("textAnswerCons".concat(i));
+    let newArr = [...questionList];
+    newArr[i].answerOptions = textFieldElement.value;
+    setQuestionList(newArr);
+  };
   return (
     <>
       <Box
@@ -211,28 +298,6 @@ export function PostEdit() {
       </Box>
       <Edit aside={<Aside />} title="Edit exam" style={{ marginTop: "5%" }}>
         <SimpleForm toolbar={<PostEditToolbar />} className="SimpleFormHere">
-          {/* <div collapseOnSelect expand="lg">
-          <div className="navigation">
-            <Row>
-              <div className="InsertButton" style={{ padding: 0 }}>
-                <Button
-                  variant="contained"
-                  onClick={insertQA_MCQ}
-                  className="InsertMCQButton"
-                >
-                  <i className="bi bi-plus"></i> Insert MCQ
-                </Button>
-                <Button
-                  variant="contained"
-                  onClick={insertQA_Cons}
-                  className="InsertConsButton"
-                >
-                  <i className="bi bi-plus"></i> Insert Constructive Questions
-                </Button>
-              </div>
-            </Row>
-          </div>
-        </div> */}
           <div className="multipleChoice">
             <div className="question-section">
               <div className="question-text">
@@ -247,15 +312,25 @@ export function PostEdit() {
                         >
                           <span>Question {i + 1}</span>
                         </div>
-                        <RichTextInput source="" />
+                        <RichTextInput
+                          id={"questionText".concat(i)}
+                          source=""
+                          onChange={() => {
+                            handleQuestionTextChange(i);
+                          }}
+                        />
                         <RadioGroup
                           row
                           aria-labelledby="demo-row-radio-buttons-group-label"
                           name="row-radio-buttons-group"
                           style={{ marginTop: "1em" }}
+                          value={valueMCQ}
+                          onChange={(event) => {
+                            handleMCQChange(event, i);
+                          }}
                         >
                           <FormControlLabel
-                            value="female"
+                            value="A"
                             control={<Radio />}
                             label=""
                           />
@@ -269,16 +344,16 @@ export function PostEdit() {
                           >
                             <TextField
                               className="textAnswer"
-                              id="outlined-basic"
+                              id={"textAnswerA".concat(i)}
                               label="Answer A"
                               variant="outlined"
-                              defaultValue={
-                                question.answerOptions[0].answerText
-                              }
+                              onChange={() => {
+                                handleTextFieldA_MCQChange(i);
+                              }}
                             />
                           </Box>
                           <FormControlLabel
-                            value="male"
+                            value="B"
                             control={<Radio />}
                             label=""
                           />
@@ -292,16 +367,16 @@ export function PostEdit() {
                           >
                             <TextField
                               className="textAnswer"
-                              id="outlined-basic"
+                              id={"textAnswerB".concat(i)}
                               label="Answer B"
                               variant="outlined"
-                              defaultValue={
-                                question.answerOptions[1].answerText
-                              }
+                              onChange={() => {
+                                handleTextFieldB_MCQChange(i);
+                              }}
                             />
                           </Box>
                           <FormControlLabel
-                            value="other1"
+                            value="C"
                             control={<Radio />}
                             label=""
                           />
@@ -315,16 +390,16 @@ export function PostEdit() {
                           >
                             <TextField
                               className="textAnswer"
-                              id="outlined-basic"
+                              id={"textAnswerC".concat(i)}
                               label="Answer C"
                               variant="outlined"
-                              defaultValue={
-                                question.answerOptions[2].answerText
-                              }
+                              onChange={() => {
+                                handleTextFieldC_MCQChange(i);
+                              }}
                             />
                           </Box>
                           <FormControlLabel
-                            value="other2"
+                            value="D"
                             control={<Radio />}
                             label=""
                           />
@@ -338,12 +413,12 @@ export function PostEdit() {
                           >
                             <TextField
                               className="textAnswer"
-                              id="outlined-basic"
+                              id={"textAnswerD".concat(i)}
                               label="Answer D"
                               variant="outlined"
-                              defaultValue={
-                                question.answerOptions[3].answerText
-                              }
+                              onChange={() => {
+                                handleTextFieldD_MCQChange(i);
+                              }}
                             />
                           </Box>
                         </RadioGroup>
@@ -359,15 +434,24 @@ export function PostEdit() {
                         >
                           <span>Question {i + 1}</span>
                         </div>
-                        <RichTextInput source="" />
+                        <RichTextInput
+                          id={"questionText".concat(i)}
+                          source=""
+                          onChange={() => {
+                            handleQuestionTextChange(i);
+                          }}
+                        />
                         <div>
                           <TextField
-                            id="filled-multiline-static"
+                            id={"textAnswerCons".concat(i)}
                             label="Answer"
                             multiline
                             rows={5}
                             variant="filled"
                             style={{ width: "55em" }}
+                            onChange={() => {
+                              handleTextField_ConsChange(i);
+                            }}
                           />
                         </div>
                       </div>
