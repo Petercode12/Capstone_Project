@@ -90,6 +90,15 @@ form div.textAnswer {
 }
 
 /* BUTTON */
+.InsertButtonBox {
+  width: 100%;
+  background-color: rgb(255, 255, 255);
+  border-radius: 5px;
+  padding: 8px;
+  position: fixed;
+  z-index: 10;
+  transition-duration: 0.4s;
+}
 button.InsertMCQButton {
   float: left;
 }
@@ -99,9 +108,38 @@ button.InsertConsButton {
 }
 .InsertButton {
   position: relative;
-  padding: 7px;
   z-index: 10 !important;
 }
 div.css-46bh2p-MuiCardContent-root {
   padding-top: 0;
+}
+div.NavigationAside {
+  width: 200px;
+  margin: 1em;
+  display: flex;
+  flex-wrap: wrap;
+}
+/* Responsive tablet */
+@media only screen and (max-width: 1000px) {
+  div.NavigationAside {
+    width: 250px;
+  }
+}
+/* Responsive small tablet */
+@media only screen and (max-width: 800px) {
+  div.NavigationAside {
+    width: 300px;
+  }
+}
+/* Responsive mobile */
+@media only screen and (max-width: 700px) {
+  div.NavigationAside {
+    display: none;
+  }
+}
+/* Responsive small mobile */
+@media only screen and (max-width: 400px) {
+  button.InsertConsButton {
+    margin-left: 0px;
+  }
 }
