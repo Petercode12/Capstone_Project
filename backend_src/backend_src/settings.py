@@ -99,7 +99,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',  
         'NAME': 'capstone_project',  
         'USER': 'root',  
-        'PASSWORD': 'tanphuoc1903',  
+        'PASSWORD': 'manhhung148635',  
         'HOST': 'localhost',  
         'PORT': '3306'
     }

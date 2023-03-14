@@ -8,7 +8,7 @@ from src.serializers import *
 from django.http import HttpResponse
 from django.core.paginator import Paginator
 from django.core import serializers as core_serializers
-
+from datetime import date
 # Create your views here.
 @csrf_exempt
 def query_all_exams_api(request):
@@ -38,15 +38,26 @@ def query_exam_by_id(request, event_id):
         exam = EXAMS_COLLECTION.objects.get(id=event_id)
         exam_serializer = exams_collection_serializer(exam)
         return JsonResponse(exam_serializer.data, safe=False)
-
+    if request.method == 'DELETE':
+        if event_id is not None and event_id != "":
+            print("Try to delete: ", event_id)
+            tests = EXAMS_COLLECTION.objects.get(id=event_id)
+            test_serializer = exams_collection_serializer(tests)
+            print(test_serializer.data);
+            if tests:
+                tests.delete()
+            else:
+                return HttpResponse(status=404)
+            return JsonResponse(test_serializer.data, safe=False)
+        return HttpResponse(status=400)
 
 @csrf_exempt
 def insert_new_exam(request):
     if request.method == "POST":
         data = json.loads(request.body)
         Name = data["Name"]
-        Created_Date = data["Created_Date"]
-        Last_Modified_Date = data["Last_Modified_Date"]
+        Created_Date = str(date.today())
+        Last_Modified_Date = str(date.today())
         Is_split = data["Is_split"]
         User_id = data["User_id"]
         exam = EXAMS_COLLECTION(

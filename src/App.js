@@ -9,6 +9,7 @@ import { HomePage } from "./Page/HomePage";
 import LibraryAddIcon from "@mui/icons-material/LibraryAdd";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import jsonServerProvider from "ra-data-json-server";
+import axios from "axios";
 
 // A list of allowed origins that can access our backend API
 
@@ -35,11 +36,6 @@ const httpClient = (url, options = {}) => {
   return fetchUtils.fetchJson(url, options);
 };
 const dataProvider = jsonServerProvider("http://127.0.0.1:8000", httpClient);
-// const dataProvider = jsonServerProvider(
-//   "https://jsonplaceholder.typicode.com",
-//   httpClient
-// );
-
 const App = () => (
   <Admin
     dashboard={HomePage}

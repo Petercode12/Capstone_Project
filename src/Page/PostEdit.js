@@ -46,6 +46,7 @@ function convertQueryDataToQuestionList(data) {
 }
 
 export function PostEdit() {
+  //edit create test
   const [questionList, setQuestionList] = useState([]);
   const [create, { error }] = useCreate();
   const notify = useNotify();
@@ -95,6 +96,7 @@ export function PostEdit() {
     window.scrollTo(0, document.body.scrollHeight);
   };
   const PostEditToolbar = () => (
+    //nút save của trang edit test
     <Toolbar>
       <Box sx={{ "& > button": { m: 1 } }}>
         <LoadingButton
@@ -182,21 +184,8 @@ export function PostEdit() {
     return buttonGroupList;
   };
   const Aside = () => (
-    <div style={{ width: 200, margin: "0.5em" }}>
-      <Box
-        sx={{
-          display: "flex",
-          flexWrap: "wrap",
-          "& > :not(style)": {
-            marginTop: 2,
-            width: 220,
-            height: "auto",
-            position: "fixed",
-            top: "14.5%",
-            zIndex: "10 !important",
-          },
-        }}
-      >
+    <div className="NavigationAside">
+      <Box sx={{ position: "fixed" }}>
         <Paper>
           <p style={{ textAlign: "center", fontWeight: "bold" }}>
             Question List
@@ -219,6 +208,7 @@ export function PostEdit() {
   );
 
   const saveDataGen = () => {
+    // tạo array dict data của đề thi
     let saveData = [];
     for (let i = 0; i < questionList.length; i++) {
       if (questionList[i].type === "MCQ") {
@@ -315,42 +305,59 @@ export function PostEdit() {
     newArr[i].answerOptions = textFieldElement.value;
     setQuestionList(newArr);
   };
+  // function ẩn hiện thanh insert MCQ
+  var currentPageYOffset = 0;
+  window.addEventListener(
+    "scroll",
+    function () {
+      var Y = window.pageYOffset;
+      if (currentPageYOffset < Y) {
+        console.log("hien");
+        const note = document.querySelector(".InsertButtonBox");
+        note.style.cssText += "margin-top: -48px";
+      } else if (currentPageYOffset > Y) {
+        console.log("an");
+        const note = document.querySelector(".InsertButtonBox");
+        note.style.cssText -= "margin-top: -48px";
+      }
+      currentPageYOffset = Y;
+    },
+    false
+  );
   return (
     <>
-      <Box
-        sx={{
-          display: "flex",
-          flexWrap: "wrap",
-          "& > :not(style)": {
-            marginTop: 2,
-            width: 490,
-            height: 50,
-            position: "fixed",
-            bottom: "85%",
-            zIndex: "10 !important",
-          },
-        }}
-      >
-        <Paper>
-          <div className="InsertButton">
-            <Button
-              variant="contained"
-              onClick={insertQA_MCQ}
-              className="InsertMCQButton"
-            >
-              <i className="bi bi-plus"></i> Insert MCQ
-            </Button>
-            <Button
-              variant="contained"
-              onClick={insertQA_Cons}
-              className="InsertConsButton"
-            >
-              <i className="bi bi-plus"></i> Insert Constructive Questions
-            </Button>
-          </div>
-        </Paper>
-      </Box>
-      <Edit aside={<Aside />} title="Edit exam" style={{ marginTop: "5%" }}>
+      <div className="InsertButtonBox">
+        {/* <Box display={{
+          xs: 'block', sm: 'flex', width: '100%', position: "fixed",
+          color: 'success.dark',
+          bgcolor: '#46505A',
+          boxShadow: 1,
+          borderRadius: 2,
+          zIndex: "10 !important"
+        }} > */}
+        <div className="InsertButton">
+          <Button
+            variant="contained"
+            onClick={insertQA_MCQ}
+            className="InsertMCQButton"
+            flex={1}
+            mr={{ xs: 0, sm: "0.5em" }}
+          >
+            <i className="bi bi-plus"></i> MCQ
+          </Button>
+          <Button
+            variant="contained"
+            onClick={insertQA_Cons}
+            className="InsertConsButton"
+            flex={1}
+            mr={{ xs: 0, sm: "0.5em" }}
+          >
+            <i className="bi bi-plus"></i> Constructive Questions
+          </Button>
+        </div>
+        {/* </Box> */}
+      </div>
+      <Edit aside={<Aside />} title="Edit exam" style={{ marginTop: "20px" }}>
         <SimpleForm toolbar={<PostEditToolbar />} className="SimpleFormHere">
           <div className="multipleChoice">
             <div className="question-section">
@@ -388,97 +395,121 @@ export function PostEdit() {
                           }}
                           defaultValue={questionList[i].correctAnswer}
                         >
-                          <FormControlLabel
-                            value="A"
-                            control={<Radio />}
-                            label=""
-                          />
                           <Box
-                            component="form"
                             sx={{
-                              "& > :not(style)": { m: 1, width: "25ch" },
+                              display: "flex",
                             }}
-                            noValidate
-                            autoComplete="off"
                           >
-                            <TextField
-                              className="textAnswer"
-                              id={"textAnswerA".concat(i)}
-                              label="Answer A"
-                              variant="outlined"
-                              defaultValue={
-                                questionList[i].answerOptions[0].answerText
-                              }
+                            <FormControlLabel
+                              value="A"
+                              control={<Radio />}
+                              label=""
                             />
+                            <Box
+                              component="form"
+                              sx={{
+                                "& > :not(style)": { m: 1, width: "25ch" },
+                              }}
+                              noValidate
+                              autoComplete="off"
+                            >
+                              <TextField
+                                className="textAnswer"
+                                id={"textAnswerA".concat(i)}
+                                label="Answer A"
+                                variant="outlined"
+                                defaultValue={
+                                  questionList[i].answerOptions[0].answerText
+                                }
+                              />
+                            </Box>
                           </Box>
-                          <FormControlLabel
-                            value="B"
-                            control={<Radio />}
-                            label=""
-                          />
                           <Box
-                            component="form"
                             sx={{
-                              "& > :not(style)": { m: 1, width: "25ch" },
+                              display: "flex",
                             }}
-                            noValidate
-                            autoComplete="off"
                           >
-                            <TextField
-                              className="textAnswer"
-                              id={"textAnswerB".concat(i)}
-                              label="Answer B"
-                              variant="outlined"
-                              defaultValue={
-                                questionList[i].answerOptions[1].answerText
-                              }
+                            <FormControlLabel
+                              value="B"
+                              control={<Radio />}
+                              label=""
                             />
+                            <Box
+                              component="form"
+                              sx={{
+                                "& > :not(style)": { m: 1, width: "25ch" },
+                              }}
+                              noValidate
+                              autoComplete="off"
+                            >
+                              <TextField
+                                className="textAnswer"
+                                id={"textAnswerB".concat(i)}
+                                label="Answer B"
+                                variant="outlined"
+                                defaultValue={
+                                  questionList[i].answerOptions[1].answerText
+                                }
+                              />
+                            </Box>
                           </Box>
-                          <FormControlLabel
-                            value="C"
-                            control={<Radio />}
-                            label=""
-                          />
                           <Box
-                            component="form"
                             sx={{
-                              "& > :not(style)": { m: 1, width: "25ch" },
+                              display: "flex",
                             }}
-                            noValidate
-                            autoComplete="off"
                           >
-                            <TextField
-                              className="textAnswer"
-                              id={"textAnswerC".concat(i)}
-                              label="Answer C"
-                              variant="outlined"
-                              defaultValue={
-                                questionList[i].answerOptions[2].answerText
-                              }
+                            <FormControlLabel
+                              value="C"
+                              control={<Radio />}
+                              label=""
                             />
+                            <Box
+                              component="form"
+                              sx={{
+                                "& > :not(style)": { m: 1, width: "25ch" },
+                              }}
+                              noValidate
+                              autoComplete="off"
+                            >
+                              <TextField
+                                className="textAnswer"
+                                id={"textAnswerC".concat(i)}
+                                label="Answer C"
+                                variant="outlined"
+                                defaultValue={
+                                  questionList[i].answerOptions[2].answerText
+                                }
+                              />
+                            </Box>
                           </Box>
-                          <FormControlLabel
-                            value="D"
-                            control={<Radio />}
-                            label=""
-                          />
                           <Box
-                            component="form"
                             sx={{
-                              "& > :not(style)": { m: 1, width: "25ch" },
+                              display: "flex",
                             }}
-                            noValidate
-                            autoComplete="off"
                           >
-                            <TextField
-                              className="textAnswer"
-                              id={"textAnswerD".concat(i)}
-                              label="Answer D"
-                              variant="outlined"
-                              defaultValue={
-                                questionList[i].answerOptions[3].answerText
-                              }
+                            <FormControlLabel
+                              value="D"
+                              control={<Radio />}
+                              label=""
                             />
+                            <Box
+                              component="form"
+                              sx={{
+                                "& > :not(style)": { m: 1, width: "25ch" },
+                              }}
+                              noValidate
+                              autoComplete="off"
+                            >
+                              <TextField
+                                className="textAnswer"
+                                id={"textAnswerD".concat(i)}
+                                label="Answer D"
+                                variant="outlined"
+                                defaultValue={
+                                  questionList[i].answerOptions[3].answerText
+                                }
+                              />
+                            </Box>
                           </Box>
                         </RadioGroup>
                       </div>
