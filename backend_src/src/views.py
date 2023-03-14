@@ -35,7 +35,6 @@ def query_all_exams_api(request):
 @csrf_exempt
 def query_exam_by_id(request, event_id):
     if request.method == "GET":
-        print("Id is here", event_id)
         exam = EXAMS_COLLECTION.objects.get(id=event_id)
         exam_serializer = exams_collection_serializer(exam)
         return JsonResponse(exam_serializer.data, safe=False)
@@ -63,11 +62,14 @@ def insert_new_exam(request):
 
 
 @csrf_exempt
-def insert_questions_and_answers(request):
+def insert_questions_and_answers(request, exam_id):
     if request.method == "POST":
+        delete_questions_and_answers = QUESTIONS_AND_ANSWERS.objects.filter(
+            exam_id=exam_id
+        )
+        delete_questions_and_answers.delete()
         dataList = json.loads(request.body)
         questions_and_answers = None
-        print("Data save: ", dataList)
         for data in dataList:
             Ordinal = data["Ordinal"]
             Question = data["Question"]
@@ -99,6 +101,18 @@ def insert_questions_and_answers(request):
 
 
 @csrf_exempt
+def query_questions_and_answers_by_examid(request, exam_id):
+    if request.method == "GET":
+        questions_and_answers = QUESTIONS_AND_ANSWERS.objects.filter(
+            exam_id=exam_id
+        ).order_by("Ordinal")
+        q_and_a_serializer = questions_and_answers_serializer(
+            questions_and_answers, many=True
+        )
+        return JsonResponse(q_and_a_serializer.data, safe=False)
+
+
+@csrf_exempt
 def test_api(request):
     if request.method == "GET":
         tests = TEST_API.objects.all()
@@ -107,7 +121,6 @@ def test_api(request):
         per_page = end - start
         total = len(tests)
         page = floor(end / per_page)
-        print("The wanted page: ", page)
         tests_paginator = Paginator(tests, per_page)
         tests_serializer = test_serializer(tests_paginator.page(page), many=True)  #
         content_range = len(tests)
@@ -121,7 +134,6 @@ def test_api(request):
 def delete_api(request, event_id):
     if request.method == "DELETE":
         if event_id is not None and event_id != "":
-            print("Try to delete: ", event_id)
             tests = TEST_API.objects.get(id=event_id)
             if tests:
                 tests.delete()

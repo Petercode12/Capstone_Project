@@ -9,8 +9,13 @@ urlpatterns = [
     path("all_exams/<int:event_id>", views.query_exam_by_id, name="queryExamById"),
     path("save_exam/", views.insert_new_exam, name="insertNewExam"),
     path(
-        "save_questions_and_answers/",
+        "save_questions_and_answers/<int:exam_id>",
         views.insert_questions_and_answers,
         name="insertQuestionsAnswers",
+    ),
+    path(
+        "query_questions_and_answers_by_examid/<int:exam_id>",
+        views.query_questions_and_answers_by_examid,
+        name="queryQuestionsAnswersByExamId",
     ),
 ]
