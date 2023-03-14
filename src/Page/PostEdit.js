@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import "../Style/PostEditStyle.css";
-import { Row } from "react-bootstrap";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -9,12 +8,12 @@ import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import LoadingButton from "@mui/lab/LoadingButton";
 import Button from "@mui/material/Button";
-import { SaveButton, SimpleForm } from "react-admin";
+import { SimpleForm } from "react-admin";
 import { RichTextInput } from "ra-input-rich-text";
 import SaveIcon from "@mui/icons-material/Save";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { Toolbar, Edit, useCreate, useNotify } from "react-admin";
 import Paper from "@mui/material/Paper";
-import Typography from "@mui/material/Typography";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import axios from "axios";
 
@@ -366,6 +365,13 @@ export function PostEdit() {
                           id={"question".concat(i + 1)}
                         >
                           <span>Question {i + 1}</span>
+                          <Button
+                            variant="outlined"
+                            style={{ float: "right" }}
+                            startIcon={<DeleteIcon />}
+                          >
+                            Delete
+                          </Button>
                         </div>
                         <RichTextInput
                           id={"questionText".concat(i)}
@@ -486,6 +492,13 @@ export function PostEdit() {
                           style={{ marginTop: "2em" }}
                         >
                           <span>Question {i + 1}</span>
+                          <Button
+                            variant="outlined"
+                            style={{ float: "right" }}
+                            startIcon={<DeleteIcon />}
+                          >
+                            Delete
+                          </Button>
                         </div>
                         <RichTextInput
                           id={"questionText".concat(i)}
