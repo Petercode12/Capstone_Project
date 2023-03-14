@@ -91,13 +91,21 @@ form div.textAnswer {
 
 /* BUTTON */
 .InsertButtonBox {
-  width: 100%;
+  width: inherit;
   background-color: rgb(255, 255, 255);
-  border-radius: 5px;
+  box-sizing: border-box;
+  border-radius: 4px;
+  box-shadow: 0px 2px 1px -1px rgb(0 0 0 / 20%),
+    0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%);
   padding: 8px;
   position: fixed;
   z-index: 10;
   transition-duration: 0.4s;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
 }
 button.InsertMCQButton {
   float: left;
@@ -113,27 +121,42 @@ button.InsertConsButton {
 div.css-46bh2p-MuiCardContent-root {
   padding-top: 0;
 }
-div.NavigationAside {
-  width: 150px;
-  margin: 0.5em;
+.NavigationAside {
+  width: 154px;
+  margin: 0 0.75em;
   display: flex;
-  flex-wrap: wrap;
+  justify-content: center;
+  /* overflow: hidden; */
 }
 /* Responsive tablet */
+@media only screen and (max-width: 1200px) {
+  .NavigationAside {
+    width: 200px;
+  }
+  .NavigationAsidePaper {
+    margin-left: 15px;
+  }
+}
 @media only screen and (max-width: 1000px) {
-  div.NavigationAside {
+  .NavigationAside {
     width: 250px;
+  }
+  .NavigationAsidePaper {
+    margin-left: 25px;
   }
 }
 /* Responsive small tablet */
 @media only screen and (max-width: 800px) {
-  div.NavigationAside {
-    width: 300px;
+  .NavigationAside {
+    display: none;
+  }
+  .NavigationAsidePaper {
+    margin-left: 30px;
   }
 }
 /* Responsive mobile */
-@media only screen and (max-width: 700px) {
-  div.NavigationAside {
+@media only screen and (max-width: 600px) {
+  .NavigationAside {
     display: none;
   }
 }

@@ -20,7 +20,7 @@ import {
   useRefresh,
   useRedirect,
 } from "react-admin";
-
+import { Box, } from '@mui/material';
 export const PostList = () => (
   <List>
     <Datagrid>
@@ -55,11 +55,24 @@ export const PostCreate = () => {
   return (
     <Create title="Create an exam">
       <SimpleForm sx={{ maxWidth: 500 }} onSubmit={postSave} warnWhenUnsavedChanges>
-        <TextInput source="Name" />
+        <Box
+          sx={{
+            width: {
+              xs: 200, // theme.breakpoints.up('xs')
+              sm: 300, // theme.breakpoints.up('sm')
+              md: 400, // theme.breakpoints.up('md')
+              lg: 450, // theme.breakpoints.up('lg')
+              xl: 450, // theme.breakpoints.up('xl')
+            },
+          }}
+        >
+          <TextInput source="Name" fullWidth />
+          <BooleanInput label="Is split?" source="Is_split" fullWidth />
+          <NumberInput label="User ID" source="User_id" fullWidth />
+        </Box>
         {/* <DateInput label="Created Date" source="Created_Date" /> */}
         {/* <DateInput label="Last Modified Date" source="Last_Modified_Date" /> */}
-        <BooleanInput label="Is split?" source="Is_split" />
-        <NumberInput label="User ID" source="User_id" />
+
       </SimpleForm>
     </Create>
   );

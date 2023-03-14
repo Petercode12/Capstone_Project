@@ -16,7 +16,7 @@ import { Toolbar, Edit, useCreate, useNotify } from "react-admin";
 import Paper from "@mui/material/Paper";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import axios from "axios";
-
+import { Typography } from "@mui/material";
 function convertQueryDataToQuestionList(data) {
   let questionList = [];
   for (let e of data) {
@@ -129,6 +129,8 @@ export function PostEdit() {
       for (let i = 1; i <= questionList.length; i++) {
         buttonList.push(
           <Button
+            xs={{ margin: 0, p: 0, minWidth: 30, py: 0.25, }}
+            variant="text"
             onClick={() => {
               scrolltoId("question".concat(i));
             }}
@@ -184,12 +186,12 @@ export function PostEdit() {
     return buttonGroupList;
   };
   const Aside = () => (
-    <div className="NavigationAside">
-      <Box sx={{ position: "fixed" }}>
-        <Paper>
-          <p style={{ textAlign: "center", fontWeight: "bold" }}>
+    <Box className="NavigationAside">
+      <Box sx={{ position: "fixed", width: "auto", display: "flex", textAlign: "center" }}>
+        <Paper className="NavigationAsidePaper">
+          <div style={{ textAlign: "center", fontWeight: "bold", padding: "8px" }}>
             Question List
-          </p>
+          </div>
           <Box
             sx={{
               display: "flex",
@@ -204,7 +206,7 @@ export function PostEdit() {
           </Box>
         </Paper>
       </Box>
-    </div>
+    </Box>
   );
 
   const saveDataGen = () => {
@@ -357,7 +359,7 @@ export function PostEdit() {
         </div>
         {/* </Box> */}
       </div>
-      <Edit aside={<Aside />} title="Edit exam" style={{ marginTop: "20px" }}>
+      <Edit aside={<Aside />} title="Edit exam" style={{ marginTop: "50px", display: "block" }}>
         <SimpleForm toolbar={<PostEditToolbar />} className="SimpleFormHere">
           <div className="multipleChoice">
             <div className="question-section">
@@ -408,7 +410,11 @@ export function PostEdit() {
                             <Box
                               component="form"
                               sx={{
-                                "& > :not(style)": { m: 1, width: "25ch" },
+                                // padding: "0px",
+                                // width: "20ch",
+                                marginLeft: '-0.5em',
+                                marginRight: '-0.5em',
+                                // "& > :not(style)": { m: 0.75, width: "20ch" },
                               }}
                               noValidate
                               autoComplete="off"
@@ -437,7 +443,9 @@ export function PostEdit() {
                             <Box
                               component="form"
                               sx={{
-                                "& > :not(style)": { m: 1, width: "25ch" },
+                                marginLeft: '-0.5em',
+                                marginRight: '-0.5em',
+                                // "& > :not(style)": { m: 0.75, width: "25ch" },
                               }}
                               noValidate
                               autoComplete="off"
@@ -466,7 +474,9 @@ export function PostEdit() {
                             <Box
                               component="form"
                               sx={{
-                                "& > :not(style)": { m: 1, width: "25ch" },
+                                marginLeft: '-0.5em',
+                                marginRight: '-0.5em',
+                                // "& > :not(style)": { m: 0.75, width: "25ch" },
                               }}
                               noValidate
                               autoComplete="off"
@@ -495,7 +505,9 @@ export function PostEdit() {
                             <Box
                               component="form"
                               sx={{
-                                "& > :not(style)": { m: 1, width: "25ch" },
+                                marginLeft: '-0.5em',
+                                marginRight: '-0.5em',
+                                // "& > :not(style)": { m: 0.75, width: "25ch" },
                               }}
                               noValidate
                               autoComplete="off"
