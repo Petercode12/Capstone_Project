@@ -130,7 +130,7 @@ export function PostEdit() {
         buttonList.push(
           <Button
             xs={{ margin: 0, p: 0, minWidth: 30, py: 0.25, }}
-            variant="text"
+            variant="outlined"
             onClick={() => {
               scrolltoId("question".concat(i));
             }}
@@ -189,7 +189,7 @@ export function PostEdit() {
     <Box className="NavigationAside">
       <Box sx={{ position: "fixed", width: "auto", display: "flex", textAlign: "center" }}>
         <Paper className="NavigationAsidePaper">
-          <div style={{ textAlign: "center", fontWeight: "bold", padding: "8px" }}>
+          <div style={{ textAlign: "center", fontWeight: "bold", padding: "8px", minWidth: "170px" }}>
             Question List
           </div>
           <Box
@@ -555,7 +555,7 @@ export function PostEdit() {
                             multiline
                             rows={5}
                             variant="filled"
-                            style={{ width: "55em" }}
+                            style={{ width: "100%" }}
                             defaultValue={questionList[i].answerOptions}
                           />
                         </div>
