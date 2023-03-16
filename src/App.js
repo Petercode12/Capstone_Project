@@ -4,10 +4,13 @@ import { Admin, Resource, fetchUtils, ListGuesser, defaultTheme } from "react-ad
 import { UserList } from "./Page/Users";
 import { PostList, PostCreate } from "./Page/Posts";
 import { PostEdit } from "./Page/PostEdit";
+import { PracticeList } from "./Page/Practice";
+import { PracticeTest } from "./Page/PracticeEachTest";
 import { authProvider } from "./Page/authProvider";
 import { HomePage } from "./Page/HomePage";
 import LibraryAddIcon from "@mui/icons-material/LibraryAdd";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
+import ModeEditOutlineTwoToneIcon from '@mui/icons-material/ModeEditOutlineTwoTone';
 import jsonServerProvider from "ra-data-json-server";
 import axios from "axios";
 
@@ -52,13 +55,6 @@ const App = () => (
   // menu={menu}
   >
     {/* <Resource
-      name="posts"
-      options={{ label: "Test collection" }}
-      // list={ListGuesser}
-      list={PostList}
-      edit={PostEdit}
-    /> */}
-    {/* <Resource
       name="users"
       options={{ label: "Account manager" }}
       list={UserList}
@@ -71,6 +67,14 @@ const App = () => (
       edit={PostEdit}
       create={PostCreate}
       icon={LibraryAddIcon}
+    />
+    <Resource
+      name="practice_tests"
+      options={{ label: "Practice tests" }}
+      list={PracticeList}
+      // edit={PostEdit}
+      edit={PracticeTest}
+      icon={ModeEditOutlineTwoToneIcon}
     />
   </Admin>
 );

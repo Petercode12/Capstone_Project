@@ -23,7 +23,11 @@ import {
 import { Box, } from '@mui/material';
 export const PostList = () => (
   <List>
-    <Datagrid>
+    <Datagrid initialState={{
+      sorting: {
+        sortModel: [{ field: 'id', sort: 'asc' }],
+      },
+    }}>
       <NumberField source="id" />
       <TextField source="Name" />
       <DateField source="Created_Date" />

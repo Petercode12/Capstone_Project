@@ -16,7 +16,7 @@ import { Toolbar, Edit, useCreate, useNotify } from "react-admin";
 import Paper from "@mui/material/Paper";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import axios from "axios";
-import { Typography } from "@mui/material";
+
 function convertQueryDataToQuestionList(data) {
   let questionList = [];
   for (let e of data) {
@@ -129,7 +129,7 @@ export function PostEdit() {
       for (let i = 1; i <= questionList.length; i++) {
         buttonList.push(
           <Button
-            xs={{ margin: 0, p: 0, minWidth: 30, py: 0.25, }}
+            xs={{ margin: 0, p: 0, maxWidth: 10, py: 0.25, }}
             variant="outlined"
             onClick={() => {
               scrolltoId("question".concat(i));
@@ -189,7 +189,7 @@ export function PostEdit() {
     <Box className="NavigationAside">
       <Box sx={{ position: "fixed", width: "auto", display: "flex", textAlign: "center" }}>
         <Paper className="NavigationAsidePaper">
-          <div style={{ textAlign: "center", fontWeight: "bold", padding: "8px", minWidth: "170px" }}>
+          <div style={{ textAlign: "center", fontWeight: "bold", padding: "8px 0px", minWidth: "170px" }}>
             Question List
           </div>
           <Box
@@ -314,13 +314,15 @@ export function PostEdit() {
     function () {
       var Y = window.pageYOffset;
       if (currentPageYOffset < Y) {
-        console.log("hien");
         const note = document.querySelector(".InsertButtonBox");
-        note.style.cssText += "margin-top: -48px";
+        if (note !== null) {
+          note.style.cssText += "margin-top: -48px";
+        }
       } else if (currentPageYOffset > Y) {
-        console.log("an");
         const note = document.querySelector(".InsertButtonBox");
-        note.style.cssText -= "margin-top: -48px";
+        if (note !== null) {
+          note.style.cssText -= "margin-top: -48px";
+        }
       }
       currentPageYOffset = Y;
     },
@@ -391,7 +393,7 @@ export function PostEdit() {
                           row
                           aria-labelledby="demo-row-radio-buttons-group-label"
                           name="row-radio-buttons-group"
-                          style={{ marginTop: "1em" }}
+                          style={{ marginTop: "0.5em", marginLeft: "0px" }}
                           onChange={(event) => {
                             handleMCQChange(event, i);
                           }}
