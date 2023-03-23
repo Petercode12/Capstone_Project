@@ -6,6 +6,7 @@
   "Access-Control-Expose-Headers": "Content-Range",
   "Access-Control-Allow-Origin": "*",
   "dependencies": {
+    "@emotion/core": "^11.0.0",
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
     "@flaticon/flaticon-uicons": "^2.0.1",
