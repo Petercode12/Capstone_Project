@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.files.base import ContentFile
 
 # Create your models here.
 class USER(models.Model):
@@ -16,6 +17,9 @@ class EXAMS_COLLECTION(models.Model):
     Last_Modified_Date = models.DateField()
     Is_split = models.BooleanField(default=True)
     User = models.ForeignKey(USER, on_delete=models.CASCADE)
+    duration = models.FloatField(default=0)
+    image = models.TextField()
+    description = models.TextField(default=None)
 
 
 class QUESTIONS_AND_ANSWERS(models.Model):

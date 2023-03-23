@@ -9,6 +9,7 @@ from django.http import HttpResponse
 from django.core.paginator import Paginator
 from django.core import serializers as core_serializers
 from datetime import date
+
 # Create your views here.
 @csrf_exempt
 def query_all_exams_api(request):
@@ -17,7 +18,6 @@ def query_all_exams_api(request):
         start = int(request.GET["_start"])
         end = int(request.GET["_end"])
         per_page = end - start
-        total = len(exams)
         page = floor(end / per_page)
         exams_paginator = Paginator(exams, per_page)
         exams_serializer = exams_collection_serializer(
@@ -25,8 +25,6 @@ def query_all_exams_api(request):
         )
         content_range = len(exams)
         headers = {"X-Total-Count": content_range}
-        # return JsonResponse(status = 200, safe=False, headers = {'Access-Control-Expose-Headers': 'Content-Range','Content-Range': 'posts 0-24/319','Access-Control-Allow-Methods': 'GET,HEAD,OPTIONS,POST,PUT', 'Access-Control-Allow-Origin': '*'}, data = exams_serializer.data)
-        # headers = {'Access-Control-Expose-Headers': 'Content-Range','Content-Range': 'posts 0-24/319','Access-Control-Allow-Methods': 'GET,HEAD,OPTIONS,POST,PUT', 'Access-Control-Allow-Origin': '*'},
         return JsonResponse(
             status=200, headers=headers, data=exams_serializer.data, safe=False
         )
@@ -60,23 +58,34 @@ def query_practice_test_by_id(request, event_id):
         return JsonResponse(exam_serializer.data, safe=False)
       
 @csrf_exempt
+def query_exams_by_userid(
+    request,
+):  # Note: Temporary not query by user_id, will implement later
+    if request.method == "GET":
+        exams = EXAMS_COLLECTION.objects.all()
+        exams_serializer = exams_collection_serializer2(exams, many=True)
+        return JsonResponse(exams_serializer.data, safe=False)
+
+
+@csrf_exempt
 def query_exam_by_id(request, event_id):
     if request.method == "GET":
         exam = EXAMS_COLLECTION.objects.get(id=event_id)
         exam_serializer = exams_collection_serializer(exam)
         return JsonResponse(exam_serializer.data, safe=False)
-    if request.method == 'DELETE':
+    if request.method == "DELETE":
         if event_id is not None and event_id != "":
             print("Try to delete: ", event_id)
             tests = EXAMS_COLLECTION.objects.get(id=event_id)
             test_serializer = exams_collection_serializer(tests)
-            print(test_serializer.data);
+            print(test_serializer.data)
             if tests:
                 tests.delete()
             else:
                 return HttpResponse(status=404)
             return JsonResponse(test_serializer.data, safe=False)
         return HttpResponse(status=400)
+
 
 @csrf_exempt
 def insert_new_exam(request):
@@ -87,12 +96,16 @@ def insert_new_exam(request):
         Last_Modified_Date = str(date.today())
         Is_split = data["Is_split"]
         User_id = data["User_id"]
+        image = data["image"]
+        description = data["description"]
         exam = EXAMS_COLLECTION(
             Name=Name,
             Created_Date=Created_Date,
             Last_Modified_Date=Last_Modified_Date,
             Is_split=Is_split,
             User_id=User_id,
+            image=image,
+            description=description,
         )
         exam.save()
         exam_serializer = exams_collection_serializer(exam)

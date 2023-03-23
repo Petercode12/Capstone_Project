@@ -57,7 +57,8 @@ export function PostEdit() {
   const [create, { error }] = useCreate();
   const notify = useNotify();
   const params = useParams();
-
+  const [assignNewValueForElementsCheck, setAssignNewValueForElementsCheck] =
+    useState(false);
   useEffect(() => {
     axios
       .get(
@@ -88,7 +89,7 @@ export function PostEdit() {
         type: "MCQ",
       },
     ]);
-    window.scrollTo(0, document.body.scrollHeight);
+    window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
   };
   const insertQA_Cons = () => {
     setQuestionList([
@@ -99,7 +100,7 @@ export function PostEdit() {
         type: "Cons",
       },
     ]);
-    window.scrollTo(0, document.body.scrollHeight);
+    window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
   };
   const PostEditToolbar = () => (
     //nút save của trang edit test
@@ -341,6 +342,85 @@ export function PostEdit() {
     },
     false
   );
+  const removeQuestionAndAnswerFromQuestionList = (i) => {
+    let newArr = [...questionList];
+    newArr.splice(i, 1);
+    setQuestionList(newArr);
+    setAssignNewValueForElementsCheck(true);
+  };
+  console.log("Questionlist: ", questionList);
+  const assignNewValueForElements = () => {
+    console.log("Assign new value");
+    for (let i = 0; i < questionList.length; i++) {
+      if (questionList[i].type === "MCQ") {
+        // questionText
+        let questionTextElement = document.getElementById(
+          "questionText".concat(i)
+        );
+        if (questionTextElement !== null) {
+          questionTextElement.innerHTML = questionList[i].questionText;
+        }
+        // answerText A
+        let textFieldA_Element = document.getElementById(
+          "textAnswerA".concat(i)
+        );
+        if (textFieldA_Element !== null) {
+          textFieldA_Element.value =
+            questionList[i].answerOptions[0].answerText;
+        }
+        // answerText B
+        let textFieldB_Element = document.getElementById(
+          "textAnswerB".concat(i)
+        );
+        if (textFieldB_Element !== null) {
+          textFieldB_Element.value =
+            questionList[i].answerOptions[1].answerText;
+        }
+        // answerText C
+        let textFieldC_Element = document.getElementById(
+          "textAnswerC".concat(i)
+        );
+        if (textFieldC_Element !== null) {
+          textFieldC_Element.value =
+            questionList[i].answerOptions[2].answerText;
+        }
+        // answerText D
+        let textFieldD_Element = document.getElementById(
+          "textAnswerD".concat(i)
+        );
+        if (textFieldD_Element !== null) {
+          textFieldD_Element.value =
+            questionList[i].answerOptions[3].answerText;
+        }
+        // correctAnswer
+        let correctAnswer_Element = document.getElementById(
+          "correctAnswer".concat(i)
+        );
+        if (correctAnswer_Element !== null) {
+          correctAnswer_Element.value = questionList[i].correctAnswer;
+        }
+      } else {
+        // questionText
+        let questionTextElement = document.getElementById(
+          "questionText".concat(i)
+        );
+        if (questionTextElement !== null) {
+          questionTextElement.innerHTML = questionList[i].questionText;
+        }
+        // textField
+        let textFieldElement = document.getElementById(
+          "textAnswerCons".concat(i)
+        );
+        if (textFieldElement !== null) {
+          textFieldElement.value = questionList[i].answerOptions;
+        }
+      }
+    }
+  };
+  if (assignNewValueForElementsCheck) {
+    assignNewValueForElements();
+    setAssignNewValueForElementsCheck(false);
+  }
   return (
     <Container sx={{ maxWidth: { xl: 1280 } }} >
       <Grid container justifyContent="space-between" spacing={2}>
@@ -387,12 +467,16 @@ export function PostEdit() {
                                 variant="outlined"
                                 style={{ float: "right" }}
                                 startIcon={<DeleteIcon />}
+                                onClick={() => {
+                              removeQuestionAndAnswerFromQuestionList(i);
+                            }}
                               >
                                 Delete
                               </Button>
                             </div>
                             <RichTextInput
                               id={"questionText".concat(i)}
+                              key={i}
                               source=""
                               defaultValue={questionList[i].questionText}
                             />
@@ -405,6 +489,7 @@ export function PostEdit() {
                                 handleMCQChange(event, i);
                               }}
                               defaultValue={questionList[i].correctAnswer}
+                              id={"correctAnswer".concat(i)}
                             >
                               <Box
                                 sx={{
@@ -542,12 +627,16 @@ export function PostEdit() {
                                 variant="outlined"
                                 style={{ float: "right" }}
                                 startIcon={<DeleteIcon />}
+                                onClick={() => {
+                              removeQuestionAndAnswerFromQuestionList(i);
+                            }}
                               >
                                 Delete
                               </Button>
                             </div>
                             <RichTextInput
                               id={"questionText".concat(i)}
+                              key={i}
                               source=""
                               defaultValue={questionList[i].questionText}
                             />

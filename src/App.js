@@ -7,7 +7,7 @@ import { PostEdit } from "./Page/PostEdit";
 import { PracticeList } from "./Page/Practice";
 import { PracticeTest } from "./Page/PracticeEachTest";
 import { authProvider } from "./Page/authProvider";
-import { HomePage } from "./Page/HomePage";
+import { TestPool } from "./Page/TestPool";
 import MyLayout from "./MyLayout";
 import LibraryAddIcon from "@mui/icons-material/LibraryAdd";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
@@ -53,7 +53,7 @@ const dataProvider = jsonServerProvider("http://127.0.0.1:8000", httpClient);
 
 const App = () => (
   <Admin
-    dashboard={HomePage}
+    dashboard={TestPool}
     dataProvider={dataProvider}
     authProvider={authProvider}
     theme={theme}

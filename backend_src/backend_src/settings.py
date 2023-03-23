@@ -12,12 +12,13 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 import os
 import environ
 from pathlib import Path
+
 os.environ["DB_ENGINE"] = "postgres"
 env = environ.Env(
     # set casting, default value
     DEBUG=(bool, True)
 )
-print(os.environ.get('DB_ENGINE'))
+print(os.environ.get("DB_ENGINE"))
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -25,83 +26,84 @@ BASE_DIR = Path(__file__).parent.parent
 CORE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Take environment variables from .env file
-environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('SECRET_KEY', default='S#perS3crEt_007')
+SECRET_KEY = env("SECRET_KEY", default="S#perS3crEt_007")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env('DEBUG')
+DEBUG = env("DEBUG")
 
 # Assets Management
-ASSETS_ROOT = os.getenv('ASSETS_ROOT', '/static/assets')
+ASSETS_ROOT = os.getenv("ASSETS_ROOT", "/static/assets")
 
 # load production server from .env
 SECURE_CROSS_ORIGIN_OPENER_POLICY = None
 ALLOWED_HOSTS = ["*"]
-ALLOWED_HOSTS = ['localhost', 'localhost:3000', '127.0.0.1']
-CSRF_TRUSTED_ORIGINS = ['http://localhost:3000', 'http://127.0.0.1',
-                        'https://' + env('SERVER', default='127.0.0.1')]
+ALLOWED_HOSTS = ["localhost", "localhost:3000", "127.0.0.1"]
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1",
+    "https://" + env("SERVER", default="127.0.0.1"),
+]
 
 # Application definition
 
 INSTALLED_APPS = [
-    'src.apps.SrcConfig',
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'corsheaders',
-    'rest_framework',
+    "src.apps.SrcConfig",
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "corsheaders",
+    "rest_framework",
 ]
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.common.CommonMiddleware',
+    "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
 ]
-
-
 
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-                'src.context_processors.cfg_assets_root',
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+                "src.context_processors.cfg_assets_root",
             ],
         },
     },
 ]
 
-WSGI_APPLICATION = 'backend_src.wsgi.application'
+WSGI_APPLICATION = "backend_src.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',  
-        'NAME': 'capstone_project',  
-        'USER': 'root',  
-        'PASSWORD': 'manhhung148635',  
-        'HOST': 'localhost',  
-        'PORT': '3306'
+    "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": "capstone_project",
+        "USER": "root",
+        "PASSWORD": "tanphuoc1903",
+        "HOST": "localhost",
+        "PORT": "3306",
     }
 }
 
@@ -111,16 +113,16 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
 
@@ -128,9 +130,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = "UTC"
 
 USE_I18N = True
 
@@ -140,12 +142,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = "static/"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Settings for CORS issue
 CORS_ORIGIN_ALLOW_ALL = True
@@ -179,12 +181,12 @@ CORS_ALLOW_HEADERS = [
     "access-control-request-methods",
     "access-control-request-origin",
     "access-control-expose-headers",
-    "x-total-count"
+    "x-total-count",
 ]
 CORS_EXPOSE_HEADERS = ["*"]
 # End settings for CORS issue
 
-ROOT_URLCONF = 'backend_src.urls'
+ROOT_URLCONF = "backend_src.urls"
 # REST_FRAMEWORK = {
 #     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
 #     'PAGE_SIZE': 10
