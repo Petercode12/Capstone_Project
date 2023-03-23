@@ -1,15 +1,11 @@
 import * as React from "react";
-import { render } from "react-dom";
-import { Admin, Resource, fetchUtils, ListGuesser } from "react-admin";
-import { UserList } from "./Page/Users";
+import { Admin, Resource, fetchUtils } from "react-admin";
 import { PostList, PostCreate } from "./Page/Posts";
 import { PostEdit } from "./Page/PostEdit";
 import { authProvider } from "./Page/authProvider";
-import { HomePage } from "./Page/HomePage";
+import { TestPool } from "./Page/TestPool";
 import LibraryAddIcon from "@mui/icons-material/LibraryAdd";
-import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import jsonServerProvider from "ra-data-json-server";
-import axios from "axios";
 
 // A list of allowed origins that can access our backend API
 
@@ -38,7 +34,7 @@ const httpClient = (url, options = {}) => {
 const dataProvider = jsonServerProvider("http://127.0.0.1:8000", httpClient);
 const App = () => (
   <Admin
-    dashboard={HomePage}
+    dashboard={TestPool}
     dataProvider={dataProvider}
     authProvider={authProvider}
   >

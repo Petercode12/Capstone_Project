@@ -2,22 +2,20 @@ import * as React from "react";
 import {
   List,
   Datagrid,
-  Edit,
   Create,
   SimpleForm,
   DateField,
   TextField,
   EditButton,
   TextInput,
-  DateInput,
   BooleanField,
   NumberField,
-  useRecordContext,
   NumberInput,
   BooleanInput,
+  ImageInput,
+  ImageField,
   useCreate,
   useNotify,
-  useRefresh,
   useRedirect,
 } from "react-admin";
 
@@ -34,32 +32,48 @@ export const PostList = () => (
     </Datagrid>
   </List>
 );
+
+const toBase64 = (file) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
+
 export const PostCreate = () => {
   const notify = useNotify();
   const redirect = useRedirect();
   const [create, { error }] = useCreate();
-  const postSave = (data) => {
-    // console.log("Data: ", data);
+  const postSave = async function (data) {
+    data["image"] = await toBase64(data["image"].rawFile);
     create("save_exam/", { data });
     if (error) {
       notify("Cannot save!", { type: "error" });
     } else {
-      notify("Save successfully!", { type: "success" })
+      notify("Save successfully!", { type: "success" });
       setTimeout(() => {
-        redirect('/all_exams');
+        redirect("/all_exams");
       }, 100);
-      // window.location.reload();
-
     }
   };
   return (
     <Create title="Create an exam">
-      <SimpleForm sx={{ maxWidth: 500 }} onSubmit={postSave} warnWhenUnsavedChanges>
+      <SimpleForm
+        sx={{ maxWidth: 500 }}
+        onSubmit={postSave}
+        warnWhenUnsavedChanges
+      >
         <TextInput source="Name" />
         {/* <DateInput label="Created Date" source="Created_Date" /> */}
         {/* <DateInput label="Last Modified Date" source="Last_Modified_Date" /> */}
         <BooleanInput label="Is split?" source="Is_split" />
         <NumberInput label="User ID" source="User_id" />
+        <span>Thumbnail</span>
+        <ImageInput source="image" label=" ">
+          <ImageField source="src" title="title" />
+        </ImageInput>
+        <TextInput label="Description" source="description" />
       </SimpleForm>
     </Create>
   );
