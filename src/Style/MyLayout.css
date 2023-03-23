@@ -1,0 +1,14 @@
+.MobileAppBar {
+  display: none !important;
+}
+.DesktopAppBar {
+  display: flex !important;
+}
+@media screen and (max-width: 800px) {
+  .MobileAppBar {
+    display: flex !important;
+  }
+  .DesktopAppBar {
+    display: none !important;
+  }
+}

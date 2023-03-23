@@ -16,6 +16,12 @@ import { Toolbar, Edit, useCreate, useNotify } from "react-admin";
 import Paper from "@mui/material/Paper";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import axios from "axios";
+import {
+  useMediaQuery,
+  useTheme,
+  Container,
+  Grid,
+} from "@mui/material";
 
 function convertQueryDataToQuestionList(data) {
   let questionList = [];
@@ -101,7 +107,7 @@ export function PostEdit() {
     <Toolbar>
       <Box sx={{ "& > button": { m: 1 } }}>
         <LoadingButton
-          color="secondary"
+          color="primary"
           onClick={() => {
             questions_and_answers_Save();
           }}
@@ -130,6 +136,8 @@ export function PostEdit() {
       for (let i = 1; i <= questionList.length; i++) {
         buttonList.push(
           <Button
+            xs={{ margin: 0, p: 0, maxWidth: 10, py: 0.25, }}
+            variant="outlined"
             onClick={() => {
               scrolltoId("question".concat(i));
             }}
@@ -185,27 +193,25 @@ export function PostEdit() {
     return buttonGroupList;
   };
   const Aside = () => (
-    <div className="NavigationAside">
-      <Box sx={{ position: "fixed" }}>
-        <Paper>
-          <p style={{ textAlign: "center", fontWeight: "bold" }}>
-            Question List
-          </p>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              "& > *": {
-                m: 1,
-              },
-            }}
-          >
-            {addNavigationMenu()}
-          </Box>
-        </Paper>
-      </Box>
-    </div>
+    <Box className="NavigationAside" sx={{ position: "fixed", display: "flex", textAlign: "center", justifyContent: "center" }}>
+      <Paper className="NavigationAsidePaper">
+        <div style={{ textAlign: "center", fontWeight: "bold", padding: "8px 0px", minWidth: "173px" }}>
+          Question List
+        </div>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            "& > *": {
+              m: 1,
+            },
+          }}
+        >
+          {addNavigationMenu()}
+        </Box>
+      </Paper>
+    </Box>
   );
 
   const saveDataGen = () => {
@@ -306,21 +312,30 @@ export function PostEdit() {
     newArr[i].answerOptions = textFieldElement.value;
     setQuestionList(newArr);
   };
+  const theme = useTheme();
+  const isLargeEnough = useMediaQuery(theme.breakpoints.up('sm'));
+  // console.log(isLargeEnough);
   // function ẩn hiện thanh insert MCQ
   var currentPageYOffset = 0;
   window.addEventListener(
     "scroll",
     function () {
+
       var Y = window.pageYOffset;
-      if (currentPageYOffset < Y) {
-        const note = document.querySelector(".InsertButtonBox");
-        if (note !== null) {
-          note.style.cssText += "margin-top: -48px";
-        }
-      } else if (currentPageYOffset > Y) {
-        const note = document.querySelector(".InsertButtonBox");
-        if (note !== null) {
-          note.style.cssText -= "margin-top: -48px";
+      var X = window.innerWidth;
+      const note = document.querySelector(".InsertButton");
+      console.log("X size", X, isLargeEnough);
+      // const appBar = document.querySelector(".MuiBox-root");
+      if (X < 600) {
+        console.log((X < 600));
+        if (currentPageYOffset < Y) {
+          if (note !== null) {
+            note.style.cssText += "margin-top: -52.5px";
+          }
+        } else if (currentPageYOffset > Y) {
+          if (note !== null) {
+            note.style.cssText -= "margin-top: -52.5px";
+          }
         }
       }
       currentPageYOffset = Y;
@@ -407,237 +422,249 @@ export function PostEdit() {
     setAssignNewValueForElementsCheck(false);
   }
   return (
-    <>
-      <div className="InsertButtonBox">
-        <div className="InsertButton">
-          <Button
-            variant="contained"
-            onClick={insertQA_MCQ}
-            className="InsertMCQButton"
-            flex={1}
-            mr={{ xs: 0, sm: "0.5em" }}
-          >
-            <i className="bi bi-plus"></i> MCQ
-          </Button>
-          <Button
-            variant="contained"
-            onClick={insertQA_Cons}
-            className="InsertConsButton"
-            flex={1}
-            mr={{ xs: 0, sm: "0.5em" }}
-          >
-            <i className="bi bi-plus"></i> Constructive Questions
-          </Button>
-        </div>
-      </div>
-      <Edit aside={<Aside />} title="Edit exam" style={{ marginTop: "20px" }}>
-        <SimpleForm toolbar={<PostEditToolbar />} className="SimpleFormHere">
-          <div className="multipleChoice">
-            <div className="question-section">
-              <div className="question-text">
-                {questionList.map((question, i) => {
-                  if (question.type === "MCQ") {
-                    return (
-                      <div key={i}>
-                        <div
-                          className="question-count"
-                          style={{ marginTop: "2em" }}
-                          id={"question".concat(i + 1)}
-                        >
-                          <span>Question {i + 1}</span>
-                          <Button
-                            variant="outlined"
-                            style={{ float: "right" }}
-                            startIcon={<DeleteIcon />}
-                            onClick={() => {
+    <Container sx={{ maxWidth: { xl: 1280 } }} >
+      <Grid container justifyContent="space-between" spacing={2}>
+        <Grid item xs={12}>
+          <Grid className="InsertButton">
+            <Button
+              variant="contained"
+              onClick={insertQA_MCQ}
+              className="InsertMCQButton"
+              // flex={1}
+              mr={{ xs: 0, sm: "0.5em" }}
+            >
+              <i className="bi bi-plus"></i> MCQ
+            </Button>
+            <Button
+              variant="contained"
+              onClick={insertQA_Cons}
+              className="InsertConsButton"
+              // flex={1}
+              mr={{ xs: 0, sm: "0.5em" }}
+            >
+              <i className="bi bi-plus"></i> Constructive Questions
+            </Button>
+          </Grid>
+        </Grid>
+        <Grid item xs={12} sm={8} md={9} lg={10} style={{ paddingTop: "48px" }}>
+          {/* aside={<Aside />} */}
+          <Edit title="Edit exam" style={{ marginTop: "0px", alignItems: "center" }}>
+            <SimpleForm toolbar={<PostEditToolbar />} sx={{ padding: "8px", alignItems: "center" }}>
+              <div className="multipleChoice">
+                <div className="question-section">
+                  <div className="question-text">
+                    {questionList.map((question, i) => {
+                      if (question.type === "MCQ") {
+                        return (
+                          <div key={i}>
+                            <div
+                              className="question-count"
+                              style={{ margin: "1em 0em" }}
+                              id={"question".concat(i + 1)}
+                            >
+                              <span>Question {i + 1}</span>
+                              <Button
+                                variant="outlined"
+                                style={{ float: "right" }}
+                                startIcon={<DeleteIcon />}
+                                onClick={() => {
                               removeQuestionAndAnswerFromQuestionList(i);
                             }}
-                          >
-                            Delete
-                          </Button>
-                        </div>
-                        <RichTextInput
-                          id={"questionText".concat(i)}
-                          key={i}
-                          source=""
-                          defaultValue={questionList[i].questionText}
-                        />
-                        <RadioGroup
-                          row
-                          aria-labelledby="demo-row-radio-buttons-group-label"
-                          name="row-radio-buttons-group"
-                          style={{ marginTop: "1em" }}
-                          onChange={(event) => {
-                            handleMCQChange(event, i);
-                          }}
-                          defaultValue={questionList[i].correctAnswer}
-                          id={"correctAnswer".concat(i)}
-                        >
-                          <Box
-                            sx={{
-                              display: "flex",
-                            }}
-                          >
-                            <FormControlLabel
-                              value="A"
-                              control={<Radio />}
-                              label=""
+                              >
+                                Delete
+                              </Button>
+                            </div>
+                            <RichTextInput
+                              id={"questionText".concat(i)}
+                              key={i}
+                              source=""
+                              defaultValue={questionList[i].questionText}
                             />
-                            <Box
-                              component="form"
-                              sx={{
-                                "& > :not(style)": { m: 1, width: "25ch" },
+                            <RadioGroup
+                              row
+                              aria-labelledby="demo-row-radio-buttons-group-label"
+                              name="row-radio-buttons-group"
+                              style={{ marginTop: "0.5em", marginLeft: "0px" }}
+                              onChange={(event) => {
+                                handleMCQChange(event, i);
                               }}
-                              noValidate
-                              autoComplete="off"
+                              defaultValue={questionList[i].correctAnswer}
+                              id={"correctAnswer".concat(i)}
                             >
-                              <TextField
-                                className="textAnswer"
-                                id={"textAnswerA".concat(i)}
-                                label="Answer A"
-                                variant="outlined"
-                                defaultValue={
-                                  questionList[i].answerOptions[0].answerText
-                                }
-                              />
-                            </Box>
-                          </Box>
-                          <Box
-                            sx={{
-                              display: "flex",
-                            }}
-                          >
-                            <FormControlLabel
-                              value="B"
-                              control={<Radio />}
-                              label=""
-                            />
-                            <Box
-                              component="form"
-                              sx={{
-                                "& > :not(style)": { m: 1, width: "25ch" },
-                              }}
-                              noValidate
-                              autoComplete="off"
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  marginBottom: "1em",
+                                }}
+                              >
+                                <FormControlLabel
+                                  value="A"
+                                  control={<Radio />}
+                                  label=""
+                                />
+                                <Box
+                                  component="form"
+                                  sx={{
+                                    marginLeft: '-0.5em',
+                                  }}
+                                  noValidate
+                                  autoComplete="off"
+                                >
+                                  <TextField
+                                    className="textAnswer"
+                                    id={"textAnswerA".concat(i)}
+                                    label="Answer A"
+                                    variant="outlined"
+                                    defaultValue={
+                                      questionList[i].answerOptions[0].answerText
+                                    }
+                                  />
+                                </Box>
+                              </Box>
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  marginBottom: "1em",
+                                }}
+                              >
+                                <FormControlLabel
+                                  value="B"
+                                  control={<Radio />}
+                                  label=""
+                                />
+                                <Box
+                                  component="form"
+                                  sx={{
+                                    marginLeft: '-0.5em',
+                                  }}
+                                  noValidate
+                                  autoComplete="off"
+                                >
+                                  <TextField
+                                    className="textAnswer"
+                                    id={"textAnswerB".concat(i)}
+                                    label="Answer B"
+                                    variant="outlined"
+                                    defaultValue={
+                                      questionList[i].answerOptions[1].answerText
+                                    }
+                                  />
+                                </Box>
+                              </Box>
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  marginBottom: "1em",
+                                }}
+                              >
+                                <FormControlLabel
+                                  value="C"
+                                  control={<Radio />}
+                                  label=""
+                                />
+                                <Box
+                                  component="form"
+                                  sx={{
+                                    marginLeft: '-0.5em',
+                                  }}
+                                  noValidate
+                                  autoComplete="off"
+                                >
+                                  <TextField
+                                    className="textAnswer"
+                                    id={"textAnswerC".concat(i)}
+                                    label="Answer C"
+                                    variant="outlined"
+                                    defaultValue={
+                                      questionList[i].answerOptions[2].answerText
+                                    }
+                                  />
+                                </Box>
+                              </Box>
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  marginBottom: "1em",
+                                }}
+                              >
+                                <FormControlLabel
+                                  value="D"
+                                  control={<Radio />}
+                                  label=""
+                                />
+                                <Box
+                                  component="form"
+                                  sx={{
+                                    marginLeft: '-0.5em',
+                                  }}
+                                  noValidate
+                                  autoComplete="off"
+                                >
+                                  <TextField
+                                    className="textAnswer"
+                                    id={"textAnswerD".concat(i)}
+                                    label="Answer D"
+                                    variant="outlined"
+                                    defaultValue={
+                                      questionList[i].answerOptions[3].answerText
+                                    }
+                                  />
+                                </Box>
+                              </Box>
+                            </RadioGroup>
+                          </div>
+                        );
+                      } else {
+                        return (
+                          <div key={i}>
+                            <div
+                              id={"question".concat(i + 1)}
+                              className="question-count"
+                              style={{ marginTop: "2em" }}
                             >
-                              <TextField
-                                className="textAnswer"
-                                id={"textAnswerB".concat(i)}
-                                label="Answer B"
+                              <span>Question {i + 1}</span>
+                              <Button
                                 variant="outlined"
-                                defaultValue={
-                                  questionList[i].answerOptions[1].answerText
-                                }
-                              />
-                            </Box>
-                          </Box>
-                          <Box
-                            sx={{
-                              display: "flex",
-                            }}
-                          >
-                            <FormControlLabel
-                              value="C"
-                              control={<Radio />}
-                              label=""
-                            />
-                            <Box
-                              component="form"
-                              sx={{
-                                "& > :not(style)": { m: 1, width: "25ch" },
-                              }}
-                              noValidate
-                              autoComplete="off"
-                            >
-                              <TextField
-                                className="textAnswer"
-                                id={"textAnswerC".concat(i)}
-                                label="Answer C"
-                                variant="outlined"
-                                defaultValue={
-                                  questionList[i].answerOptions[2].answerText
-                                }
-                              />
-                            </Box>
-                          </Box>
-                          <Box
-                            sx={{
-                              display: "flex",
-                            }}
-                          >
-                            <FormControlLabel
-                              value="D"
-                              control={<Radio />}
-                              label=""
-                            />
-                            <Box
-                              component="form"
-                              sx={{
-                                "& > :not(style)": { m: 1, width: "25ch" },
-                              }}
-                              noValidate
-                              autoComplete="off"
-                            >
-                              <TextField
-                                className="textAnswer"
-                                id={"textAnswerD".concat(i)}
-                                label="Answer D"
-                                variant="outlined"
-                                defaultValue={
-                                  questionList[i].answerOptions[3].answerText
-                                }
-                              />
-                            </Box>
-                          </Box>
-                        </RadioGroup>
-                      </div>
-                    );
-                  } else {
-                    return (
-                      <div key={i}>
-                        <div
-                          id={"question".concat(i + 1)}
-                          className="question-count"
-                          style={{ marginTop: "2em" }}
-                        >
-                          <span>Question {i + 1}</span>
-                          <Button
-                            variant="outlined"
-                            style={{ float: "right" }}
-                            startIcon={<DeleteIcon />}
-                            onClick={() => {
+                                style={{ float: "right" }}
+                                startIcon={<DeleteIcon />}
+                                onClick={() => {
                               removeQuestionAndAnswerFromQuestionList(i);
                             }}
-                          >
-                            Delete
-                          </Button>
-                        </div>
-                        <RichTextInput
-                          id={"questionText".concat(i)}
-                          key={i}
-                          source=""
-                          defaultValue={questionList[i].questionText}
-                        />
-                        <div>
-                          <TextField
-                            id={"textAnswerCons".concat(i)}
-                            label="Answer"
-                            multiline
-                            rows={5}
-                            variant="filled"
-                            style={{ width: "55em" }}
-                            defaultValue={questionList[i].answerOptions}
-                          />
-                        </div>
-                      </div>
-                    );
-                  }
-                })}
+                              >
+                                Delete
+                              </Button>
+                            </div>
+                            <RichTextInput
+                              id={"questionText".concat(i)}
+                              key={i}
+                              source=""
+                              defaultValue={questionList[i].questionText}
+                            />
+                            <div>
+                              <TextField
+                                id={"textAnswerCons".concat(i)}
+                                label="Answer"
+                                multiline
+                                rows={5}
+                                variant="filled"
+                                style={{ width: "100%" }}
+                                defaultValue={questionList[i].answerOptions}
+                              />
+                            </div>
+                          </div>
+                        );
+                      }
+                    })}
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-        </SimpleForm>
-      </Edit>
-    </>
+            </SimpleForm>
+          </Edit>
+        </Grid>
+        <Grid item xs={0} sm={4} md={3} lg={2} style={{ paddingTop: "64px" }}>
+          <Aside />
+        </Grid>
+      </Grid>
+    </Container>
   );
 }

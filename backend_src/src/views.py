@@ -29,7 +29,34 @@ def query_all_exams_api(request):
             status=200, headers=headers, data=exams_serializer.data, safe=False
         )
 
-
+@csrf_exempt
+def query_all_practice_tests(request):
+    if request.method == "GET":
+        exams = EXAMS_COLLECTION.objects.all()
+        start = int(request.GET["_start"])
+        end = int(request.GET["_end"])
+        per_page = end - start
+        total = len(exams)
+        page = floor(end / per_page)
+        exams_paginator = Paginator(exams, per_page)
+        exams_serializer = exams_collection_serializer(
+            exams_paginator.page(page), many=True
+        )
+        content_range = len(exams)
+        headers = {"X-Total-Count": content_range}
+        # return JsonResponse(status = 200, safe=False, headers = {'Access-Control-Expose-Headers': 'Content-Range','Content-Range': 'posts 0-24/319','Access-Control-Allow-Methods': 'GET,HEAD,OPTIONS,POST,PUT', 'Access-Control-Allow-Origin': '*'}, data = exams_serializer.data)
+        # headers = {'Access-Control-Expose-Headers': 'Content-Range','Content-Range': 'posts 0-24/319','Access-Control-Allow-Methods': 'GET,HEAD,OPTIONS,POST,PUT', 'Access-Control-Allow-Origin': '*'},
+        return JsonResponse(
+            status=200, headers=headers, data=exams_serializer.data, safe=False
+        )
+        
+@csrf_exempt
+def query_practice_test_by_id(request, event_id):
+    if request.method == "GET":
+        exam = EXAMS_COLLECTION.objects.get(id=event_id)
+        exam_serializer = exams_collection_serializer(exam)
+        return JsonResponse(exam_serializer.data, safe=False)
+      
 @csrf_exempt
 def query_exams_by_userid(
     request,
