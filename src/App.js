@@ -1,6 +1,6 @@
 import * as React from "react";
 import { render } from "react-dom";
-import { Admin, Resource, fetchUtils, ListGuesser, defaultTheme } from "react-admin";
+import { Admin, Resource, fetchUtils, ListGuesser, defaultTheme, RefreshIconButton } from "react-admin";
 import { UserList } from "./Page/Users";
 import { PostList, PostCreate } from "./Page/Posts";
 import { PostEdit } from "./Page/PostEdit";
@@ -8,12 +8,14 @@ import { PracticeList } from "./Page/Practice";
 import { PracticeTest } from "./Page/PracticeEachTest";
 import { authProvider } from "./Page/authProvider";
 import { HomePage } from "./Page/HomePage";
+import MyLayout from "./MyLayout";
 import LibraryAddIcon from "@mui/icons-material/LibraryAdd";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import ModeEditOutlineTwoToneIcon from '@mui/icons-material/ModeEditOutlineTwoTone';
 import jsonServerProvider from "ra-data-json-server";
 import axios from "axios";
-
+import { CssBaseline, Container } from '@mui/material';
+import { Box } from "@mui/material";
 // A list of allowed origins that can access our backend API
 
 const httpClient = (url, options = {}) => {
@@ -41,18 +43,21 @@ const httpClient = (url, options = {}) => {
 const theme = {
   ...defaultTheme,
   sidebar: {
-    width: 180,
-    closedWidth: 55,
+    width: 174,
+    closedWidth: 50,
+    bgcolor: "#fff",
+    zIndex: "20 !important",
   },
 };
 const dataProvider = jsonServerProvider("http://127.0.0.1:8000", httpClient);
+
 const App = () => (
   <Admin
     dashboard={HomePage}
     dataProvider={dataProvider}
     authProvider={authProvider}
     theme={theme}
-  // menu={menu}
+    layout={MyLayout}
   >
     {/* <Resource
       name="users"
@@ -62,7 +67,7 @@ const App = () => (
     /> */}
     <Resource
       name="all_exams"
-      options={{ label: "Test collection" }}
+      options={{ label: "Test collection", }}
       list={PostList}
       edit={PostEdit}
       create={PostCreate}

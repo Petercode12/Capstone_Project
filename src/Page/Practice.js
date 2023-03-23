@@ -40,7 +40,7 @@ const PostEditActions = () => (
     </TopToolbar>
 );
 export const PracticeList = () => (
-    <List actions={<PostEditActions />} >
+    <List actions={<PostEditActions />} xs={{ maxWidth: 1280 }} sx={{ margin: "0 auto" }}>
         <Datagrid bulkActionButtons={false}>
             <NumberField source="id" />
             <TextField source="Name" />

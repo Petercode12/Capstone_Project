@@ -48,20 +48,6 @@
   justify-content: space-between;
 }
 
-/* .multipleChoice button {
-  width: 100%;
-  font-size: 16px;
-  color: #ffffff;
-  background-color: #252d4a;
-  border-radius: 15px;
-  display: flex;
-  padding: 5px;
-  justify-content: flex-start;
-  align-items: center;
-  border: 5px solid #234668;
-  cursor: pointer;
-} */
-
 .correct {
   background-color: #2f922f;
 }
@@ -70,6 +56,12 @@
   background-color: #ff3333;
 }
 
+.multipleChoice {
+  margin: auto;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
 .multipleChoice button:hover {
   background-color: #555e7d;
 }
@@ -90,68 +82,70 @@ form div.textAnswer {
 }
 
 /* BUTTON */
-.InsertButtonBox {
-  width: inherit;
-  background-color: rgb(255, 255, 255);
-  box-sizing: border-box;
-  border-radius: 4px;
-  box-shadow: 0px 2px 1px -1px rgb(0 0 0 / 20%),
-    0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%);
-  padding: 8px;
-  position: fixed;
-  z-index: 10;
-  transition-duration: 0.4s;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto;
-}
 button.InsertMCQButton {
+  padding-left: 0px;
   float: left;
 }
 button.InsertConsButton {
   float: left;
   margin-left: 1.5em;
 }
+.css-mhc70k-MuiGrid-root > .MuiGrid-item {
+  padding-left: 0px;
+}
 .InsertButton {
-  position: relative;
-  z-index: 10 !important;
+  /* width: inherit; */
+  box-sizing: border-box;
+  background-color: rgb(255, 255, 255);
+  border-radius: 4px;
+  box-shadow: 0px 2px 1px -1px rgb(0 0 0 / 20%),
+    0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%);
+  padding: 8px;
+  /* padding-left: 0px; */
+  /* position: relative; */
+  /* position: -webkit-sticky; */
+  position: fixed;
+  transition-duration: 0.3s;
+  z-index: 100 !important;
+  display: flex;
+  margin: 0 auto;
+  /* align-items: center;
+  justify-content: center; */
+  transform: translateZ(0);
 }
 div.css-46bh2p-MuiCardContent-root {
   padding-top: 0;
 }
-.NavigationAside {
-  width: 160px;
-  margin: 0 0.5em;
+.EditExam .NavigationAside {
+  /* width: 170px; */
+  position: relative;
+  margin: auto;
+  /* margin-top: 8px; */
+  padding: 8px;
+  /* margin: 0 0.5em; */
   display: flex;
   justify-content: center;
-  /* overflow: hidden; */
+  align-items: center;
+  left: 50%;
+  transform: translate(-50%, 0);
+  margin-left: auto;
+  overflow: hidden;
 }
 /* Responsive tablet */
 @media only screen and (max-width: 1200px) {
   .NavigationAside {
-    width: 200px;
-  }
-  .NavigationAsidePaper {
-    margin-left: 15px;
+    width: 250px;
   }
 }
 @media only screen and (max-width: 1000px) {
   .NavigationAside {
     width: 250px;
   }
-  .NavigationAsidePaper {
-    margin-left: 25px;
-  }
 }
 /* Responsive small tablet */
 @media only screen and (max-width: 800px) {
   .NavigationAside {
-    display: none;
-  }
-  .NavigationAsidePaper {
-    margin-left: 30px;
+    width: 178px;
   }
 }
 /* Responsive mobile */

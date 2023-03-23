@@ -376,6 +376,7 @@ export function PracticeTest() {
                                                     <Box
                                                         sx={{
                                                             display: "flex",
+                                                            marginBottom: "1em",
                                                         }}
                                                     >
                                                         <FormControlLabel

@@ -20,9 +20,13 @@ import {
   useRefresh,
   useRedirect,
 } from "react-admin";
-import { Box, } from '@mui/material';
+import {
+  Box,
+  Container,
+  Grid,
+} from '@mui/material';
 export const PostList = () => (
-  <List>
+  <List xs={{ maxWidth: 1280 }} sx={{ margin: "0 auto" }}>
     <Datagrid initialState={{
       sorting: {
         sortModel: [{ field: 'id', sort: 'asc' }],
