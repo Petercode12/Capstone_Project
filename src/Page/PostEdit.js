@@ -16,12 +16,7 @@ import { Toolbar, Edit, useCreate, useNotify } from "react-admin";
 import Paper from "@mui/material/Paper";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import axios from "axios";
-import {
-  useMediaQuery,
-  useTheme,
-  Container,
-  Grid,
-} from "@mui/material";
+import { useMediaQuery, useTheme, Container, Grid } from "@mui/material";
 
 function convertQueryDataToQuestionList(data) {
   let questionList = [];
@@ -67,7 +62,8 @@ export function PostEdit() {
         )
       )
       .then((res) => {
-        setQuestionList(convertQueryDataToQuestionList(res.data));
+        console.log(res.data);
+        setQuestionList(convertQueryDataToQuestionList(res.data["q_and_a"]));
       })
       .catch((err) => {
         console.log(err);
@@ -136,7 +132,7 @@ export function PostEdit() {
       for (let i = 1; i <= questionList.length; i++) {
         buttonList.push(
           <Button
-            xs={{ margin: 0, p: 0, maxWidth: 10, py: 0.25, }}
+            xs={{ margin: 0, p: 0, maxWidth: 10, py: 0.25 }}
             variant="outlined"
             onClick={() => {
               scrolltoId("question".concat(i));
@@ -193,9 +189,24 @@ export function PostEdit() {
     return buttonGroupList;
   };
   const Aside = () => (
-    <Box className="NavigationAside" sx={{ position: "fixed", display: "flex", textAlign: "center", justifyContent: "center" }}>
+    <Box
+      className="NavigationAside"
+      sx={{
+        position: "fixed",
+        display: "flex",
+        textAlign: "center",
+        justifyContent: "center",
+      }}
+    >
       <Paper className="NavigationAsidePaper">
-        <div style={{ textAlign: "center", fontWeight: "bold", padding: "8px 0px", minWidth: "173px" }}>
+        <div
+          style={{
+            textAlign: "center",
+            fontWeight: "bold",
+            padding: "8px 0px",
+            minWidth: "170px",
+          }}
+        >
           Question List
         </div>
         <Box
@@ -216,7 +227,7 @@ export function PostEdit() {
 
   const saveDataGen = () => {
     // tạo array dict data của đề thi
-    let saveData = [];
+    let saveData = []; // array of dict
     for (let i = 0; i < questionList.length; i++) {
       if (questionList[i].type === "MCQ") {
         let k = {
@@ -264,6 +275,7 @@ export function PostEdit() {
       }
     }
     const data = saveDataGen();
+    console.log("DATA will be saved: ", data);
     create("save_questions_and_answers/".concat(params.id), { data });
     if (error) {
       notify("Cannot save!", { type: "error" });
@@ -313,21 +325,20 @@ export function PostEdit() {
     setQuestionList(newArr);
   };
   const theme = useTheme();
-  const isLargeEnough = useMediaQuery(theme.breakpoints.up('sm'));
+  const isLargeEnough = useMediaQuery(theme.breakpoints.up("sm"));
   // console.log(isLargeEnough);
   // function ẩn hiện thanh insert MCQ
   var currentPageYOffset = 0;
   window.addEventListener(
     "scroll",
     function () {
-
       var Y = window.pageYOffset;
       var X = window.innerWidth;
       const note = document.querySelector(".InsertButton");
-      console.log("X size", X, isLargeEnough);
+      // console.log("X size", X, isLargeEnough);
       // const appBar = document.querySelector(".MuiBox-root");
-      if (X < 600) {
-        console.log((X < 600));
+      if (X < 800) {
+        // console.log(X < 600);
         if (currentPageYOffset < Y) {
           if (note !== null) {
             note.style.cssText += "margin-top: -52.5px";
@@ -422,7 +433,7 @@ export function PostEdit() {
     setAssignNewValueForElementsCheck(false);
   }
   return (
-    <Container sx={{ maxWidth: { xl: 1280 } }} >
+    <Container sx={{ maxWidth: { xl: 1280 } }}>
       <Grid container justifyContent="space-between" spacing={2}>
         <Grid item xs={12}>
           <Grid className="InsertButton">
@@ -447,9 +458,16 @@ export function PostEdit() {
           </Grid>
         </Grid>
         <Grid item xs={12} sm={8} md={9} lg={10} style={{ paddingTop: "48px" }}>
-          {/* aside={<Aside />} */}
-          <Edit title="Edit exam" style={{ marginTop: "0px", alignItems: "center" }}>
-            <SimpleForm toolbar={<PostEditToolbar />} sx={{ padding: "8px", alignItems: "center" }}>
+          <Edit
+            title="Edit exam"
+            style={{ marginTop: "0px", alignItems: "center" }}
+            className="NavigationAsidePaper"
+          >
+            <SimpleForm
+              toolbar={<PostEditToolbar />}
+              sx={{ padding: "8px", alignItems: "center" }}
+              className="NavigationAsidePaper"
+            >
               <div className="multipleChoice">
                 <div className="question-section">
                   <div className="question-text">
@@ -468,8 +486,8 @@ export function PostEdit() {
                                 style={{ float: "right" }}
                                 startIcon={<DeleteIcon />}
                                 onClick={() => {
-                              removeQuestionAndAnswerFromQuestionList(i);
-                            }}
+                                  removeQuestionAndAnswerFromQuestionList(i);
+                                }}
                               >
                                 Delete
                               </Button>
@@ -505,7 +523,8 @@ export function PostEdit() {
                                 <Box
                                   component="form"
                                   sx={{
-                                    marginLeft: '-0.5em',
+                                    marginLeft: "-4px",
+                                    marginRight: "-4px",
                                   }}
                                   noValidate
                                   autoComplete="off"
@@ -516,7 +535,8 @@ export function PostEdit() {
                                     label="Answer A"
                                     variant="outlined"
                                     defaultValue={
-                                      questionList[i].answerOptions[0].answerText
+                                      questionList[i].answerOptions[0]
+                                        .answerText
                                     }
                                   />
                                 </Box>
@@ -535,7 +555,8 @@ export function PostEdit() {
                                 <Box
                                   component="form"
                                   sx={{
-                                    marginLeft: '-0.5em',
+                                    marginLeft: "-4px",
+                                    marginRight: "-4px",
                                   }}
                                   noValidate
                                   autoComplete="off"
@@ -546,7 +567,8 @@ export function PostEdit() {
                                     label="Answer B"
                                     variant="outlined"
                                     defaultValue={
-                                      questionList[i].answerOptions[1].answerText
+                                      questionList[i].answerOptions[1]
+                                        .answerText
                                     }
                                   />
                                 </Box>
@@ -565,7 +587,8 @@ export function PostEdit() {
                                 <Box
                                   component="form"
                                   sx={{
-                                    marginLeft: '-0.5em',
+                                    marginLeft: "-4px",
+                                    marginRight: "-4px",
                                   }}
                                   noValidate
                                   autoComplete="off"
@@ -576,7 +599,8 @@ export function PostEdit() {
                                     label="Answer C"
                                     variant="outlined"
                                     defaultValue={
-                                      questionList[i].answerOptions[2].answerText
+                                      questionList[i].answerOptions[2]
+                                        .answerText
                                     }
                                   />
                                 </Box>
@@ -595,7 +619,8 @@ export function PostEdit() {
                                 <Box
                                   component="form"
                                   sx={{
-                                    marginLeft: '-0.5em',
+                                    marginLeft: "-4px",
+                                    marginRight: "-4px",
                                   }}
                                   noValidate
                                   autoComplete="off"
@@ -606,7 +631,8 @@ export function PostEdit() {
                                     label="Answer D"
                                     variant="outlined"
                                     defaultValue={
-                                      questionList[i].answerOptions[3].answerText
+                                      questionList[i].answerOptions[3]
+                                        .answerText
                                     }
                                   />
                                 </Box>
@@ -628,8 +654,8 @@ export function PostEdit() {
                                 style={{ float: "right" }}
                                 startIcon={<DeleteIcon />}
                                 onClick={() => {
-                              removeQuestionAndAnswerFromQuestionList(i);
-                            }}
+                                  removeQuestionAndAnswerFromQuestionList(i);
+                                }}
                               >
                                 Delete
                               </Button>

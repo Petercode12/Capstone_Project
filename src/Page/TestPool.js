@@ -16,6 +16,7 @@ import { Container, InputAdornment, TextField } from "@mui/material";
 export function TestPool() {
   const [originalExamList, setOriginalExamList] = useState([]);
   const [examList, setExamList] = useState([]);
+  let infinity = "♾️";
   useEffect(() => {
     axios
       .get("http://localhost:8000/exams/")
@@ -36,13 +37,16 @@ export function TestPool() {
   };
   return (
     <>
-      <Container maxWidth="md" sx={{ mt: 3 }}>
+      <Container
+        maxWidth="sm"
+        sx={{ mt: 3, display: "flex", justifyContent: "center" }}
+      >
         <TextField
           id="search"
           type="search"
           label="Search"
           onChange={handleSearchChange}
-          sx={{ width: 600 }}
+          sx={{ width: "100%" }}
           style={{ backgroundColor: "#fff" }}
           InputProps={{
             endAdornment: (
@@ -54,34 +58,60 @@ export function TestPool() {
         />
       </Container>
 
-      <Grid container spacing={2} sx={{ marginTop: "1em" }}>
+      <Grid container spacing={2} sx={{ display: "flex", marginTop: "1em" }}>
         {examList.map((exam, i) => {
+          if (exam["description"] === "") {
+            exam["description"] = "No description";
+          }
+          if (exam["duration"] === 0) {
+            exam["duration"] = infinity;
+          }
           return (
             <Grid xs={12} sm={6} md={4} lg={3} xl={2} item key={i}>
-              <Card sx={{ maxWidth: 345 }}>
+              <Card
+                sx={{
+                  maxWidth: 340,
+                  justifyContent: "center",
+                  marginLeft: "auto",
+                  marginRight: "auto",
+                }}
+              >
                 <CardMedia
                   component="img"
                   alt="exam paper"
                   height="140"
                   image={exam["image"]}
                 />
-                <CardContent style={{ paddingBottom: 0 }}>
-                  <Typography gutterBottom variant="h5" component="div">
+                <CardContent style={{ marginTop: 4, paddingBottom: 0 }}>
+                  <Typography gutterBottom variant="h5" component="div" noWrap>
                     {exam["Name"]}
                   </Typography>
-                  <Typography variant="body1" color="text.secondary">
+                  <Typography
+                    variant="body1"
+                    inline
+                    color="text.secondary"
+                    noWrap
+                  >
                     {exam["description"]}
                   </Typography>
                   <Typography variant="subtitle1" component="div">
-                    <i
-                      className="fa fa-clock-o"
+                    <div
                       style={{
-                        fontSize: "20px",
-                        marginRight: ".4rem",
-                        marginTop: ".4rem",
+                        transform: "translateY(1px)",
+                        display: "inline-block",
                       }}
-                    ></i>
-                    {exam["duration"]} min
+                    >
+                      <i
+                        className="fa fa-clock-o"
+                        style={{
+                          fontSize: "20px",
+                          marginRight: ".4rem",
+                          marginTop: ".4rem",
+                        }}
+                        sx={{ margin: "0px 4px" }}
+                      />
+                    </div>
+                    {exam["duration"]} mins
                   </Typography>
                 </CardContent>
                 <CardActions>

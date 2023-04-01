@@ -25,4 +25,7 @@ urlpatterns = [
         views.query_questions_and_answers_by_examid,
         name="queryQuestionsAnswersByExamId",
     ),
+    path("test_result/<int:exam_id>", views.insert_test_result, name="insertTestResult"),
+    path("test_result_specific/<int:exam_id>", views.insert_test_result_specific, name="insertTestResultSpecific")
+    
 ]

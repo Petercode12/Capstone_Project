@@ -35,7 +35,7 @@ const styles = {
         textOverflow: 'ellipsis',
         whiteSpace: 'nowrap',
         overflow: 'hidden',
-        width: '138px',
+        width: '150px',
     },
     spacer: {
         flex: 1,
