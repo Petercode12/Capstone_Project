@@ -81,13 +81,13 @@ export function TestPool() {
                   </Typography>
                   <Typography variant="subtitle1" component="div">
                     <i
-                      className="fa fa-clock-o"
+                      className="fa-regular fa-clock"
                       style={{
                         fontSize: "20px",
                         marginRight: ".4rem",
                         marginTop: ".4rem",
                       }}
-                    ></i>
+                    />
                     {exam["duration"]} min
                   </Typography>
                 </CardContent>
