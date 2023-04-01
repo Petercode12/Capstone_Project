@@ -113,7 +113,7 @@ export function TestPool() {
                       }}
                     >
                       <i
-                        className="fa fa-clock-o"
+                        className="fa-regular fa-clock"
                         style={{
                           fontSize: "20px",
                           marginRight: ".4rem",
