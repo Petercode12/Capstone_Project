@@ -56,6 +56,39 @@ class questions_and_answers_serializer(serializers.ModelSerializer):
         )
 
 
+class test_result_serializer(serializers.ModelSerializer):
+    class Meta:
+        model = TEST_RESULT
+        fields = (
+            "id",
+            "Score",
+            "Date",
+            "exam_id",
+            "user_id",
+        )
+
+
+class test_result_specific_serializer(serializers.ModelSerializer):
+    class Meta:
+        model = TEST_RESULT_SPECIFIC
+        fields = (
+            "id",
+            "Ordinal",
+            "Question",
+            "Is_MCQ",
+            "Answer_a",
+            "Answer_b",
+            "Answer_c",
+            "Answer_d",
+            "Correct_answer",
+            "Solution",
+            "User_answer_MCQ",
+            "User_answer_CONS",
+            "Mark",
+            "test_result_id",
+        )
+
+
 class user_serializer(serializers.ModelSerializer):
     class Meta:
         model = USER

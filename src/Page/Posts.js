@@ -18,10 +18,39 @@ import {
   useNotify,
   useRedirect,
   useGetIdentity,
+  ReferenceInput,
+  SelectInput,
 } from "react-admin";
-import { Box } from "@mui/material";
-import { ShareButton } from "./ShareButton";
+import {
+  Box,
+  Container,
+  Grid,
+  createTheme,
+  TextField as TextField1,
+  InputAdornment,
+  FormControl,
+  OutlinedInput,
+  FilledInput,
+  InputLabel,
+  FormHelperText,
+} from "@mui/material";
 import ShareIcon from "@mui/icons-material/Share";
+import { ShareButton } from "./ShareButton";
+const theme = createTheme({
+  components: {
+    // Name of the component
+    RaImageInput: {
+      styleOverrides: {
+        // Name of the slot
+        root: {
+          // Some CSS
+          fontSize: "1rem",
+        },
+      },
+    },
+  },
+});
+
 export const PostList = () => (
   <List xs={{ maxWidth: 1280 }} sx={{ margin: "0 auto" }}>
     <Datagrid
@@ -56,10 +85,19 @@ export const PostCreate = () => {
   const redirect = useRedirect();
   const [create, { error }] = useCreate();
   const { data: userInfo, isLoading, err } = useGetIdentity();
+  const [num, setNum] = React.useState();
+  const min = 1;
+  const max = 999;
+  const [timeError, setTimeError] = React.useState();
+  const [isSetDuration, setIsSetDuration] = React.useState(false);
   const postSave = async function(data) {
     console.log("User info: ", userInfo);
     data["image"] = await toBase64(data["image"].rawFile);
     data = { ...data, User_id: userInfo.id };
+    console.log(isSetDuration);
+    if (isSetDuration === true) data["duration"] = num;
+    else data["duration"] = 0;
+    console.log("Duration: ", data["duration"], typeof data["duration"]);
     console.log("Data saved: ", data);
     create("save_exam/", { data });
     if (error) {
@@ -72,34 +110,106 @@ export const PostCreate = () => {
     }
   };
   return (
-    <Create title="Create an exam">
-      <SimpleForm
-        sx={{ maxWidth: 500 }}
-        onSubmit={postSave}
-        warnWhenUnsavedChanges
-      >
-        <Box
-          sx={{
-            width: {
-              xs: 200, // theme.breakpoints.up('xs')
-              sm: 300, // theme.breakpoints.up('sm')
-              md: 400, // theme.breakpoints.up('md')
-              lg: 450, // theme.breakpoints.up('lg')
-              xl: 450, // theme.breakpoints.up('xl')
-            },
-          }}
+    <Container
+      xs={{ maxWidth: 1200 }}
+      sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+    >
+      <Create title="Create an exam" sx={{ maxWidth: 500, display: "flex" }}>
+        <SimpleForm
+          onSubmit={postSave}
+          warnWhenUnsavedChanges
+          sx={{ display: "flex", maxWidth: 500 }}
         >
-          <TextInput source="Name" />
-          {/* <DateInput label="Created Date" source="Created_Date" /> */}
-          {/* <DateInput label="Last Modified Date" source="Last_Modified_Date" /> */}
-          <BooleanInput label="Is split?" source="Is_split" />
-          <span>Thumbnail</span>
-          <ImageInput source="image" label=" ">
-            <ImageField source="src" title="title" />
-          </ImageInput>
-          <TextInput label="Description" source="description" />
-        </Box>
-      </SimpleForm>
-    </Create>
+          <Box
+            sx={{
+              width: "auto",
+            }}
+          >
+            <TextInput source="Name" required resettable fullWidth />
+            <BooleanInput label="Is split?" source="Is_split" />
+
+            <ImageInput
+              source="image"
+              label="Choose a profile picture:"
+              labelSingle
+              accept="image/*"
+              required
+              placeholder={
+                <p>Drop a picture to upload, or click to select one </p>
+              }
+              sx={{
+                "& .RaImageInput-preview": {
+                  fontSize: "1.5em !important",
+                },
+              }}
+            >
+              <ImageField source="src" title="title" />
+            </ImageInput>
+            <Container sx={{ display: "flex", padding: "0px !important" }}>
+              <BooleanInput
+                label="Set duration?"
+                source="Is_timer"
+                options={{ display: "flex" }}
+                onChange={() => {
+                  setIsSetDuration(!isSetDuration);
+                  console.log(isSetDuration);
+                  if (isSetDuration === false) {
+                    const note = document.querySelector("#clock");
+                    note.classList.remove("Duration");
+                  } else {
+                    const note = document.querySelector("#clock");
+                    note.classList.add("Duration");
+                  }
+                }}
+              />
+              <FormControl
+                sx={{ width: "25ch", display: "flex" }}
+                variant="filled"
+                id="clock"
+                className="Duration"
+              >
+                <InputLabel htmlFor="filled-adornment-timer">
+                  Test duration
+                </InputLabel>
+                <FilledInput
+                  id="filled-adornment-timer"
+                  type="number"
+                  endAdornment={
+                    <InputAdornment position="end">minutes</InputAdornment>
+                  }
+                  aria-describedby="filled-weight-helper-text"
+                  size="small"
+                  onChange={(e) => {
+                    var value = parseInt(e.target.value, "10");
+                    if (value > max) {
+                      // setTimeError(true);
+                      value = max;
+                    } else if (value < min) {
+                      setTimeError(true);
+                      value = 0;
+                    } else {
+                      setTimeError(false);
+                    }
+                    setNum(value);
+                    console.log(e.target.value, typeof value);
+                  }}
+                  value={num}
+                />
+                <FormHelperText error={Boolean(timeError)}>
+                  {"Time is between 1 and 999"}
+                </FormHelperText>
+              </FormControl>
+            </Container>
+            <TextInput
+              label="Description"
+              source="description"
+              resettable
+              multiline
+              fullWidth
+            />
+          </Box>
+        </SimpleForm>
+      </Create>
+    </Container>
   );
 };

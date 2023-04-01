@@ -1,0 +1,182 @@
+.app {
+  background-color: #252d4a;
+  width: 450px;
+  min-height: 200px;
+  height: min-content;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 10px 10px 42px 0px rgba(0, 0, 0, 0.75);
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.score-section {
+  display: flex;
+  font-size: 24px;
+  align-items: center;
+}
+
+/* QUESTION/TIMER/LEFT SECTION */
+.question-section {
+  width: 100%;
+  position: relative;
+}
+
+.question-count span {
+  font-size: 28px;
+}
+
+.question-text {
+  margin-bottom: 12px;
+}
+
+.timer-text {
+  background: rgb(230, 153, 12);
+  padding: 15px;
+  margin-top: 20px;
+  margin-right: 20px;
+  border: 5px solid rgb(255, 189, 67);
+  border-radius: 15px;
+  text-align: center;
+}
+
+/* ANSWERS/RIGHT SECTION */
+.answer-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.correct {
+  background-color: #2f922f;
+}
+
+.incorrect {
+  background-color: #ff3333;
+}
+
+.multipleChoice {
+  margin: auto;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.multipleChoice button:hover {
+  background-color: #555e7d;
+}
+
+.multipleChoice button:focus {
+  outline: none;
+}
+
+.multipleChoice button svg {
+  margin-right: 5px;
+}
+
+/* Text area */
+form div.textAnswer1 {
+  width: 12em;
+  margin-right: 1em;
+  margin-left: -1em;
+  background-color: #fff;
+  border-color: rgb(0, 0, 0, 23%);
+  pointer-events: none;
+}
+
+/* BUTTON */
+button.InsertMCQButton {
+  display: flex;
+  float: left;
+}
+button.InsertConsButton {
+  display: flex;
+  float: left;
+  margin-left: 1.5em;
+}
+.css-mhc70k-MuiGrid-root > .MuiGrid-item {
+  padding-left: 0px;
+}
+#questionText {
+  border-color: #fff;
+}
+.PaperBox {
+  background-color: rgb(255, 255, 255);
+  border-color: #000;
+  border-radius: 4px;
+  box-shadow: 0px 2px 1px -1px rgb(0 0 0 / 20%),
+    0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%),
+    0px 0px 0px 1px rgb(0 0 0 / 20%);
+}
+
+div.css-46bh2p-MuiCardContent-root {
+  padding-top: 0;
+}
+.EditExam .NavigationAside {
+  /* width: 170px; */
+  position: relative;
+  margin: auto;
+  /* margin-top: 8px; */
+  padding: 8px;
+  /* margin: 0 0.5em; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  left: 50%;
+  transform: translate(-50%, 0);
+  margin-left: auto;
+  overflow: hidden;
+}
+/* Timer */
+.Duration {
+  visibility: hidden;
+}
+.RichTextToolbar {
+  display: inline-flexbox;
+  overflow: hidden;
+  box-sizing: border-box;
+  width: 100% !important;
+  height: 0px;
+  /* visibility: hidden; */
+}
+.RichTextContent {
+  background-color: #fff;
+  border-color: rgb(0, 0, 0, 23%);
+  pointer-events: none;
+  display: inline-block;
+  width: 100% !important;
+}
+.MCQContent {
+  background-color: #fff;
+  border-color: rgb(0, 0, 0, 23%);
+  pointer-events: none;
+}
+/* Responsive tablet */
+@media only screen and (max-width: 1200px) {
+  .NavigationAside {
+    width: 250px;
+  }
+}
+@media only screen and (max-width: 1000px) {
+  .NavigationAside {
+    width: 250px;
+  }
+}
+/* Responsive small tablet */
+@media only screen and (max-width: 800px) {
+  .NavigationAside {
+    width: 178px;
+  }
+}
+/* Responsive mobile */
+@media only screen and (max-width: 600px) {
+  .NavigationAside {
+    display: none;
+  }
+}
+/* Responsive small mobile */
+@media only screen and (max-width: 400px) {
+  button.InsertConsButton {
+    margin-left: 0px;
+  }
+}

@@ -9,7 +9,9 @@ from django.http import HttpResponse
 from django.core.paginator import Paginator
 from django.core import serializers as core_serializers
 from datetime import date
+import datetime
 
+test_result_pk = 1
 # Create your views here.
 @csrf_exempt
 def query_all_exams_api(request):
@@ -56,7 +58,7 @@ def query_all_practice_tests(request):
 def query_practice_test_by_id(request, event_id):
     if request.method == "GET":
         exam = EXAMS_COLLECTION.objects.get(id=event_id)
-        exam_serializer = exams_collection_serializer(exam)
+        exam_serializer = exams_collection_serializer2(exam)
         return JsonResponse(exam_serializer.data, safe=False)
 
 
@@ -76,12 +78,13 @@ def query_exams_by_userid(request, user_id):
 def query_exam_by_id(request, event_id):
     if request.method == "GET":
         exam = EXAMS_COLLECTION.objects.get(id=event_id)
-        exam_serializer = exams_collection_serializer(exam)
+        exam_serializer = exams_collection_serializer2(exam)
         return JsonResponse(exam_serializer.data, safe=False)
     if request.method == "DELETE":
         if event_id is not None and event_id != "":
             tests = EXAMS_COLLECTION.objects.get(id=event_id)
-            test_serializer = exams_collection_serializer(tests)
+            test_serializer = exams_collection_serializer2(tests)
+            print(test_serializer.data)
             if tests:
                 tests.delete()
             else:
@@ -100,6 +103,7 @@ def insert_new_exam(request):
         Is_split = data["Is_split"]
         User_id = data["User_id"]
         image = data["image"]
+        duration = data["duration"]
         description = data["description"]
         exam = EXAMS_COLLECTION(
             Name=Name,
@@ -108,15 +112,18 @@ def insert_new_exam(request):
             Is_split=Is_split,
             User_id=User_id,
             image=image,
+            duration=duration,
             description=description,
         )
         exam.save()
-        exam_serializer = exams_collection_serializer(exam)
+        exam_serializer = exams_collection_serializer2(exam)
         return JsonResponse(exam_serializer.data, safe=False)
 
 
 @csrf_exempt
-def insert_questions_and_answers(request, exam_id):
+def insert_questions_and_answers(
+    request, exam_id
+):  # sau khi update phải cập nhật lại thời gian thay đổi
     if request.method == "POST":
         delete_questions_and_answers = QUESTIONS_AND_ANSWERS.objects.filter(
             exam_id=exam_id
@@ -124,7 +131,7 @@ def insert_questions_and_answers(request, exam_id):
         delete_questions_and_answers.delete()
         dataList = json.loads(request.body)
         questions_and_answers = None
-        for data in dataList:
+        for data in dataList:  # dataList là array of dict
             Ordinal = data["Ordinal"]
             Question = data["Question"]
             Correct_answer = data["Correct_answer"]
@@ -150,20 +157,108 @@ def insert_questions_and_answers(request, exam_id):
                 exam_id=exam_id,
             )
             questions_and_answers.save()
-        q_and_a_serializer = questions_and_answers_serializer(questions_and_answers)
+            q_and_a_serializer = questions_and_answers_serializer(questions_and_answers)
         return JsonResponse(q_and_a_serializer.data, safe=False)
+    # if request.method == "PATCH":
+    #     exam = EXAMS_COLLECTION.objects.get(id=exam_id)
 
 
 @csrf_exempt
 def query_questions_and_answers_by_examid(request, exam_id):
     if request.method == "GET":
+        exam = EXAMS_COLLECTION.objects.get(id=exam_id)
+
         questions_and_answers = QUESTIONS_AND_ANSWERS.objects.filter(
             exam_id=exam_id
         ).order_by("Ordinal")
+        exam_collections = exams_collection_serializer2(exam)
+        print(exam_id, exam_collections.data["duration"])
         q_and_a_serializer = questions_and_answers_serializer(
             questions_and_answers, many=True
         )
-        return JsonResponse(q_and_a_serializer.data, safe=False)
+        print(q_and_a_serializer.data)
+        return JsonResponse(
+            {
+                "q_and_a": q_and_a_serializer.data,
+                "duration": exam_collections.data["duration"],
+            },
+            safe=False,
+        )
+
+
+@csrf_exempt
+def insert_test_result(request, exam_id):
+    if request.method == "POST":
+        dataList = json.loads(request.body)
+        for data in dataList:  # dataList là array of dict
+            Score = data["Score"]
+            # Date = data["Date"] # datetime field
+            Date = datetime.datetime.now()
+            exam_id = data["exam_id"]
+            user_id = data["user_id"]
+            test_result = TEST_RESULT(
+                Score=Score,
+                Date=Date,
+                exam_id=exam_id,
+                user_id=user_id,
+            )
+            instance = test_result.save()
+            global test_result_pk
+            test_result_pk = test_result.pk
+        test_result_ser = test_result_serializer(test_result)
+        return JsonResponse(
+            {"id": test_result_pk, "data": test_result_ser.data}, safe=False
+        )
+    if request.method == "PATCH":
+        test_result = TEST_RESULT.objects.get(id=exam_id)
+        data = json.loads(request.body)
+        test_result.Score = data["Score"]
+        test_result.save()
+        test_result_ser = test_result_serializer(test_result)
+        return JsonResponse(test_result_ser.data, safe=False)
+
+
+@csrf_exempt
+def insert_test_result_specific(request, exam_id):
+    if request.method == "POST":
+        dataList = json.loads(request.body)
+        questions_and_answers = None
+        for data in dataList:
+            print("Data: ", data)
+            Ordinal = data["Ordinal"]
+            Question = data["Question"]
+            Is_MCQ = data["Is_MCQ"]
+            Answer_a = data["Answer_a"]
+            Answer_b = data["Answer_b"]
+            Answer_c = data["Answer_c"]
+            Answer_d = data["Answer_d"]
+            Correct_answer = data["Correct_answer"]
+            Solution = data["Solution"]
+            User_answer_MCQ = data["User_answer_MCQ"]
+            User_answer_CONS = data["User_answer_CONS"]
+            Mark = data["Mark"]
+            test_result_id = data["test_result_id"]
+            # print("ID bài làm: ", data["test_result_id"])
+            questions_and_answers = TEST_RESULT_SPECIFIC(
+                Ordinal=Ordinal,
+                Question=Question,
+                Is_MCQ=Is_MCQ,
+                Answer_a=Answer_a,
+                Answer_b=Answer_b,
+                Answer_c=Answer_c,
+                Answer_d=Answer_d,
+                Correct_answer=Correct_answer,
+                Solution=Solution,
+                User_answer_MCQ=User_answer_MCQ,
+                User_answer_CONS=User_answer_CONS,
+                Mark=Mark,
+                test_result_id=test_result_id,
+            )
+            questions_and_answers.save()
+        questions_and_answers_seri = test_result_specific_serializer(
+            questions_and_answers
+        )
+        return JsonResponse(questions_and_answers_seri.data, safe=False)
 
 
 @csrf_exempt
