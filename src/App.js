@@ -1,6 +1,12 @@
 import * as React from "react";
 import { render } from "react-dom";
-import { Admin, Resource, fetchUtils, ListGuesser, defaultTheme, RefreshIconButton } from "react-admin";
+import {
+  Admin,
+  CustomRoutes,
+  Resource,
+  fetchUtils,
+  defaultTheme,
+} from "react-admin";
 import { UserList } from "./Page/Users";
 import { PostList, PostCreate } from "./Page/Posts";
 import { PostEdit } from "./Page/PostEdit";
@@ -10,12 +16,11 @@ import { authProvider } from "./Page/authProvider";
 import { TestPool } from "./Page/TestPool";
 import MyLayout from "./MyLayout";
 import LibraryAddIcon from "@mui/icons-material/LibraryAdd";
-import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
-import ModeEditOutlineTwoToneIcon from '@mui/icons-material/ModeEditOutlineTwoTone';
+import ModeEditOutlineTwoToneIcon from "@mui/icons-material/ModeEditOutlineTwoTone";
 import jsonServerProvider from "ra-data-json-server";
-import axios from "axios";
-import { CssBaseline, Container } from '@mui/material';
-import { Box } from "@mui/material";
+import { MyLoginPage } from "./Page/MyLoginPage";
+import { Route } from "react-router";
+import { ShareForm } from "./Page/ShareForm";
 // A list of allowed origins that can access our backend API
 
 const httpClient = (url, options = {}) => {
@@ -55,32 +60,30 @@ const App = () => (
   <Admin
     dashboard={TestPool}
     dataProvider={dataProvider}
+    loginPage={MyLoginPage}
     authProvider={authProvider}
     theme={theme}
     layout={MyLayout}
   >
-    {/* <Resource
-      name="users"
-      options={{ label: "Account manager" }}
-      list={UserList}
-      icon={PeopleAltIcon}
-    /> */}
     <Resource
       name="all_exams"
-      options={{ label: "Test collection", }}
+      options={{ label: "Test collection" }}
       list={PostList}
       edit={PostEdit}
       create={PostCreate}
       icon={LibraryAddIcon}
-    />
+    ></Resource>
+
     <Resource
       name="practice_tests"
       options={{ label: "Practice tests" }}
       list={PracticeList}
-      // edit={PostEdit}
       edit={PracticeTest}
       icon={ModeEditOutlineTwoToneIcon}
     />
+    <CustomRoutes>
+      <Route path="/share/:id" element={<ShareForm />} />
+    </CustomRoutes>
   </Admin>
 );
 

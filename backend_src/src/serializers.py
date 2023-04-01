@@ -55,6 +55,7 @@ class questions_and_answers_serializer(serializers.ModelSerializer):
             "exam_id",
         )
 
+
 class test_result_serializer(serializers.ModelSerializer):
     class Meta:
         model = TEST_RESULT
@@ -65,7 +66,8 @@ class test_result_serializer(serializers.ModelSerializer):
             "exam_id",
             "user_id",
         )
-        
+
+
 class test_result_specific_serializer(serializers.ModelSerializer):
     class Meta:
         model = TEST_RESULT_SPECIFIC
@@ -85,3 +87,15 @@ class test_result_specific_serializer(serializers.ModelSerializer):
             "Mark",
             "test_result_id",
         )
+
+
+class user_serializer(serializers.ModelSerializer):
+    class Meta:
+        model = USER
+        fields = ("id", "Username", "Password", "Email", "Created_Date", "Avatar")
+
+
+class shared_users_serializer(serializers.ModelSerializer):
+    class Meta:
+        model = SHARED_USERS
+        fields = ("id", "exam_id", "User_id", "Shared_user_id")

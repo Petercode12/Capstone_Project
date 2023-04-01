@@ -12,14 +12,21 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import SearchIcon from "@mui/icons-material/Search";
 import { Container, InputAdornment, TextField } from "@mui/material";
+import { useGetIdentity } from "react-admin";
 
 export function TestPool() {
   const [originalExamList, setOriginalExamList] = useState([]);
   const [examList, setExamList] = useState([]);
   let infinity = "♾️";
+  const { data: userInfo, isLoading, error } = useGetIdentity();
+  console.log("UserInfo: ", userInfo);
   useEffect(() => {
     axios
-      .get("http://localhost:8000/exams/")
+      .get(
+        "http://localhost:8000/exams/".concat(
+          userInfo !== undefined ? userInfo["id"] : 0
+        )
+      )
       .then((res) => {
         console.log("Data: ", res.data);
         setOriginalExamList(res.data);
@@ -28,7 +35,7 @@ export function TestPool() {
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }, [userInfo]);
   const handleSearchChange = (event) => {
     const filteredExamList = originalExamList.filter((e) => {
       return e.Name.toLowerCase().includes(event.target.value.toLowerCase());
@@ -58,7 +65,11 @@ export function TestPool() {
         />
       </Container>
 
-      <Grid container spacing={2} sx={{ display: "flex", marginTop: "1em" }}>
+      <Grid
+        container
+        spacing={2}
+        sx={{ maxWidth: 1280, display: "flex", marginTop: "1em" }}
+      >
         {examList.map((exam, i) => {
           if (exam["description"] === "") {
             exam["description"] = "No description";
@@ -102,7 +113,7 @@ export function TestPool() {
                       }}
                     >
                       <i
-                        className="fa fa-clock-o"
+                        className="fa-regular fa-clock"
                         style={{
                           fontSize: "20px",
                           marginRight: ".4rem",
@@ -111,7 +122,7 @@ export function TestPool() {
                         sx={{ margin: "0px 4px" }}
                       />
                     </div>
-                    {exam["duration"]} mins
+                    {exam["duration"]} min
                   </Typography>
                 </CardContent>
                 <CardActions>

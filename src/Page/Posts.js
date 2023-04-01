@@ -1,5 +1,4 @@
 import * as React from "react";
-// import { useState } from "react";
 import {
   List,
   Datagrid,
@@ -18,6 +17,7 @@ import {
   useCreate,
   useNotify,
   useRedirect,
+  useGetIdentity,
   ReferenceInput,
   SelectInput,
 } from "react-admin";
@@ -34,7 +34,8 @@ import {
   InputLabel,
   FormHelperText,
 } from "@mui/material";
-
+import ShareIcon from "@mui/icons-material/Share";
+import { ShareButton } from "./ShareButton";
 const theme = createTheme({
   components: {
     // Name of the component
@@ -66,6 +67,7 @@ export const PostList = () => (
       <BooleanField source="Is_split" />
       <NumberField source="User_id" />
       <EditButton />
+      <ShareButton />
     </Datagrid>
   </List>
 );
@@ -82,17 +84,21 @@ export const PostCreate = () => {
   const notify = useNotify();
   const redirect = useRedirect();
   const [create, { error }] = useCreate();
+  const { data: userInfo, isLoading, err } = useGetIdentity();
   const [num, setNum] = React.useState();
   const min = 1;
   const max = 999;
   const [timeError, setTimeError] = React.useState();
   const [isSetDuration, setIsSetDuration] = React.useState(false);
-  const postSave = async function (data) {
+  const postSave = async function(data) {
+    console.log("User info: ", userInfo);
     data["image"] = await toBase64(data["image"].rawFile);
+    data = { ...data, User_id: userInfo.id };
     console.log(isSetDuration);
     if (isSetDuration === true) data["duration"] = num;
     else data["duration"] = 0;
     console.log("Duration: ", data["duration"], typeof data["duration"]);
+    console.log("Data saved: ", data);
     create("save_exam/", { data });
     if (error) {
       notify("Cannot save!", { type: "error" });
@@ -121,7 +127,7 @@ export const PostCreate = () => {
           >
             <TextInput source="Name" required resettable fullWidth />
             <BooleanInput label="Is split?" source="Is_split" />
-            <NumberInput label="User ID" source="User_id" />
+
             <ImageInput
               source="image"
               label="Choose a profile picture:"
@@ -139,7 +145,6 @@ export const PostCreate = () => {
             >
               <ImageField source="src" title="title" />
             </ImageInput>
-
             <Container sx={{ display: "flex", padding: "0px !important" }}>
               <BooleanInput
                 label="Set duration?"

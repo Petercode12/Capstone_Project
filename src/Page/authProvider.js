@@ -1,29 +1,45 @@
+import axios from "axios";
 export const authProvider = {
-  // called when the user attempts to log in
-  login: ({ username }) => {
-    localStorage.setItem("username", username);
-    // accept all username/password combinations
-    return Promise.resolve();
+  login: ({ username, password }) => {
+    return axios
+      .post("http://localhost:8000/auth/", { username, password })
+      .then((res) => {
+        console.log("Res: ", res.data);
+        if (res.status < 200 || res.status >= 300) {
+          return Promise.reject();
+        }
+        localStorage.setItem("auth", JSON.stringify(res.data));
+        return Promise.resolve();
+      });
   },
-  // called when the user clicks on the logout button
   logout: () => {
-    localStorage.removeItem("username");
+    localStorage.removeItem("auth");
     return Promise.resolve();
   },
-  // called when the API returns an error
-  checkError: ({ status }) => {
+  checkAuth: () =>
+    localStorage.getItem("auth") ? Promise.resolve() : Promise.reject(),
+  checkError: (error) => {
+    const status = error.status;
     if (status === 401 || status === 403) {
-      localStorage.removeItem("username");
+      localStorage.removeItem("auth");
       return Promise.reject();
     }
+    // other error code (404, 500, etc): no need to log out
     return Promise.resolve();
   },
-  // called when the user navigates to a new location, to check for authentication
-  checkAuth: () => {
-    return localStorage.getItem("username")
-      ? Promise.resolve()
-      : Promise.reject();
+  getIdentity: () => {
+    try {
+      console.log("auth: ", localStorage.getItem("auth"));
+      const data = JSON.parse(localStorage.getItem("auth"));
+      const userInfo = {
+        id: data.id,
+        fullName: data.Username,
+        avatar: data.Avatar,
+      };
+      return Promise.resolve(userInfo);
+    } catch (error) {
+      return Promise.reject(error);
+    }
   },
-  // called when the user navigates to a new location, to check for permissions / roles
-  getPermissions: () => Promise.resolve(),
+  getPermissions: () => Promise.resolve(""),
 };

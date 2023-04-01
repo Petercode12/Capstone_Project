@@ -6,7 +6,8 @@ class USER(models.Model):
     id = models.AutoField(primary_key=True, null=False)
     Username = models.CharField(max_length=200, blank=False)
     Password = models.CharField(max_length=200, blank=False)
-    Email = models.CharField(max_length=200, blank=True)
+    Email = models.EmailField(max_length=200, blank=True)
+    Avatar = models.TextField(default=None)
     Created_Date = models.DateField()
 
 
@@ -76,3 +77,12 @@ class TEST_API(models.Model):
     id = models.AutoField(primary_key=True, null=False)
     title = models.CharField(max_length=200, blank=False)
     body = models.CharField(max_length=200, blank=False)
+
+
+class SHARED_USERS(models.Model):
+    id = models.AutoField(primary_key=True, null=False)
+    exam = models.ForeignKey(EXAMS_COLLECTION, on_delete=models.CASCADE)
+    User = models.ForeignKey(USER, on_delete=models.CASCADE, related_name="User_id")
+    Shared_user = models.ForeignKey(
+        USER, on_delete=models.CASCADE, related_name="Shared_user_id"
+    )

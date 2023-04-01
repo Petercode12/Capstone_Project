@@ -5,7 +5,7 @@ from src import views
 urlpatterns = [
     path("all_exams/", views.query_all_exams_api, name="allExams"),
     path("all_exams/<int:event_id>", views.query_exam_by_id, name="queryExamById"),
-    path("exams/", views.query_exams_by_userid, name="queryExamByUserId"),
+    path("exams/<int:user_id>", views.query_exams_by_userid, name="queryExamByUserId"),
     path("posts/", views.test_api, name="postsALL"),
     path("posts/<int:event_id>", views.delete_api, name="deleteOne"),
     path("save_exam/", views.insert_new_exam, name="insertNewExam"),
@@ -25,7 +25,24 @@ urlpatterns = [
         views.query_questions_and_answers_by_examid,
         name="queryQuestionsAnswersByExamId",
     ),
-    path("test_result/<int:exam_id>", views.insert_test_result, name="insertTestResult"),
-    path("test_result_specific/<int:exam_id>", views.insert_test_result_specific, name="insertTestResultSpecific")
-    
+    path(
+        "test_result/<int:exam_id>", views.insert_test_result, name="insertTestResult"
+    ),
+    path(
+        "test_result_specific/<int:exam_id>",
+        views.insert_test_result_specific,
+        name="insertTestResultSpecific",
+    ),
+    path("all_users/", views.query_all_users, name="queryAllUsers"),
+    path("save_user/", views.insert_new_user, name="insertNewUser"),
+    path(
+        "save_shared_info/<int:exam_id>",
+        views.insert_shared_info,
+        name="insertSharedInfo",
+    ),
+    path(
+        "auth/",
+        views.authentication,
+        name="authentication",
+    ),
 ]
