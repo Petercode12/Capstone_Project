@@ -54,3 +54,15 @@ class questions_and_answers_serializer(serializers.ModelSerializer):
             "Is_MCQ",
             "exam_id",
         )
+
+
+class user_serializer(serializers.ModelSerializer):
+    class Meta:
+        model = USER
+        fields = ("id", "Username", "Password", "Email", "Created_Date", "Avatar")
+
+
+class shared_users_serializer(serializers.ModelSerializer):
+    class Meta:
+        model = SHARED_USERS
+        fields = ("id", "exam_id", "User_id", "Shared_user_id")

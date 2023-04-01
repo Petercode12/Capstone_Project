@@ -17,8 +17,11 @@ import {
   useCreate,
   useNotify,
   useRedirect,
+  useGetIdentity,
 } from "react-admin";
-import { Box, Container, Grid } from "@mui/material";
+import { Box } from "@mui/material";
+import { ShareButton } from "./ShareButton";
+import ShareIcon from "@mui/icons-material/Share";
 export const PostList = () => (
   <List xs={{ maxWidth: 1280 }} sx={{ margin: "0 auto" }}>
     <Datagrid
@@ -35,6 +38,7 @@ export const PostList = () => (
       <BooleanField source="Is_split" />
       <NumberField source="User_id" />
       <EditButton />
+      <ShareButton />
     </Datagrid>
   </List>
 );
@@ -51,8 +55,12 @@ export const PostCreate = () => {
   const notify = useNotify();
   const redirect = useRedirect();
   const [create, { error }] = useCreate();
-  const postSave = async function (data) {
+  const { data: userInfo, isLoading, err } = useGetIdentity();
+  const postSave = async function(data) {
+    console.log("User info: ", userInfo);
     data["image"] = await toBase64(data["image"].rawFile);
+    data = { ...data, User_id: userInfo.id };
+    console.log("Data saved: ", data);
     create("save_exam/", { data });
     if (error) {
       notify("Cannot save!", { type: "error" });
@@ -85,7 +93,6 @@ export const PostCreate = () => {
           {/* <DateInput label="Created Date" source="Created_Date" /> */}
           {/* <DateInput label="Last Modified Date" source="Last_Modified_Date" /> */}
           <BooleanInput label="Is split?" source="Is_split" />
-          <NumberInput label="User ID" source="User_id" />
           <span>Thumbnail</span>
           <ImageInput source="image" label=" ">
             <ImageField source="src" title="title" />

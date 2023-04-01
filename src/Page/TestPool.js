@@ -12,13 +12,20 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import SearchIcon from "@mui/icons-material/Search";
 import { Container, InputAdornment, TextField } from "@mui/material";
+import { useGetIdentity } from "react-admin";
 
 export function TestPool() {
   const [originalExamList, setOriginalExamList] = useState([]);
   const [examList, setExamList] = useState([]);
+  const { data: userInfo, isLoading, error } = useGetIdentity();
+  console.log("UserInfo: ", userInfo);
   useEffect(() => {
     axios
-      .get("http://localhost:8000/exams/")
+      .get(
+        "http://localhost:8000/exams/".concat(
+          userInfo !== undefined ? userInfo["id"] : 0
+        )
+      )
       .then((res) => {
         console.log("Data: ", res.data);
         setOriginalExamList(res.data);
@@ -27,7 +34,7 @@ export function TestPool() {
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }, [userInfo]);
   const handleSearchChange = (event) => {
     const filteredExamList = originalExamList.filter((e) => {
       return e.Name.toLowerCase().includes(event.target.value.toLowerCase());
