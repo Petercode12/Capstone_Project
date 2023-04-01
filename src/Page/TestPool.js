@@ -106,14 +106,22 @@ export function TestPool() {
                     {exam["description"]}
                   </Typography>
                   <Typography variant="subtitle1" component="div">
-                    <i
-                      className="fa fa-clock-o"
+                    <div
                       style={{
-                        fontSize: "20px",
-                        marginRight: ".4rem",
-                        marginTop: ".4rem",
+                        transform: "translateY(1px)",
+                        display: "inline-block",
                       }}
-                    />
+                    >
+                      <i
+                        className="fa fa-clock-o"
+                        style={{
+                          fontSize: "20px",
+                          marginRight: ".4rem",
+                          marginTop: ".4rem",
+                        }}
+                        sx={{ margin: "0px 4px" }}
+                      />
+                    </div>
                     {exam["duration"]} min
                   </Typography>
                 </CardContent>
