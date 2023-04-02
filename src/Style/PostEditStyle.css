@@ -119,6 +119,13 @@ button.InsertConsButton {
   margin: 0 auto;
   transform: translateZ(0);
 }
+.RichTextContentEdit {
+  background-color: #fff;
+  border-color: rgb(0, 0, 0, 23%);
+  display: inline-block;
+  word-break: break-all;
+  width: 100% !important;
+}
 div.css-46bh2p-MuiCardContent-root {
   padding-top: 0;
 }

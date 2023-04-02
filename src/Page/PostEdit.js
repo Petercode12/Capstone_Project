@@ -281,6 +281,7 @@ export function PostEdit() {
       notify("Cannot save!", { type: "error" });
     } else {
       notify("Save successfully!", { type: "success" });
+      // update last_modified_date
     }
   };
   const handleMCQChange = (event, i) => {
@@ -497,6 +498,7 @@ export function PostEdit() {
                               key={i}
                               source=""
                               defaultValue={questionList[i].questionText}
+                              className="RichTextContentEdit"
                             />
                             <RadioGroup
                               row
@@ -665,6 +667,7 @@ export function PostEdit() {
                               key={i}
                               source=""
                               defaultValue={questionList[i].questionText}
+                              className="RichTextContentEdit"
                             />
                             <div>
                               <TextField

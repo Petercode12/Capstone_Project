@@ -23,7 +23,7 @@
 }
 
 .question-count span {
-  font-size: 28px;
+  font-size: 24px;
 }
 
 .question-text {
@@ -81,7 +81,8 @@ form div.textAnswer1 {
   margin-left: -1em;
   background-color: #fff;
   border-color: rgb(0, 0, 0, 23%);
-  pointer-events: none;
+  display: flex;
+  flex-direction: row;
 }
 
 /* BUTTON */
@@ -132,18 +133,19 @@ div.css-46bh2p-MuiCardContent-root {
   visibility: hidden;
 }
 .RichTextToolbar {
-  display: inline-flexbox;
+  display: none;
   overflow: hidden;
   box-sizing: border-box;
   width: 100% !important;
   height: 0px;
-  /* visibility: hidden; */
+  margin-top: -20px;
 }
 .RichTextContent {
   background-color: #fff;
   border-color: rgb(0, 0, 0, 23%);
   pointer-events: none;
   display: inline-block;
+  word-break: break-all;
   width: 100% !important;
 }
 .MCQContent {

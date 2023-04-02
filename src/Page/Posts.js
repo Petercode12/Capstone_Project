@@ -62,8 +62,8 @@ export const PostList = () => (
     >
       <NumberField source="id" />
       <TextField source="Name" />
-      <DateField source="Created_Date" />
-      <DateField source="Last_Modified_Date" />
+      <DateField source="Created_Date" showDate locales="fr-FR" />
+      <DateField source="Last_Modified_Date" locales="fr-FR" />
       <BooleanField source="Is_split" />
       <NumberField source="User_id" />
       <EditButton />

@@ -7,12 +7,20 @@ import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import LoadingButton from "@mui/lab/LoadingButton";
 import Button from "@mui/material/Button";
-import { SimpleForm, SaveButton } from "react-admin";
+import {
+  SimpleForm,
+  SaveButton,
+  Toolbar,
+  Edit,
+  useCreate,
+  useNotify,
+  useGetRecordId,
+  useGetIdentity,
+} from "react-admin";
 import { RichTextInput, RichTextInputToolbar } from "ra-input-rich-text";
 import SaveIcon from "@mui/icons-material/Save";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import { Toolbar, Edit, useCreate, useNotify } from "react-admin";
 import Paper from "@mui/material/Paper";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import axios from "axios";
@@ -58,21 +66,7 @@ export function PracticeTest() {
   const notify = useNotify();
   const params = useParams();
   const [duration, setDuration] = useState();
-  async function AddQuestionBoxCss() {
-    console.log("Add css to question Box");
-    for (let i = 0; i < questionList.length; i++) {
-      var bien = "questionText" + i.toString() + "-label";
-      var bien1 = "questionText" + i.toString();
-      if (document.getElementById(bien) !== null)
-        document.getElementById(bien).style.width = "100%";
-      if (document.getElementById(bien1) !== null)
-        document.getElementById(bien1).style.borderColor = "#fff";
-      else {
-        console.log("chưa có border");
-      }
-    }
-  }
-
+  const { data: userInfo, isLoading, error1 } = useGetIdentity();
   useEffect(() => {
     // get the data from the api
     axios
@@ -332,7 +326,7 @@ export function PracticeTest() {
     let k = {
       Score: 0,
       exam_id: params.id,
-      user_id: "1", // Phước update userid
+      user_id: userInfo["id"], // Phước update userid
     };
     data.push(k);
     return data;
@@ -420,21 +414,24 @@ export function PracticeTest() {
                           >
                             <div
                               className="question-count"
-                              style={{ marginTop: "2em" }}
+                              style={{ marginTop: "1em" }}
                               id={"question".concat(i + 1)}
                             >
                               <span>Question {i + 1}</span>
                             </div>
-                            <div>
+                            <div style={{ width: "100%", marginTop: "-20px" }}>
                               <RichTextInput
                                 id={"questionText"} //.concat(i)
                                 source=""
                                 defaultValue={questionList[i].questionText}
-                                sx={{}}
+                                style={{
+                                  width: "100% !important",
+                                  display: "none",
+                                }}
                                 className="RichTextContent"
                                 toolbar={
                                   <RichTextInputToolbar
-                                    size="medium"
+                                    size="small"
                                     className="RichTextToolbar"
                                   />
                                 }
@@ -479,6 +476,9 @@ export function PracticeTest() {
                                     id={"textAnswerA".concat(i)}
                                     label="Answer A"
                                     variant="outlined"
+                                    InputProps={{
+                                      readOnly: true,
+                                    }}
                                     defaultValue={
                                       questionList[i].answerOptions[0]
                                         .answerText
@@ -511,6 +511,9 @@ export function PracticeTest() {
                                     id={"textAnswerB".concat(i)}
                                     label="Answer B"
                                     variant="outlined"
+                                    InputProps={{
+                                      readOnly: true,
+                                    }}
                                     defaultValue={
                                       questionList[i].answerOptions[1]
                                         .answerText
@@ -543,6 +546,9 @@ export function PracticeTest() {
                                     id={"textAnswerC".concat(i)}
                                     label="Answer C"
                                     variant="outlined"
+                                    InputProps={{
+                                      readOnly: true,
+                                    }}
                                     defaultValue={
                                       questionList[i].answerOptions[2]
                                         .answerText
@@ -575,6 +581,9 @@ export function PracticeTest() {
                                     id={"textAnswerD".concat(i)}
                                     label="Answer D"
                                     variant="outlined"
+                                    InputProps={{
+                                      readOnly: true,
+                                    }}
                                     defaultValue={
                                       questionList[i].answerOptions[3]
                                         .answerText
@@ -591,11 +600,11 @@ export function PracticeTest() {
                             <div
                               id={"question".concat(i + 1)}
                               className="question-count"
-                              style={{ marginTop: "2em" }}
+                              style={{ marginTop: "1em" }}
                             >
                               <span>Question {i + 1}</span>
                             </div>
-                            <div style={{ width: "100%" }}>
+                            <div style={{ width: "100%", marginTop: "-20px" }}>
                               <RichTextInput
                                 id={"questionText"}
                                 style={{
@@ -607,7 +616,7 @@ export function PracticeTest() {
                                 className="RichTextContent"
                                 toolbar={
                                   <RichTextInputToolbar
-                                    size="medium"
+                                    size="small"
                                     className="RichTextToolbar"
                                   />
                                 }

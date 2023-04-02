@@ -100,8 +100,14 @@ export function TestPool() {
                   height="140"
                   image={exam["image"]}
                 />
-                <CardContent sx={{ padding: "0px 16px" }}>
-                  <Typography gutterBottom variant="h5" component="div" noWrap>
+                <CardContent sx={{ padding: "0px 12px" }}>
+                  <Typography
+                    gutterBottom
+                    variant="h5"
+                    component="div"
+                    noWrap
+                    sx={{ margin: "4px 0px" }}
+                  >
                     {exam["Name"]}
                   </Typography>
                   <Typography
@@ -109,6 +115,7 @@ export function TestPool() {
                     inline
                     color="text.secondary"
                     noWrap
+                    sx={{ marginBottom: "2px", marginLeft: "2px" }}
                   >
                     {exam["description"]}
                   </Typography>
