@@ -1,0 +1,16 @@
+.GridPaper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 340px !important;
+  height: 280px !important;
+}
+.GridContainer {
+  display: inline-flex;
+  flex-wrap: wrap;
+  margin-top: 1em;
+  justify-content: space-around;
+  row-gap: 40px;
+  column-gap: 15px;
+  padding-bottom: 20px;
+}

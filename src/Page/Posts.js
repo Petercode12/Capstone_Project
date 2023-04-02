@@ -90,7 +90,7 @@ export const PostCreate = () => {
   const max = 999;
   const [timeError, setTimeError] = React.useState();
   const [isSetDuration, setIsSetDuration] = React.useState(false);
-  const postSave = async function(data) {
+  const postSave = async function (data) {
     console.log("User info: ", userInfo);
     data["image"] = await toBase64(data["image"].rawFile);
     data = { ...data, User_id: userInfo.id };

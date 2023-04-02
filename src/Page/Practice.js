@@ -14,41 +14,45 @@ import Paper from "@mui/material/Paper";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import axios from "axios";
 import {
-    List,
-    Datagrid,
-    Toolbar,
-    Edit,
-    SimpleForm,
-    DateField,
-    TextField,
-    EditButton,
-    BooleanField,
-    NumberField,
-    useCreate,
-    useNotify,
-    useRefresh,
-    useRedirect,
-    ShowButton,
-    ListButton,
-    TopToolbar,
-    SimpleList,
+  List,
+  Datagrid,
+  Toolbar,
+  Edit,
+  SimpleForm,
+  DateField,
+  TextField,
+  EditButton,
+  BooleanField,
+  NumberField,
+  useCreate,
+  useNotify,
+  useRefresh,
+  useRedirect,
+  ShowButton,
+  ListButton,
+  TopToolbar,
+  SimpleList,
 } from "react-admin";
 const PostEditActions = () => (
-    <TopToolbar>
-        {/* <ShowButton /> */}
-        {/* <ListButton /> */}
-    </TopToolbar>
+  <TopToolbar>
+    {/* <ShowButton /> */}
+    {/* <ListButton /> */}
+  </TopToolbar>
 );
 export const PracticeList = () => (
-    <List actions={<PostEditActions />} xs={{ maxWidth: 1280 }} sx={{ margin: "0 auto" }}>
-        <Datagrid bulkActionButtons={false}>
-            <NumberField source="id" />
-            <TextField source="Name" />
-            <DateField source="Created_Date" />
-            <DateField source="Last_Modified_Date" />
-            <BooleanField source="Is_split" />
-            <NumberField source="User_id" />
-            <EditButton label="PRACTICE" />
-        </Datagrid>
-    </List>
+  <List
+    actions={<PostEditActions />}
+    xs={{ maxWidth: 1280 }}
+    sx={{ margin: "0 auto" }}
+  >
+    <Datagrid bulkActionButtons={false}>
+      <NumberField source="id" />
+      <TextField source="Name" />
+      <DateField source="Created_Date" />
+      <DateField source="Last_Modified_Date" />
+      <BooleanField source="Is_split" />
+      <NumberField source="User_id" />
+      <EditButton label="PRACTICE" />
+    </Datagrid>
+  </List>
 );

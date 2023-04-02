@@ -13,7 +13,7 @@ import axios from "axios";
 import SearchIcon from "@mui/icons-material/Search";
 import { Container, InputAdornment, TextField } from "@mui/material";
 import { useGetIdentity } from "react-admin";
-
+import "../Style/TestPoolStyle.css";
 export function TestPool() {
   const [originalExamList, setOriginalExamList] = useState([]);
   const [examList, setExamList] = useState([]);
@@ -45,8 +45,14 @@ export function TestPool() {
   return (
     <>
       <Container
-        maxWidth="sm"
-        sx={{ mt: 3, display: "flex", justifyContent: "center" }}
+        sx={{
+          maxWidth: "800px",
+          marginTop: "2em",
+          marginBottom: "2em",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
       >
         <TextField
           id="search"
@@ -65,10 +71,10 @@ export function TestPool() {
         />
       </Container>
 
-      <Grid
-        container
+      <div
+        // container
         spacing={2}
-        sx={{ maxWidth: 1280, display: "flex", marginTop: "1em" }}
+        className="GridContainer"
       >
         {examList.map((exam, i) => {
           if (exam["description"] === "") {
@@ -78,14 +84,15 @@ export function TestPool() {
             exam["duration"] = infinity;
           }
           return (
-            <Grid xs={12} sm={6} md={4} lg={3} xl={2} item key={i}>
+            <div item key={i} className="GridPaper">
               <Card
                 sx={{
-                  maxWidth: 340,
+                  width: 340,
                   justifyContent: "center",
-                  marginLeft: "auto",
-                  marginRight: "auto",
+                  alignItems: "center",
+                  marginBottom: "4px",
                 }}
+                className="NavigationAsidePaper"
               >
                 <CardMedia
                   component="img"
@@ -93,7 +100,7 @@ export function TestPool() {
                   height="140"
                   image={exam["image"]}
                 />
-                <CardContent style={{ marginTop: 4, paddingBottom: 0 }}>
+                <CardContent sx={{ padding: "0px 16px" }}>
                   <Typography gutterBottom variant="h5" component="div" noWrap>
                     {exam["Name"]}
                   </Typography>
@@ -130,10 +137,10 @@ export function TestPool() {
                   <Button size="small">Practice</Button>
                 </CardActions>
               </Card>
-            </Grid>
+            </div>
           );
         })}
-      </Grid>
+      </div>
     </>
   );
 }
