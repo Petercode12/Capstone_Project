@@ -1,22 +1,46 @@
-import * as React from "react";
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import TextField from "@mui/material/TextField";
+import Box from "@mui/material/Box";
+import LoadingButton from "@mui/lab/LoadingButton";
 import Button from "@mui/material/Button";
 import {
+  SimpleForm,
+  SaveButton,
+  Toolbar,
+  Edit,
+  useCreate,
+  useNotify,
+  useGetRecordId,
+  useGetIdentity,
+} from "react-admin";
+import { RichTextInput, RichTextInputToolbar } from "ra-input-rich-text";
+import SaveIcon from "@mui/icons-material/Save";
+import DeleteIcon from "@mui/icons-material/Delete";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import Paper from "@mui/material/Paper";
+import ButtonGroup from "@mui/material/ButtonGroup";
+import axios from "axios";
+import Countdown from "react-countdown";
+import {
+  useMediaQuery,
+  useTheme,
+  Container,
   Grid,
+  Typography,
   Card,
   CardMedia,
   CardContent,
   CardActions,
-  Typography,
-  Container,
   InputAdornment,
-  TextField,
 } from "@mui/material";
-import { useState, useEffect } from "react";
-import axios from "axios";
+import "../Style/PracticeResult.css";
 import SearchIcon from "@mui/icons-material/Search";
-import { useGetIdentity } from "react-admin";
-import "../Style/TestPoolStyle.css";
-export function TestPool() {
+
+export function PracticeResult() {
   const [originalExamList, setOriginalExamList] = useState([]);
   const [examList, setExamList] = useState([]);
   let infinity = "♾️";

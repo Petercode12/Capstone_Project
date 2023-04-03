@@ -220,21 +220,29 @@ def test_result(request, exam_id):
         test_result_ser = test_result_serializer(test_result)
         return JsonResponse(test_result_ser.data, safe=False)
     if request.method == "GET":
-        exam = EXAMS_COLLECTION.objects.get(id=exam_id)
-
-        questions_and_answers = QUESTIONS_AND_ANSWERS.objects.filter(
-            exam_id=exam_id
+        print("TEST_ID: ", exam_id)
+        test = TEST_RESULT.objects.get(id=exam_id)
+        test_ser = test_result_serializer(test)
+        test_specific = TEST_RESULT_SPECIFIC.objects.filter(
+            test_result_id=exam_id
         ).order_by("Ordinal")
-        exam_collections = exams_collection_serializer2(exam)
-        print(exam_id, exam_collections.data["duration"])
-        q_and_a_serializer = questions_and_answers_serializer(
-            questions_and_answers, many=True
+        print("exam_id", test_ser.data["exam_id"])
+        test_specific_ser = test_result_specific_serializer(
+            test_specific, many=True
         )
-        print(q_and_a_serializer.data)
+        test_specific = TEST_RESULT_SPECIFIC.objects.filter(
+            test_result_id=exam_id
+        ).order_by("Ordinal")
+        num_test_skip = test_specific.filter(User_answer_MCQ__isnull=True, User_answer_CONS__isnull=True).count()
+        num_cons_question = test_specific.filter(Is_MCQ=0).count()
+        print(test_specific_ser.data)
         return JsonResponse(
             {
-                "q_and_a": q_and_a_serializer.data,
-                "duration": exam_collections.data["duration"],
+                "test_info": test_ser.data,
+                "test_specific": test_specific_ser.data,
+                "total_question": len(test_specific_ser.data),
+                "skip_question": num_test_skip,
+                "nums_cons_question": num_cons_question,
             },
             safe=False,
         )

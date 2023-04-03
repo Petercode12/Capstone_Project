@@ -164,7 +164,13 @@ const MyLayout = ({ children, dashboard, title, classes, ...props }) => {
                 </Tabs>
               </Box>
               <Box display="flex">
-                <LoadingIndicator />
+                <LoadingIndicator
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                />
                 <UserMenu {...props} className={classes.logo1}>
                   <Logout />
                 </UserMenu>

@@ -2,12 +2,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 340px !important;
-  height: 280px !important;
+  width: 300px !important;
+  height: 270px !important;
 }
 .GridContainer {
+  max-width: 1250px;
   display: inline-flex;
   flex-wrap: wrap;
+  margin: 0 auto;
   margin-top: 1em;
   justify-content: space-around;
   row-gap: 40px;

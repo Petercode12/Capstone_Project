@@ -21,6 +21,7 @@ import jsonServerProvider from "ra-data-json-server";
 import { MyLoginPage } from "./Page/MyLoginPage";
 import { Route } from "react-router";
 import { ShareForm } from "./Page/ShareForm";
+import { PracticeResult } from "./Page/PracticeResult";
 // A list of allowed origins that can access our backend API
 
 const httpClient = (url, options = {}) => {
@@ -83,6 +84,7 @@ const App = () => (
     />
     <CustomRoutes>
       <Route path="/share/:id" element={<ShareForm />} />
+      <Route path="/test_result/:id" element={<PracticeResult />} />
     </CustomRoutes>
   </Admin>
 );
