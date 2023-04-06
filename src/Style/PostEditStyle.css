@@ -98,7 +98,6 @@ button.InsertConsButton {
   background-color: rgb(255, 255, 255);
   border-color: #000;
   border-radius: 4px;
-
   box-shadow: 0px 2px 1px -1px rgb(0 0 0 / 20%),
     0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%),
     0px 0px 0px 1px rgb(0 0 0 / 10%) !important;
@@ -111,6 +110,7 @@ button.InsertConsButton {
   box-shadow: 0px 2px 1px -1px rgb(0 0 0 / 20%),
     0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%),
     0px 0px 0px 1px rgb(0 0 0 / 10%);
+  /* box-shadow: 0 1px 5px #ddd; */
   padding: 8px;
   position: fixed;
   transition-duration: 0.3s;

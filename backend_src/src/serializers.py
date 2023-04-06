@@ -63,6 +63,8 @@ class test_result_serializer(serializers.ModelSerializer):
             "id",
             "Score",
             "Date",
+            "Start_time",
+            "End_time",
             "exam_id",
             "user_id",
         )

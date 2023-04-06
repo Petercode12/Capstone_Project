@@ -195,13 +195,16 @@ def test_result(request, exam_id):
         dataList = json.loads(request.body)
         for data in dataList:  # dataList là array of dict
             Score = data["Score"]
-            # Date = data["Date"] # datetime field
             Date = datetime.datetime.now()
+            Start_time = data["Start_time"]
+            End_time = data["End_time"]
             exam_id = data["exam_id"]
             user_id = data["user_id"]
             test_result = TEST_RESULT(
                 Score=Score,
                 Date=Date,
+                Start_time = Start_time,
+                End_time = End_time,
                 exam_id=exam_id,
                 user_id=user_id,
             )

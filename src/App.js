@@ -84,7 +84,7 @@ const App = () => (
     />
     <CustomRoutes>
       <Route path="/share/:id" element={<ShareForm />} />
-      <Route path="/test_result/:id" element={<PracticeResult />} />
+      <Route path="/result/:id" element={<PracticeResult />} />
     </CustomRoutes>
   </Admin>
 );

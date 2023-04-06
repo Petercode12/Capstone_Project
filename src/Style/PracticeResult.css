@@ -1,0 +1,10 @@
+.TestResult-ButtonGroup {
+  display: flex;
+  flex-flow: wrap;
+  row-gap: 10px;
+  column-gap: 10px;
+}
+.TestResult-BoxDetail {
+  margin: 20px 0px;
+  width: 300px;
+}

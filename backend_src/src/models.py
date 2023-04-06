@@ -55,6 +55,8 @@ class TEST_RESULT(models.Model):
     id = models.AutoField(primary_key=True, null=False)
     Score = models.IntegerField(null=True)  # điểm trong TH full trắc nghiệm
     Date = models.DateTimeField(null=True)
+    Start_time = models.TimeField(null=False)
+    End_time = models.TimeField(null=False)
     exam = models.ForeignKey(EXAMS_COLLECTION, on_delete=models.CASCADE)
     user = models.ForeignKey(USER, on_delete=models.CASCADE)
 class TEST_RESULT_SPECIFIC(models.Model):
