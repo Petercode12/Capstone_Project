@@ -16,6 +16,7 @@ import {
   useNotify,
   useGetRecordId,
   useGetIdentity,
+  useRedirect,
 } from "react-admin";
 import { RichTextInput, RichTextInputToolbar } from "ra-input-rich-text";
 import SaveIcon from "@mui/icons-material/Save";
@@ -28,6 +29,7 @@ import Countdown from "react-countdown";
 import { useMediaQuery, useTheme, Container, Grid } from "@mui/material";
 import "../Style/PracticeStyle.css";
 import { wait } from "@testing-library/user-event/dist/utils";
+import { htmlPrefilter } from "jquery";
 
 function convertQueryDataToQuestionList(data) {
   let questionList = []; // questionList bao gồm: questionText, answerOptions, correctAnswer đối với MCQ, type
@@ -68,7 +70,7 @@ export function PracticeTest() {
   const [duration, setDuration] = useState();
   const { data: userInfo, isLoading, error1 } = useGetIdentity();
   const [countdown, setCountdown] = useState();
-
+  const redirect = useRedirect();
   var today = new Date();
   const start_time =
     today.getHours() +
@@ -394,6 +396,8 @@ export function PracticeTest() {
       notify("Cannot save!", { type: "error" });
     } else {
       notify("Save successfully!", { type: "success" });
+      wait(1000);
+      redirect("/result/".concat(id));
     }
   };
   const handleMCQChange = () => {
@@ -671,7 +675,6 @@ export function PracticeTest() {
                                 variant="filled"
                                 style={{ width: "100%" }}
                                 defaultValue={""}
-                                // defaultValue={questionList[i].answerOptions}
                               />
                             </div>
                           </div>

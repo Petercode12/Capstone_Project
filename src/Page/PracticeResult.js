@@ -42,6 +42,7 @@ import {
 import "../Style/PracticeResult.css";
 import target from "../Images/target.png";
 import hourglass from "../Images/hourglass.png";
+import total_question from "../Images/total_question.png";
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
   ...theme.typography.body2,
@@ -51,9 +52,13 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 export function PracticeResult() {
   const [originalExamList, setOriginalExamList] = useState([]);
-  const [examList, setExamList] = useState([]);
   const [time, setTime] = useState(0);
   const [testInfo, setTestInfo] = useState({});
+  const [testSpecific, setTestSpecific] = useState([]);
+  const [totalQuestion, setTotalQuestion] = useState(0);
+  const [skipQuestion, setSkipQuestion] = useState(0);
+  const [numsConsQuestion, setNumsConsQuestion] = useState(0);
+  const [accuracy, setAccuracy] = useState(0);
   const params = useParams();
   console.log("param id: ", params.id);
   let infinity = "♾️";
@@ -64,19 +69,29 @@ export function PracticeResult() {
       .then((res) => {
         console.log("Test Result: ", res.data);
         setTestInfo(res.data["test_info"]);
-        console.log(
-          "Time taken: ",
-          res.data["test_info"]["Start_time"].getHours
-        );
-        var start = testInfo["Start_time"];
-        var end = testInfo["End_time"];
+        setTestSpecific(res.data["test_specific"]);
+        setTotalQuestion(res.data["total_question"]);
+        setSkipQuestion(res.data["skip_question"]);
+        setNumsConsQuestion(res.data["nums_cons_question"]);
+        if (res.data["test_info"]["Score"] > 0) {
+          setAccuracy(
+            (
+              res.data["test_info"]["Score"] /
+              (res.data["total_question"] - res.data["nums_cons_question"])
+            ).toFixed(2) * 100
+          );
+        } else {
+          setAccuracy(0);
+        }
+        console.log("Test specific: ", res.data["test_specific"]);
+        var start = res.data["test_info"]["Start_time"];
+        var end = res.data["test_info"]["End_time"];
         var diff = start
           .split(":")
-          .map(
-            (item, index) => end.split(":")[index] - item
-          )
+          .map((item, index) => (end.split(":")[index] - item).toFixed(0))
           .join(":");
-        console.log(diff);
+        console.log("Time done: ", diff);
+        setTime(diff);
       })
       .catch((err) => {
         console.log(err);
@@ -84,7 +99,7 @@ export function PracticeResult() {
   }, []);
   return (
     <Container
-      xs="lg"
+      xs="md"
       sx={{
         marginTop: "2em",
         marginBottom: "2em",
@@ -94,14 +109,12 @@ export function PracticeResult() {
       }}
     >
       <Grid container spacing={2}>
-        <Grid item xs={12} md={6} lg={4}>
-          {/* <Item>xs=8</Item> */}
+        <Grid item xs={12}>
           <div className="TestResult-ButtonGroup">
             <Button
               variant="contained"
               size="small"
               style={{ borderRadius: "15px" }}
-              // borderRadius: "50vh"
               onClick={() => {}}
             >
               View answer
@@ -112,11 +125,46 @@ export function PracticeResult() {
               style={{ borderRadius: "15px" }}
               onClick={() => {}}
             >
-              Do again
+              Back to exam page
             </Button>
           </div>
+        </Grid>
+        <Grid item xs={12} md={4}>
+          {/* <Item>xs=8</Item> */}
           <div className="TestResult-BoxDetail NavigationAsidePaper">
-            <div>
+            <div style={{ margin: "0 4px" }}>
+              <div
+                style={{
+                  transform: "translateY(2px)",
+                  display: "inline-block",
+                }}
+              >
+                <Box
+                  component="img"
+                  src={total_question}
+                  alt="total"
+                  width="24px"
+                  height="auto"
+                  margin="0 4px"
+                />
+              </div>
+              <Typography
+                variant="h6"
+                display="inline"
+                style={{ color: "blue" }}
+              >
+                Total questions:
+              </Typography>
+              <Typography
+                variant="h6"
+                display="inline"
+                style={{ float: "right" }}
+                className="result-stats-text"
+              >
+                {totalQuestion}
+              </Typography>
+            </div>
+            <div style={{ margin: "0 4px" }}>
               <div
                 style={{
                   transform: "translateY(2px)",
@@ -137,8 +185,16 @@ export function PracticeResult() {
               >
                 Result:
               </Typography>
+              <Typography
+                variant="h6"
+                display="inline"
+                style={{ float: "right" }}
+                className="result-stats-text"
+              >
+                {testInfo["Score"]}/{totalQuestion - numsConsQuestion}
+              </Typography>
             </div>
-            <div>
+            <div style={{ margin: "0 4px" }}>
               <div
                 style={{
                   transform: "translateY(2px)",
@@ -156,22 +212,22 @@ export function PracticeResult() {
                 />
               </div>
               <div style={{ display: "inline-block" }}>
-                <Typography
-                  variant="h6"
-                  // display="inline"
-                  style={{ color: "blue" }}
-                >
+                <Typography variant="h6" style={{ color: "blue" }}>
                   Accuracy:
                 </Typography>
-                <Typography
-                  variant="body1"
-                  // display="inline"
-                >
-                  #right/#total
+                <Typography variant="body1">(#right/#total)</Typography>
+              </div>
+              <div
+                style={{ display: "inline-block", float: "right" }}
+                className="result-stats-text"
+              >
+                <Typography variant="h6" style={{ float: "left" }}>
+                  {accuracy}%
                 </Typography>
+                <Typography variant="body1" />
               </div>
             </div>
-            <div>
+            <div style={{ margin: "0 4px" }}>
               <div
                 style={{
                   transform: "translateY(4px)",
@@ -195,94 +251,162 @@ export function PracticeResult() {
               >
                 Time completion:
               </Typography>
+              <Typography
+                variant="h6"
+                display="inline"
+                style={{ float: "right" }}
+                className="result-stats-text"
+              >
+                {time}
+              </Typography>
             </div>
           </div>
-          {/* <div
-            // container
-            spacing={2}
-            className="GridContainer"
+        </Grid>
+        <Grid item xs={12} md={8}>
+          <div className="row">
+            <div className="col">
+              <div className="result-score-box">
+                <div className="result-score-icon text-correct">
+                  <span className="fas fa-check-circle" />
+                </div>
+                <div className="result-score-icontext text-correct">Right</div>
+                <div className="result-score-text">{testInfo["Score"]}</div>
+                <div classname="result-score-subtext">question</div>
+              </div>
+            </div>
+            <div className="col">
+              <div className="result-score-box">
+                <div className="result-score-icon text-wrong">
+                  <span className="fas fa-times-circle" />
+                </div>
+                <div className="result-score-icontext text-wrong">Wrong</div>
+                <div className="result-score-text">
+                  {totalQuestion -
+                    numsConsQuestion -
+                    skipQuestion -
+                    testInfo["Score"]}
+                </div>
+                <div classname="result-score-subtext">question</div>
+              </div>
+            </div>
+            <div className="col">
+              <div className="result-score-box">
+                <div className="result-score-icon text-unanswered">
+                  <span className="fas fa-minus-circle" />
+                </div>
+                <div className="result-score-icontext text-unanswered">
+                  Unanswered
+                </div>
+                <div className="result-score-text">{skipQuestion}</div>
+                <div classname="result-score-subtext">question</div>
+              </div>
+            </div>
+            <div className="col">
+              <div className="result-score-box">
+                <div className="result-score-icon text-constructive">
+                  <span className="fas fa-pencil-alt" />
+                </div>
+                <div className="result-score-icontext text-constructive">
+                  Constructive
+                </div>
+                <div className="result-score-text">{numsConsQuestion}</div>
+                <div classname="result-score-subtext">question</div>
+              </div>
+            </div>
+          </div>
+        </Grid>
+        <Grid item xs={12}>
+          <Typography
+            variant="h5"
+            display="inline-block"
+            style={{
+              textDecoration: "underline",
+              marginRight: "12px",
+              marginBottom: "12px",
+            }}
           >
-            {examList.map((exam, i) => {
-              if (exam["description"] === "") {
-                exam["description"] = "No description";
+            Details:
+          </Typography>
+          <div spacing={2} className="result-detail-box result-answers-list">
+            {testSpecific.map((exam, i) => {
+              let isMCQ = exam["Is_MCQ"];
+              let userAnswer, correctAnswer;
+
+              if (isMCQ) {
+                if (exam["User_answer_MCQ"] === "")
+                  userAnswer = "Not anwsered!";
+                else userAnswer = exam["User_answer_MCQ"];
+                correctAnswer = exam["Correct_answer"];
+              } else {
+                if (exam["User_answer_CONS"] === "")
+                  userAnswer = "Not anwsered!";
+                else userAnswer = exam["User_answer_CONS"];
+                correctAnswer = exam["Solution"];
               }
-              if (exam["duration"] === 0) {
-                exam["duration"] = infinity;
-              }
+
               return (
-                <div item key={i} className="GridPaper">
-                  <Card
-                    sx={{
-                      width: 340,
-                      justifyContent: "center",
-                      alignItems: "center",
-                      marginBottom: "4px",
-                    }}
-                    className="NavigationAsidePaper"
-                  >
-                    <CardMedia
-                      component="img"
-                      alt="exam paper"
-                      height="140"
-                      image={exam["image"]}
-                    />
-                    <CardContent sx={{ padding: "0px 12px" }}>
-                      <Typography
-                        gutterBottom
-                        variant="h5"
-                        component="div"
-                        noWrap
-                        sx={{ margin: "4px 0px" }}
-                      >
-                        {exam["Name"]}
-                      </Typography>
-                      <Typography
-                        variant="body1"
-                        inline
-                        color="text.secondary"
-                        InputProps={{
-                          readOnly: true,
-                        }}
-                        noWrap
-                        sx={{
-                          marginBottom: "2px",
-                          marginLeft: "2px",
-                        }}
-                      >
-                        {exam["description"]}
-                      </Typography>
-                      <Typography variant="subtitle1" component="div">
-                        <div
-                          style={{
-                            transform: "translateY(1px)",
-                            display: "inline-block",
-                          }}
-                        >
-                          <i
-                            className="fa-regular fa-clock"
-                            style={{
-                              fontSize: "20px",
-                              marginRight: ".4rem",
-                              marginTop: ".4rem",
-                            }}
-                            sx={{ margin: "0px 4px" }}
-                          />
-                        </div>
-                        {exam["duration"]} min
-                      </Typography>
-                    </CardContent>
-                    <CardActions>
-                      <Button size="small">Edit</Button>
-                      <Button size="small">Practice</Button>
-                    </CardActions>
-                  </Card>
+                <div className="result-answers-item">
+                  <span className="question-number">
+                    <strong>{i + 1}</strong>
+                  </span>
+                  <span>
+                    <Typography
+                      variant="h6"
+                      display="inline"
+                      className="text-answerkey"
+                    >
+                      {correctAnswer}:
+                    </Typography>
+                    <span
+                      style={{
+                        color: "red",
+                        marginRight: "0.25em",
+                        display: "inline-block",
+                      }}
+                    >
+                      &nbsp;
+                    </span>
+                    <span className="mr-1 text-useranswer">{userAnswer}</span>
+                  </span>
+                  <span className="" />
                 </div>
               );
             })}
-          </div> */}
-        </Grid>
-        <Grid item xs={4}>
-          <Item>xs=4</Item>
+            {testSpecific.map((exam, i) => {
+              let temp = document.querySelectorAll(".result-answers-item");
+              let isMCQ = exam["Is_MCQ"];
+              let userAnswer, correctAnswer;
+
+              if (isMCQ) {
+                if (exam["User_answer_MCQ"] === "")
+                  userAnswer = "Not anwsered!";
+                else userAnswer = exam["User_answer_MCQ"];
+                correctAnswer = exam["Correct_answer"];
+              } else {
+                if (exam["User_answer_CONS"] === "")
+                  userAnswer = "Not anwsered!";
+                else userAnswer = exam["User_answer_CONS"];
+                correctAnswer = exam["Solution"];
+              }
+              if (temp != null && temp[i] != null) {
+                if (isMCQ && userAnswer === correctAnswer)
+                  temp[i].lastChild.className =
+                    "text-correct fas fa-check fa-lg correct-icon";
+                else if (isMCQ && userAnswer !== correctAnswer)
+                  temp[i].lastChild.className =
+                    "text-wrong fas fa-times fa-lg wrong-icon";
+                else if (!isMCQ) {
+                  temp[i].lastChild.className =
+                    "text-constructive fas fa-pencil-alt fa-lg wrong-icon";
+                } else {
+                  temp[i].lastChild.className =
+                    "text-unanswer fas fa-minus fa-lg hyphen-icon";
+                }
+                console.log("temp: ", temp[i].lastChild);
+              }
+              return "";
+            })}
+          </div>
         </Grid>
       </Grid>
     </Container>
