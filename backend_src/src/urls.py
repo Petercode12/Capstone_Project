@@ -41,6 +41,11 @@ urlpatterns = [
         name="insertSharedInfo",
     ),
     path(
+        "query_shared_info_by_examid/<int:exam_id>",
+        views.query_shared_info_by_examid,
+        name="querySharedInfoByExamId",
+    ),
+    path(
         "auth/",
         views.authentication,
         name="authentication",

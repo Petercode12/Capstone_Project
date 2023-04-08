@@ -84,7 +84,6 @@ def query_exam_by_id(request, event_id):
         if event_id is not None and event_id != "":
             tests = EXAMS_COLLECTION.objects.get(id=event_id)
             test_serializer = exams_collection_serializer2(tests)
-            print(test_serializer.data)
             if tests:
                 tests.delete()
             else:
@@ -172,11 +171,9 @@ def query_questions_and_answers_by_examid(request, exam_id):
             exam_id=exam_id
         ).order_by("Ordinal")
         exam_collections = exams_collection_serializer2(exam)
-        print(exam_id, exam_collections.data["duration"])
         q_and_a_serializer = questions_and_answers_serializer(
             questions_and_answers, many=True
         )
-        print(q_and_a_serializer.data)
         return JsonResponse(
             {
                 "q_and_a": q_and_a_serializer.data,
@@ -224,7 +221,6 @@ def insert_test_result_specific(request, exam_id):
         dataList = json.loads(request.body)
         questions_and_answers = None
         for data in dataList:
-            print("Data: ", data)
             Ordinal = data["Ordinal"]
             Question = data["Question"]
             Is_MCQ = data["Is_MCQ"]
@@ -238,7 +234,6 @@ def insert_test_result_specific(request, exam_id):
             User_answer_CONS = data["User_answer_CONS"]
             Mark = data["Mark"]
             test_result_id = data["test_result_id"]
-            # print("ID bài làm: ", data["test_result_id"])
             questions_and_answers = TEST_RESULT_SPECIFIC(
                 Ordinal=Ordinal,
                 Question=Question,
@@ -304,7 +299,7 @@ def insert_shared_info(request, exam_id):
         delete_shared_info = SHARED_USERS.objects.filter(exam_id=exam_id)
         delete_shared_info.delete()
         user_id = EXAMS_COLLECTION.objects.filter(id=exam_id).values()[0]["User_id"]
-        data = json.loads(request.body)["email"]
+        data = json.loads(request.body)["id"]
         shared_info = None
         for e in data:
             shared_info = SHARED_USERS(
@@ -315,6 +310,14 @@ def insert_shared_info(request, exam_id):
             shared_info.save()
         shared_info_serializer = shared_users_serializer(shared_info)
         return JsonResponse(shared_info_serializer.data, safe=False)
+
+
+@csrf_exempt
+def query_shared_info_by_examid(request, exam_id):
+    if request.method == "GET":
+        info = SHARED_USERS.objects.filter(exam_id=exam_id).order_by("id")
+        info_serializer = shared_users_serializer(info, many=True)
+        return JsonResponse(info_serializer.data, safe=False)
 
 
 @csrf_exempt

@@ -9,7 +9,29 @@ import Box from "@mui/material/Box";
 import LoadingButton from "@mui/lab/LoadingButton";
 import Button from "@mui/material/Button";
 import { SimpleForm } from "react-admin";
-import { RichTextInput } from "ra-input-rich-text";
+import { ToggleButton } from "@mui/material";
+import IconButton from "@mui/material/IconButton";
+import FunctionsIcon from "@mui/icons-material/Functions";
+import Remove from "@mui/icons-material/Remove";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import { MathFormulaDialog } from "./MathFormulaDialog";
+import {
+  DefaultEditorOptions,
+  RichTextInput,
+  RichTextInputToolbar,
+  LevelSelect,
+  FormatButtons,
+  AlignmentButtons,
+  ListButtons,
+  LinkButtons,
+  QuoteButtons,
+  ClearButtons,
+  ColorButtons,
+  ImageButtons,
+  useTiptapEditor,
+} from "ra-input-rich-text";
+import HorizontalRule from "@tiptap/extension-horizontal-rule";
 import SaveIcon from "@mui/icons-material/Save";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Toolbar, Edit, useCreate, useNotify } from "react-admin";
@@ -22,9 +44,14 @@ function convertQueryDataToQuestionList(data) {
   let questionList = [];
   for (let e of data) {
     let k = {};
+    let temp = e.Question.replaceAll(
+      "<MathJaxContext config={config}><MathJax>`",
+      "&lt;Math&gt;"
+    );
+    temp = temp.replaceAll("`</MathJax></MathJaxContext>", "&lt;/Math&gt;");
     if (e.Is_MCQ) {
       k = {
-        questionText: e.Question,
+        questionText: temp,
         answerOptions: [
           { answerText: e.Answer_a },
           { answerText: e.Answer_b },
@@ -36,7 +63,7 @@ function convertQueryDataToQuestionList(data) {
       };
     } else {
       k = {
-        questionText: e.Question,
+        questionText: temp,
         answerOptions: e.Solution,
         type: "Cons",
       };
@@ -49,11 +76,15 @@ function convertQueryDataToQuestionList(data) {
 export function PostEdit() {
   //edit create test
   const [questionList, setQuestionList] = useState([]);
+  const [open, setOpen] = useState(false);
+  const [idx, setIdx] = useState();
   const [create, { error }] = useCreate();
   const notify = useNotify();
   const params = useParams();
-  const [assignNewValueForElementsCheck, setAssignNewValueForElementsCheck] =
-    useState(false);
+  const [
+    assignNewValueForElementsCheck,
+    setAssignNewValueForElementsCheck,
+  ] = useState(false);
   useEffect(() => {
     axios
       .get(
@@ -62,7 +93,6 @@ export function PostEdit() {
         )
       )
       .then((res) => {
-        console.log(res.data);
         setQuestionList(convertQueryDataToQuestionList(res.data["q_and_a"]));
       })
       .catch((err) => {
@@ -275,7 +305,7 @@ export function PostEdit() {
       }
     }
     const data = saveDataGen();
-    console.log("DATA will be saved: ", data);
+
     create("save_questions_and_answers/".concat(params.id), { data });
     if (error) {
       notify("Cannot save!", { type: "error" });
@@ -292,6 +322,14 @@ export function PostEdit() {
     let questionTextElement = document.getElementById("questionText".concat(i));
     let newArr = [...questionList];
     newArr[i].questionText = questionTextElement.innerHTML;
+    newArr[i].questionText = newArr[i].questionText.replaceAll(
+      "&lt;Math&gt;",
+      "<MathJaxContext config={config}><MathJax>`"
+    );
+    newArr[i].questionText = newArr[i].questionText.replaceAll(
+      "&lt;/Math&gt;",
+      "`</MathJax></MathJaxContext>"
+    );
     setQuestionList(newArr);
   };
   const handleTextFieldA_MCQChange = (i) => {
@@ -324,21 +362,16 @@ export function PostEdit() {
     newArr[i].answerOptions = textFieldElement.value;
     setQuestionList(newArr);
   };
-  const theme = useTheme();
-  const isLargeEnough = useMediaQuery(theme.breakpoints.up("sm"));
-  // console.log(isLargeEnough);
+
   // function ẩn hiện thanh insert MCQ
   var currentPageYOffset = 0;
   window.addEventListener(
     "scroll",
-    function () {
+    function() {
       var Y = window.pageYOffset;
       var X = window.innerWidth;
       const note = document.querySelector(".InsertButton");
-      // console.log("X size", X, isLargeEnough);
-      // const appBar = document.querySelector(".MuiBox-root");
       if (X < 800) {
-        // console.log(X < 600);
         if (currentPageYOffset < Y) {
           if (note !== null) {
             note.style.cssText += "margin-top: -52.5px";
@@ -359,9 +392,8 @@ export function PostEdit() {
     setQuestionList(newArr);
     setAssignNewValueForElementsCheck(true);
   };
-  console.log("Questionlist: ", questionList);
+
   const assignNewValueForElements = () => {
-    console.log("Assign new value");
     for (let i = 0; i < questionList.length; i++) {
       if (questionList[i].type === "MCQ") {
         // questionText
@@ -432,6 +464,72 @@ export function PostEdit() {
     assignNewValueForElements();
     setAssignNewValueForElementsCheck(false);
   }
+  console.log("Questionlist: ", questionList);
+  const MyEditorOptions = {
+    ...DefaultEditorOptions,
+    extensions: [...DefaultEditorOptions.extensions, HorizontalRule],
+  };
+
+  const handleClickOpenDialog = (idx) => {
+    setIdx(idx);
+    setOpen(true);
+  };
+  const handleCloseDialog = (eq) => {
+    if (eq !== null) {
+      let questionTextElement = document.getElementById(
+        "questionText".concat(idx)
+      );
+      questionTextElement.innerHTML += `<p>&lt;Math&gt;${eq.substring(
+        1,
+        eq.length - 1
+      )}&lt;/Math&gt</p>`;
+    }
+    setOpen(false);
+  };
+  const MyRichTextInputToolbar = ({ size, ...props }) => {
+    const editor = useTiptapEditor();
+    return (
+      <RichTextInputToolbar {...props}>
+        <LevelSelect size={size} />
+        <FormatButtons size={size} />
+        <ColorButtons size={size} />
+        <AlignmentButtons size={size} />
+        <ListButtons size={size} />
+        <LinkButtons size={size} />
+        <ImageButtons size={size} />
+        <QuoteButtons size={size} />
+        <ClearButtons size={size} />
+        <ToggleButton
+          aria-label="Add an horizontal rule"
+          title="Add an horizontal rule"
+          value="left"
+          onClick={() =>
+            editor
+              .chain()
+              .focus()
+              .setHorizontalRule()
+              .run()
+          }
+          selected={editor && editor.isActive("horizontalRule")}
+        >
+          <Remove fontSize="inherit" />
+        </ToggleButton>
+        <IconButton
+          aria-label="addFormula"
+          color="primary"
+          onClick={() => handleClickOpenDialog(props.idx)}
+        >
+          <FunctionsIcon />
+        </IconButton>
+        <MathFormulaDialog
+          open={open}
+          setOpen={setOpen}
+          handleCloseDialog={handleCloseDialog}
+        />
+      </RichTextInputToolbar>
+    );
+  };
+
   return (
     <Container sx={{ maxWidth: { xl: 1280 } }}>
       <Grid container justifyContent="space-between" spacing={2}>
@@ -441,19 +539,17 @@ export function PostEdit() {
               variant="contained"
               onClick={insertQA_MCQ}
               className="InsertMCQButton"
-              // flex={1}
               mr={{ xs: 0, sm: "0.5em" }}
             >
-              <i className="bi bi-plus"></i> MCQ
+              <i className="bi bi-plus" /> MCQ
             </Button>
             <Button
               variant="contained"
               onClick={insertQA_Cons}
               className="InsertConsButton"
-              // flex={1}
               mr={{ xs: 0, sm: "0.5em" }}
             >
-              <i className="bi bi-plus"></i> Constructive Questions
+              <i className="bi bi-plus" /> Constructive Questions
             </Button>
           </Grid>
         </Grid>
@@ -477,13 +573,17 @@ export function PostEdit() {
                           <div key={i}>
                             <div
                               className="question-count"
-                              style={{ margin: "1em 0em" }}
+                              style={{
+                                margin: "1em 0em",
+                              }}
                               id={"question".concat(i + 1)}
                             >
                               <span>Question {i + 1}</span>
                               <Button
                                 variant="outlined"
-                                style={{ float: "right" }}
+                                style={{
+                                  float: "right",
+                                }}
                                 startIcon={<DeleteIcon />}
                                 onClick={() => {
                                   removeQuestionAndAnswerFromQuestionList(i);
@@ -496,13 +596,20 @@ export function PostEdit() {
                               id={"questionText".concat(i)}
                               key={i}
                               source=""
+                              editorOptions={MyEditorOptions}
+                              toolbar={
+                                <MyRichTextInputToolbar size="medium" idx={i} />
+                              }
                               defaultValue={questionList[i].questionText}
                             />
                             <RadioGroup
                               row
                               aria-labelledby="demo-row-radio-buttons-group-label"
                               name="row-radio-buttons-group"
-                              style={{ marginTop: "0.5em", marginLeft: "0px" }}
+                              style={{
+                                marginTop: "0.5em",
+                                marginLeft: "0px",
+                              }}
                               onChange={(event) => {
                                 handleMCQChange(event, i);
                               }}
@@ -646,12 +753,16 @@ export function PostEdit() {
                             <div
                               id={"question".concat(i + 1)}
                               className="question-count"
-                              style={{ marginTop: "2em" }}
+                              style={{
+                                marginTop: "2em",
+                              }}
                             >
                               <span>Question {i + 1}</span>
                               <Button
                                 variant="outlined"
-                                style={{ float: "right" }}
+                                style={{
+                                  float: "right",
+                                }}
                                 startIcon={<DeleteIcon />}
                                 onClick={() => {
                                   removeQuestionAndAnswerFromQuestionList(i);
@@ -664,6 +775,10 @@ export function PostEdit() {
                               id={"questionText".concat(i)}
                               key={i}
                               source=""
+                              editorOptions={MyEditorOptions}
+                              toolbar={
+                                <MyRichTextInputToolbar size="medium" idx={i} />
+                              }
                               defaultValue={questionList[i].questionText}
                             />
                             <div>
@@ -673,7 +788,9 @@ export function PostEdit() {
                                 multiline
                                 rows={5}
                                 variant="filled"
-                                style={{ width: "100%" }}
+                                style={{
+                                  width: "100%",
+                                }}
                                 defaultValue={questionList[i].answerOptions}
                               />
                             </div>
