@@ -48,6 +48,7 @@ const PostCreateToolbar = () => {
 };
 export function ShareForm() {
   const [emailList, setEmailList] = useState([]);
+  const [defaultIdList, setDefaultIdList] = useState([]);
   const [create, { error }] = useCreate();
   const notify = useNotify();
   const params = useParams();
@@ -65,7 +66,24 @@ export function ShareForm() {
         console.log(err);
       });
   }, []);
+  useEffect(() => {
+    axios
+      .get(
+        "http://localhost:8000/query_shared_info_by_examid/".concat(params.id)
+      )
+      .then((res) => {
+        let id_list = [];
+        for (let e of res.data) {
+          id_list.push(e.Shared_user_id);
+        }
+        setDefaultIdList([{ id: id_list }]);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
   const postSave = (data) => {
+    console.log("Data saved: ", data);
     create("save_shared_info/".concat(params.id), { data });
     if (error) {
       notify("Cannot save!", { type: "error" });
@@ -73,7 +91,6 @@ export function ShareForm() {
       notify("Save successfully!", { type: "success" });
     }
   };
-  console.log("Email list: ", emailList);
   return (
     <Container
       xs={{ maxWidth: 600 }}
@@ -83,13 +100,16 @@ export function ShareForm() {
         justifyContent: "center",
         marginTop: "24px",
       }}
-    >
+    >{defaultIdList.map((id_list, i) => {
+        return (
       <SimpleForm
+      key={i}
         onSubmit={postSave}
         warnWhenUnsavedChanges
         sx={{ display: "flex", maxWidth: 500 }}
         toolbar={<PostCreateToolbar />}
         className="PaperBox-formContent"
+        defaultValues={id_list}
       >
         <Box
           sx={{
@@ -105,7 +125,7 @@ export function ShareForm() {
             allowEmpty
           >
             <AutocompleteArrayInput
-              source="email"
+              source="id"
               label="Email"
               choices={emailList}
               fullWidth
@@ -113,7 +133,7 @@ export function ShareForm() {
             />
           </ReferenceArrayInput>
         </Box>
-      </SimpleForm>
+      </SimpleForm>);})}
     </Container>
   );
 }

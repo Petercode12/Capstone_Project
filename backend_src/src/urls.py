@@ -25,9 +25,7 @@ urlpatterns = [
         views.query_questions_and_answers_by_examid,
         name="queryQuestionsAnswersByExamId",
     ),
-    path(
-        "test_result/<int:exam_id>", views.test_result, name="insertGetTestResult"
-    ),
+    path("test_result/<int:exam_id>", views.test_result, name="insertGetTestResult"),
     path(
         "test_result_specific/<int:exam_id>",
         views.insert_test_result_specific,
@@ -35,6 +33,19 @@ urlpatterns = [
     ),
     path("all_users/", views.query_all_users, name="queryAllUsers"),
     path("save_user/", views.insert_new_user, name="insertNewUser"),
-    path("save_shared_info/<int:exam_id>", views.insert_shared_info, name="insertSharedInfo"),
-    path("auth/", views.authentication, name="authentication"),
+    path(
+        "save_shared_info/<int:exam_id>",
+        views.insert_shared_info,
+        name="insertSharedInfo",
+    ),
+    path(
+        "query_shared_info_by_examid/<int:exam_id>",
+        views.query_shared_info_by_examid,
+        name="querySharedInfoByExamId",
+    ),
+    path(
+        "auth/",
+        views.authentication,
+        name="authentication",
+    ),
 ]
