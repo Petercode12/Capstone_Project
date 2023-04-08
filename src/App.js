@@ -21,6 +21,8 @@ import jsonServerProvider from "ra-data-json-server";
 import { MyLoginPage } from "./Page/MyLoginPage";
 import { Route } from "react-router";
 import { ShareForm } from "./Page/ShareForm";
+import { PracticeResult } from "./Page/PracticeResult";
+import { PraceticeResultSpecific } from "./Page/PracticeResultSpecific";
 // A list of allowed origins that can access our backend API
 
 const httpClient = (url, options = {}) => {
@@ -72,7 +74,7 @@ const App = () => (
       edit={PostEdit}
       create={PostCreate}
       icon={LibraryAddIcon}
-    ></Resource>
+    />
 
     <Resource
       name="practice_tests"
@@ -82,7 +84,12 @@ const App = () => (
       icon={ModeEditOutlineTwoToneIcon}
     />
     <CustomRoutes>
-      <Route path="/share/:id" element={<ShareForm />} />
+      <Route path="/all_exams/share/:id" element={<ShareForm />} />
+      <Route path="/practice_tests/result/:id" element={<PracticeResult />} />
+      <Route
+        path="/practice_tests/result_specific/:id"
+        element={<PraceticeResultSpecific />}
+      />
     </CustomRoutes>
   </Admin>
 );

@@ -117,12 +117,9 @@ def insert_new_exam(request):
         exam.save()
         exam_serializer = exams_collection_serializer2(exam)
         return JsonResponse(exam_serializer.data, safe=False)
-
-
+     
 @csrf_exempt
-def insert_questions_and_answers(
-    request, exam_id
-):  # sau khi update phải cập nhật lại thời gian thay đổi
+def insert_questions_and_answers(request, exam_id): 
     if request.method == "POST":
         delete_questions_and_answers = QUESTIONS_AND_ANSWERS.objects.filter(
             exam_id=exam_id
@@ -157,9 +154,17 @@ def insert_questions_and_answers(
             )
             questions_and_answers.save()
             q_and_a_serializer = questions_and_answers_serializer(questions_and_answers)
-        return JsonResponse(q_and_a_serializer.data, safe=False)
-    # if request.method == "PATCH":
-    #     exam = EXAMS_COLLECTION.objects.get(id=exam_id)
+        # sau khi update phải cập nhật lại thời gian thay đổi
+        test = EXAMS_COLLECTION.objects.get(id=exam_id)
+        test.Last_Modified_Date = datetime.date.today()
+        # import datetime
+        # datetime.date.today()  # Returns 2018-01-15
+        # datetime.datetime.now() # Returns 2018-01-15 09:00
+        print(datetime.date.today())
+        test.save()
+        test_ser = test_result_serializer(test)
+        return JsonResponse({"test_data": test_ser.data,"q_and_a":q_and_a_serializer.data}, safe=False)
+    
 
 
 @csrf_exempt
@@ -181,21 +186,22 @@ def query_questions_and_answers_by_examid(request, exam_id):
             },
             safe=False,
         )
-
-
 @csrf_exempt
-def insert_test_result(request, exam_id):
+def test_result(request, exam_id):
     if request.method == "POST":
         dataList = json.loads(request.body)
         for data in dataList:  # dataList là array of dict
             Score = data["Score"]
-            # Date = data["Date"] # datetime field
             Date = datetime.datetime.now()
+            Start_time = data["Start_time"]
+            End_time = data["End_time"]
             exam_id = data["exam_id"]
             user_id = data["user_id"]
             test_result = TEST_RESULT(
                 Score=Score,
                 Date=Date,
+                Start_time = Start_time,
+                End_time = End_time,
                 exam_id=exam_id,
                 user_id=user_id,
             )
@@ -213,7 +219,34 @@ def insert_test_result(request, exam_id):
         test_result.save()
         test_result_ser = test_result_serializer(test_result)
         return JsonResponse(test_result_ser.data, safe=False)
-
+    if request.method == "GET":
+        print("TEST_ID: ", exam_id)
+        test = TEST_RESULT.objects.get(id=exam_id)
+        test_ser = test_result_serializer(test)
+        test_specific = TEST_RESULT_SPECIFIC.objects.filter(
+            test_result_id=exam_id
+        ).order_by("Ordinal")
+        print("exam_id", test_ser.data["exam_id"])
+        test_specific_ser = test_result_specific_serializer(
+            test_specific, many=True
+        )
+        test_specific = TEST_RESULT_SPECIFIC.objects.filter(
+            test_result_id=exam_id
+        ).order_by("Ordinal")
+        num_test_skip = test_specific.filter(User_answer_MCQ__isnull=True, User_answer_CONS__isnull=True).count()
+        num_cons_question = test_specific.filter(Is_MCQ=0).count()
+        print(test_specific_ser.data)
+        return JsonResponse(
+            {
+                "test_info": test_ser.data,
+                "test_specific": test_specific_ser.data,
+                "total_question": len(test_specific_ser.data),
+                "skip_question": num_test_skip,
+                "nums_cons_question": num_cons_question,
+            },
+            safe=False,
+        )
+        
 
 @csrf_exempt
 def insert_test_result_specific(request, exam_id):

@@ -8,7 +8,11 @@ export function ShareButton() {
   const recordId = useGetRecordId();
   console.log("Record: ", recordId);
   return (
-    <Button startIcon={<ShareIcon />} href={"/#/share/".concat(recordId)}>
+    <Button
+      startIcon={<ShareIcon />}
+      size="small"
+      href={"/#/all_exams/share/".concat(recordId)}
+    >
       Share
     </Button>
   );

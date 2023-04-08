@@ -7,12 +7,21 @@ import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import LoadingButton from "@mui/lab/LoadingButton";
 import Button from "@mui/material/Button";
-import { SimpleForm, SaveButton } from "react-admin";
+import {
+  SimpleForm,
+  SaveButton,
+  Toolbar,
+  Edit,
+  useCreate,
+  useNotify,
+  useGetRecordId,
+  useGetIdentity,
+  useRedirect,
+} from "react-admin";
 import { RichTextInput, RichTextInputToolbar } from "ra-input-rich-text";
 import SaveIcon from "@mui/icons-material/Save";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import { Toolbar, Edit, useCreate, useNotify } from "react-admin";
 import Paper from "@mui/material/Paper";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import axios from "axios";
@@ -58,21 +67,17 @@ export function PracticeTest() {
   const notify = useNotify();
   const params = useParams();
   const [duration, setDuration] = useState();
-  async function AddQuestionBoxCss() {
-    console.log("Add css to question Box");
-    for (let i = 0; i < questionList.length; i++) {
-      var bien = "questionText" + i.toString() + "-label";
-      var bien1 = "questionText" + i.toString();
-      if (document.getElementById(bien) !== null)
-        document.getElementById(bien).style.width = "100%";
-      if (document.getElementById(bien1) !== null)
-        document.getElementById(bien1).style.borderColor = "#fff";
-      else {
-        console.log("chưa có border");
-      }
-    }
-  }
-
+  const { data: userInfo, isLoading, error1 } = useGetIdentity();
+  const [countdown, setCountdown] = useState();
+  const redirect = useRedirect();
+  var today = new Date();
+  const start_time =
+    today.getHours() +
+    ":" +
+    today.getMinutes() +
+    ":" +
+    today.getSeconds().toFixed(2);
+  console.log("Start Time: ", start_time);
   useEffect(() => {
     // get the data from the api
     axios
@@ -83,13 +88,14 @@ export function PracticeTest() {
       )
       .then((res) => {
         setQuestionList(convertQueryDataToQuestionList(res.data["q_and_a"]));
+        setDuration(res.data["duration"]);
+
         console.log(
-          "Duration: ",
+          "Set duration: ",
           res.data["duration"],
           typeof res.data["duration"]
         );
-        // AddQuestionBoxCss();
-        setDuration(res.data["duration"]);
+        setCountdown(Date.now() + res.data["duration"] * 60 * 1000);
       })
       .catch((err) => {
         console.log(err);
@@ -100,7 +106,7 @@ export function PracticeTest() {
     //nút save của trang edit test
     <Toolbar>
       <Box sx={{ "& > button": { m: 0 } }}>
-        <LoadingButton></LoadingButton>
+        <LoadingButton />
       </Box>
     </Toolbar>
   );
@@ -181,19 +187,14 @@ export function PracticeTest() {
   // Renderer callback with condition
   const renderer = ({ hours, minutes, seconds, completed }) => {
     for (let i = 0; i < questionList.length; i++) {
-      var bien = "questionText-label"; // i.toString() +
-      // var bien1 = "questionText" + i.toString();
+      var bien = "questionText-label";
       if (
         document.getElementById(bien) !== null &&
         document.getElementById(bien).style.width !== null
       )
         document.getElementById(bien).style.width = "100%";
-      // if (
-      //   document.getElementById(bien1) !== null &&
-      //   document.getElementById(bien1).style.borderColor !== null
-      // )
-      //   document.getElementById(bien1).style.borderColor = "#fff";
     }
+    // console.log("Bị render lại!!!", duration);
     if (duration > 0) {
       if (completed) {
         // Render a completed state
@@ -241,7 +242,8 @@ export function PracticeTest() {
           </div>
           <div style={{ paddingTop: "-15px", display: "inline-block" }}>
             <Countdown
-              date={Date.now() + duration * 60 * 1000}
+              // date={Date.now() + duration * 60 * 1000}
+              date={countdown}
               renderer={renderer}
             />
           </div>
@@ -329,10 +331,20 @@ export function PracticeTest() {
   const test_result_Gen = () => {
     // tạo array dict data của đề thi
     const data = [];
+    var today = new Date();
+    var end_time =
+      today.getHours() +
+      ":" +
+      today.getMinutes() +
+      ":" +
+      today.getSeconds().toFixed(2);
+    console.log("End time: ", end_time);
     let k = {
       Score: 0,
+      Start_time: start_time,
+      End_time: end_time,
       exam_id: params.id,
-      user_id: "1", // Phước update userid
+      user_id: userInfo["id"],
     };
     data.push(k);
     return data;
@@ -342,8 +354,8 @@ export function PracticeTest() {
     await axios // post  lich sử làm bài và kết quả
       .post("http://localhost:8000/test_result/".concat(params.id), data)
       .then((res) => {
-        // console.log("Data: ", res.data);
-        // console.log("ID: ", res.data["id"], typeof res.data["id"]);
+        console.log("Data: ", res.data);
+        console.log("ID: ", res.data["id"], typeof res.data["id"]);
         id = res.data["id"];
       })
       .catch((err) => {
@@ -362,16 +374,17 @@ export function PracticeTest() {
       });
   }
   const test_result_Save = async () => {
+    handleMCQChange();
     for (let i in questionList) {
       if (questionList[i].type === "MCQ") {
       } else {
         handleTextField_ConsChange(i);
       }
     }
+    // console.log("Question List", questionList);
     var data = test_result_Gen();
     console.log("DATA TEST", data);
-    const id = await test_result_Save_API(data);
-    // create("test_result/".concat(params.id), { data }) // post  lich sử làm bài và kết quả
+    const id = await test_result_Save_API(data); // post  lich sử làm bài và kết quả
     var [data1, score] = await test_result_specific_Gen(id);
     data = data1;
     console.log("DATA specific will be saved: ", data);
@@ -382,12 +395,30 @@ export function PracticeTest() {
       notify("Cannot save!", { type: "error" });
     } else {
       notify("Save successfully!", { type: "success" });
+      wait(1000);
+      redirect("/practice_tests/result/".concat(id));
     }
   };
-  const handleMCQChange = (event, i) => {
+  const handleMCQChange = () => {
+    // let textFieldElement = document.getElementById("textAnswerMCQ".concat(i));
+    // console.log(
+    //   "Element by classname: ",
+    //   textFieldElement,
+    //   textFieldElement.value
+    // );
+    let valueFieldElement = document.querySelectorAll(".Mui-checked");
     let newArr = [...questionList];
-    newArr[i].userAnswer = event.target.value;
+    for (let e of valueFieldElement) {
+      let i = e.parentElement.parentElement.parentElement.id.slice(
+        "textAnswerMCQ".length
+      );
+      let value = e.firstChild.value;
+      console.log("value all: ", i);
+      console.log("value ", ": ", value);
+      newArr[i].userAnswer = value;
+    }
     setQuestionList(newArr);
+    console.log("Update user Answer");
   };
   const handleTextField_ConsChange = (i) => {
     let textFieldElement = document.getElementById("textAnswerCons".concat(i));
@@ -416,25 +447,38 @@ export function PracticeTest() {
                         return (
                           <div
                             key={i}
-                            style={{ display: "block", width: "100%" }}
+                            style={{
+                              display: "block",
+                              width: "100%",
+                            }}
                           >
                             <div
                               className="question-count"
-                              style={{ marginTop: "2em" }}
+                              style={{
+                                marginTop: "1em",
+                              }}
                               id={"question".concat(i + 1)}
                             >
                               <span>Question {i + 1}</span>
                             </div>
-                            <div>
+                            <div
+                              style={{
+                                width: "100%",
+                                marginTop: "-20px",
+                              }}
+                            >
                               <RichTextInput
                                 id={"questionText"} //.concat(i)
                                 source=""
                                 defaultValue={questionList[i].questionText}
-                                sx={{}}
+                                style={{
+                                  width: "100% !important",
+                                  display: "none",
+                                }}
                                 className="RichTextContent"
                                 toolbar={
                                   <RichTextInputToolbar
-                                    size="medium"
+                                    size="small"
                                     className="RichTextToolbar"
                                   />
                                 }
@@ -448,11 +492,7 @@ export function PracticeTest() {
                                 marginTop: "0.5em",
                                 marginLeft: "0px",
                               }}
-                              onChange={(event) => {
-                                handleMCQChange(event, i);
-                              }}
-                              //   defaultValue={questionList[i].correctAnswer}
-                              id={"correctAnswer".concat(i)}
+                              id={"textAnswerMCQ".concat(i)}
                             >
                               <Box
                                 sx={{
@@ -479,6 +519,9 @@ export function PracticeTest() {
                                     id={"textAnswerA".concat(i)}
                                     label="Answer A"
                                     variant="outlined"
+                                    InputProps={{
+                                      readOnly: true,
+                                    }}
                                     defaultValue={
                                       questionList[i].answerOptions[0]
                                         .answerText
@@ -511,6 +554,9 @@ export function PracticeTest() {
                                     id={"textAnswerB".concat(i)}
                                     label="Answer B"
                                     variant="outlined"
+                                    InputProps={{
+                                      readOnly: true,
+                                    }}
                                     defaultValue={
                                       questionList[i].answerOptions[1]
                                         .answerText
@@ -543,6 +589,9 @@ export function PracticeTest() {
                                     id={"textAnswerC".concat(i)}
                                     label="Answer C"
                                     variant="outlined"
+                                    InputProps={{
+                                      readOnly: true,
+                                    }}
                                     defaultValue={
                                       questionList[i].answerOptions[2]
                                         .answerText
@@ -575,6 +624,9 @@ export function PracticeTest() {
                                     id={"textAnswerD".concat(i)}
                                     label="Answer D"
                                     variant="outlined"
+                                    InputProps={{
+                                      readOnly: true,
+                                    }}
                                     defaultValue={
                                       questionList[i].answerOptions[3]
                                         .answerText
@@ -591,11 +643,11 @@ export function PracticeTest() {
                             <div
                               id={"question".concat(i + 1)}
                               className="question-count"
-                              style={{ marginTop: "2em" }}
+                              style={{ marginTop: "1em" }}
                             >
                               <span>Question {i + 1}</span>
                             </div>
-                            <div style={{ width: "100%" }}>
+                            <div style={{ width: "100%", marginTop: "-20px" }}>
                               <RichTextInput
                                 id={"questionText"}
                                 style={{
@@ -607,7 +659,7 @@ export function PracticeTest() {
                                 className="RichTextContent"
                                 toolbar={
                                   <RichTextInputToolbar
-                                    size="medium"
+                                    size="small"
                                     className="RichTextToolbar"
                                   />
                                 }
@@ -622,7 +674,6 @@ export function PracticeTest() {
                                 variant="filled"
                                 style={{ width: "100%" }}
                                 defaultValue={""}
-                                // defaultValue={questionList[i].answerOptions}
                               />
                             </div>
                           </div>

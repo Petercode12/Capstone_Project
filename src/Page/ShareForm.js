@@ -1,9 +1,51 @@
-import { SimpleForm, useCreate, useNotify } from "react-admin";
-import { AutocompleteArrayInput } from "react-admin";
+import {
+  email,
+  SimpleForm,
+  useCreate,
+  useNotify,
+  AutocompleteArrayInput,
+  Create,
+  List,
+  Datagrid,
+  DateField,
+  TextField,
+  EditButton,
+  TextInput,
+  BooleanInput,
+  ImageInput,
+  ImageField,
+  Toolbar,
+  SaveButton,
+  ReferenceInput,
+  ReferenceArrayInput,
+} from "react-admin";
 import * as React from "react";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import {
+  Typography,
+  Container,
+  Box,
+  Grid,
+  createTheme,
+  TextField as TextField1,
+  InputAdornment,
+  FormControl,
+  OutlinedInput,
+  FilledInput,
+  InputLabel,
+  FormHelperText,
+} from "@mui/material";
+import "../Style/ShareForm.css";
+const PostCreateToolbar = () => {
+  const notify = useNotify();
+  return (
+    <Toolbar className="PaperBox-saveButton">
+      <SaveButton label="Save" />
+    </Toolbar>
+  );
+};
 export function ShareForm() {
   const [emailList, setEmailList] = useState([]);
   const [defaultIdList, setDefaultIdList] = useState([]);
@@ -50,20 +92,48 @@ export function ShareForm() {
     }
   };
   return (
-    <div>
-      {defaultIdList.map((id_list, i) => {
+    <Container
+      xs={{ maxWidth: 600 }}
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        marginTop: "24px",
+      }}
+    >{defaultIdList.map((id_list, i) => {
         return (
-          <SimpleForm key={i} onSubmit={postSave} defaultValues={id_list}>
-            <span>Share this test with</span>
+      <SimpleForm
+      key={i}
+        onSubmit={postSave}
+        warnWhenUnsavedChanges
+        sx={{ display: "flex", maxWidth: 500 }}
+        toolbar={<PostCreateToolbar />}
+        className="PaperBox-formContent"
+        defaultValues={id_list}
+      >
+        <Box
+          sx={{
+            minWidth: 450,
+          }}
+        >
+          <Typography variant="h6" gutterBottom>
+            Share this test with:
+          </Typography>
+          <ReferenceArrayInput
+            fullWidth
+            filterToQuery={(searchText) => ({ search: searchText })}
+            allowEmpty
+          >
             <AutocompleteArrayInput
               source="id"
-              style={{ width: 500 }}
               label="Email"
               choices={emailList}
+              fullWidth
+              options={{ fullWidth: true }}
             />
-          </SimpleForm>
-        );
-      })}
-    </div>
+          </ReferenceArrayInput>
+        </Box>
+      </SimpleForm>);})}
+    </Container>
   );
 }

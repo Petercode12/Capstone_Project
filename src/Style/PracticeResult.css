@@ -1,0 +1,130 @@
+.TestResult-ButtonGroup {
+  display: flex;
+  flex-flow: wrap;
+  row-gap: 10px;
+  column-gap: 10px;
+}
+.TestResult-BoxDetail {
+  padding: 4px 0px;
+  width: 100%;
+}
+.result-stats-text {
+  min-width: 70px;
+}
+.row {
+  display: flex;
+  flex-wrap: wrap;
+}
+.col {
+  flex-basis: 0;
+  flex-grow: 1;
+  max-width: 100%;
+  padding-right: 0.75rem;
+  padding-left: 0.75rem;
+}
+.result-answers-list {
+  columns: 2;
+  -webkit-columns: 2;
+}
+.result-score-box {
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  padding: 1.3rem 1rem;
+  border: 1px solid #efefef;
+  box-shadow: 0 2px 8px 0 rgb(0 0 0 / 5%);
+  border-radius: 0.45rem;
+  margin-bottom: 1rem;
+  align-items: center;
+  justify-content: flex-start;
+}
+.result-score-icon {
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+.result-score-icontext {
+  font-size: 1.3rem;
+  font-weight: 500;
+  text-align: center;
+}
+.result-score-text {
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+.result-score-subtext {
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.45;
+}
+.text-correct {
+  color: #3cb46e;
+}
+.text-wrong {
+  color: #e43a45;
+}
+.text-unanswered {
+  color: #71869d;
+}
+.text-constructive {
+  color: #ccc129;
+}
+.result-detail-box {
+  display: inline-block;
+  flex-direction: column;
+  vertical-align: top;
+  flex-wrap: wrap;
+  row-gap: 8px;
+  padding: 0;
+}
+.text-line-through {
+  text-decoration: line-through;
+}
+.mr-1 {
+  margin-right: 0.5rem;
+}
+.question-number {
+  margin-right: 0.5rem;
+}
+.question-number strong {
+  border-radius: 50%;
+  background-color: #e8f2ff;
+  color: #35509a;
+  width: 35px;
+  height: 35px;
+  line-height: 35px;
+  font-size: 15px;
+  text-align: center;
+  display: inline-block;
+}
+.text-answerkey {
+  color: #35509a;
+  font-weight: 500;
+}
+.text-useranswer {
+  font-style: italic;
+  font-family: Arial;
+  font-family: Roboto, Arial, sans-serif;
+  line-break: anywhere;
+  font-size: 1.25rem;
+  font-weight: 400;
+  line-height: 1.45;
+  letter-spacing: 0.0075em;
+}
+.result-answers-item {
+  margin-bottom: 1rem;
+}
+.correct-icon {
+  height: 20px;
+  width: auto;
+  transform: translateY(-2px);
+}
+.wrong-icon {
+  height: 20px;
+  width: auto;
+  transform: translateY(-2px);
+}
+.hyphen-icon {
+  height: 20px;
+  width: auto;
+  transform: translateY(0px);
+}
