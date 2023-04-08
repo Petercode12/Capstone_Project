@@ -27,6 +27,7 @@ import ButtonGroup from "@mui/material/ButtonGroup";
 import axios from "axios";
 import Countdown from "react-countdown";
 import { useMediaQuery, useTheme, Container, Grid } from "@mui/material";
+import "../Style/PracticeResultSpecific.css";
 import "../Style/PracticeStyle.css";
 import { wait } from "@testing-library/user-event/dist/utils";
 
@@ -57,13 +58,18 @@ function convertQueryDataToQuestionList(data) {
     }
     questionList.push(k);
   }
+  console.log("Question List: ", questionList);
   return questionList;
 }
 
-export function PracticeTest() {
+export function PraceticeResultSpecific() {
   //edit create test
   const [questionList, setQuestionList] = useState([]); // list các câu hỏi bao gồm biến và đáp án
   const [create, { error }] = useCreate();
+  const params1 = new URLSearchParams();
+  params1.append("name", "John");
+  params1.append("age", "32");
+  console.log("Param: ", params1.toString());
   const notify = useNotify();
   const params = useParams();
   const [duration, setDuration] = useState();
@@ -102,12 +108,10 @@ export function PracticeTest() {
       });
   }, []);
 
-  const PostEditToolbar = () => (
+  const PostEditToolbar1 = () => (
     //nút save của trang edit test
-    <Toolbar>
-      <Box sx={{ "& > button": { m: 0 } }}>
-        <LoadingButton />
-      </Box>
+    <Toolbar style={{ display: "none" }}>
+      <Box sx={{ "& > button": { m: 0 } }}>{/* <LoadingButton /> */}</Box>
     </Toolbar>
   );
 
@@ -232,7 +236,10 @@ export function PracticeTest() {
         </div>
         <div style={{ paddingBottom: "8px" }}>
           <div
-            style={{ transform: "translateY(5px)", display: "inline-block" }}
+            style={{
+              transform: "translateY(5px)",
+              display: "inline-block",
+            }}
           >
             <AccessTimeIcon
               fontSize="medium"
@@ -240,7 +247,12 @@ export function PracticeTest() {
               sx={{ margin: "0px 4px" }}
             />
           </div>
-          <div style={{ paddingTop: "-15px", display: "inline-block" }}>
+          <div
+            style={{
+              paddingTop: "-15px",
+              display: "inline-block",
+            }}
+          >
             <Countdown
               // date={Date.now() + duration * 60 * 1000}
               date={countdown}
@@ -263,7 +275,7 @@ export function PracticeTest() {
         <LoadingButton
           color="primary"
           onClick={() => {
-            test_result_Save();
+            // test_result_Save();
           }}
           loading={false}
           loadingPosition="start"
@@ -365,7 +377,9 @@ export function PracticeTest() {
   }
   async function updateTestMark(Score, id) {
     await axios // post  lich sử làm bài và kết quả
-      .patch("http://localhost:8000/test_result/".concat(id), { Score })
+      .patch("http://localhost:8000/test_result/".concat(id), {
+        Score,
+      })
       .then((res) => {
         console.log("Data: ", res.data);
       })
@@ -400,12 +414,6 @@ export function PracticeTest() {
     }
   };
   const handleMCQChange = () => {
-    // let textFieldElement = document.getElementById("textAnswerMCQ".concat(i));
-    // console.log(
-    //   "Element by classname: ",
-    //   textFieldElement,
-    //   textFieldElement.value
-    // );
     let valueFieldElement = document.querySelectorAll(".Mui-checked");
     let newArr = [...questionList];
     for (let e of valueFieldElement) {
@@ -429,14 +437,10 @@ export function PracticeTest() {
   return (
     <Container Container sx={{ maxWidth: { xl: 1280 } }}>
       <Grid container justifyContent="space-between" spacing={2}>
-        <Grid item xs={12} sm={8} md={9} lg={10} style={{ paddingTop: "48px" }}>
-          <Edit
-            title="Practice Exam"
-            style={{ display: "block" }}
-            className="NavigationAsidePaper"
-          >
+        <Grid item xs={12} style={{ paddingTop: "48px" }}>
+          <div style={{ marginTop: "14px" }}>
             <SimpleForm
-              toolbar={<PostEditToolbar />}
+              toolbar={<PostEditToolbar1 />}
               className="NavigationAsidePaper"
             >
               <div className="multipleChoice">
@@ -492,6 +496,7 @@ export function PracticeTest() {
                                 marginTop: "0.5em",
                                 marginLeft: "0px",
                               }}
+                              defaultValue={questionList[i].correctAnswer}
                               id={"textAnswerMCQ".concat(i)}
                             >
                               <Box
@@ -684,11 +689,11 @@ export function PracticeTest() {
                 </div>
               </div>
             </SimpleForm>
-          </Edit>
+          </div>
         </Grid>
-        <Grid item xs={0} sm={4} md={3} lg={2} style={{ paddingTop: "64px" }}>
+        {/* <Grid item xs={0} sm={4} md={3} lg={2} style={{ paddingTop: "64px" }}>
           <Aside />
-        </Grid>
+        </Grid> */}
       </Grid>
     </Container>
   );

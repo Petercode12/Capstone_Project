@@ -11,7 +11,7 @@ export function ShareButton() {
     <Button
       startIcon={<ShareIcon />}
       size="small"
-      href={"/#/share/".concat(recordId)}
+      href={"/#/all_exams/share/".concat(recordId)}
     >
       Share
     </Button>

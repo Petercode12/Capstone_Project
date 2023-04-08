@@ -17,6 +17,7 @@ import {
   useNotify,
   useGetRecordId,
   useGetIdentity,
+  useRedirect,
 } from "react-admin";
 import { RichTextInput, RichTextInputToolbar } from "ra-input-rich-text";
 import SaveIcon from "@mui/icons-material/Save";
@@ -60,6 +61,7 @@ export function PracticeResult() {
   const [numsConsQuestion, setNumsConsQuestion] = useState(0);
   const [accuracy, setAccuracy] = useState(0);
   const params = useParams();
+  const redirect = useRedirect();
   console.log("param id: ", params.id);
   let infinity = "♾️";
 
@@ -88,7 +90,9 @@ export function PracticeResult() {
         var end = res.data["test_info"]["End_time"];
         var diff = start
           .split(":")
-          .map((item, index) => (end.split(":")[index] - item).toFixed(0))
+          .map((item, index) =>
+            Math.max((end.split(":")[index] - item).toFixed(0), 0)
+          )
           .join(":");
         console.log("Time done: ", diff);
         setTime(diff);
@@ -115,7 +119,10 @@ export function PracticeResult() {
               variant="contained"
               size="small"
               style={{ borderRadius: "15px" }}
-              onClick={() => {}}
+              onClick={() => {
+                // show trang đề thi nhưng có đáp án
+                redirect("/practice_tests/result_specific/".concat(34));
+              }}
             >
               View answer
             </Button>
@@ -123,7 +130,9 @@ export function PracticeResult() {
               variant="outlined"
               size="small"
               style={{ borderRadius: "15px" }}
-              onClick={() => {}}
+              onClick={() => {
+                redirect("/practice_tests");
+              }}
             >
               Back to exam page
             </Button>
