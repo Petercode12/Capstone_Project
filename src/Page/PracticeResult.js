@@ -61,7 +61,11 @@ export function PracticeResult() {
   const [numsConsQuestion, setNumsConsQuestion] = useState(0);
   const [accuracy, setAccuracy] = useState(0);
   const params = useParams();
+  const params1 = new URLSearchParams();
   const redirect = useRedirect();
+  params1.append("id", params.id);
+  params1.append("exam_id", testInfo["exam_id"]);
+  console.log("Param1 url: ", params1.toString());
   console.log("param id: ", params.id);
   let infinity = "♾️";
 
@@ -121,7 +125,9 @@ export function PracticeResult() {
               style={{ borderRadius: "15px" }}
               onClick={() => {
                 // show trang đề thi nhưng có đáp án
-                redirect("/practice_tests/result_specific/".concat(34));
+                redirect(
+                  "/practice_tests/result_specific?" + params1.toString()
+                );
               }}
             >
               View answer
@@ -368,7 +374,6 @@ export function PracticeResult() {
                     </Typography>
                     <span
                       style={{
-                        color: "red",
                         marginRight: "0.25em",
                         display: "inline-block",
                       }}
@@ -401,12 +406,16 @@ export function PracticeResult() {
                 if (isMCQ && userAnswer === correctAnswer)
                   temp[i].lastChild.className =
                     "text-correct fas fa-check fa-lg correct-icon";
-                else if (isMCQ && userAnswer !== correctAnswer)
+                else if (
+                  isMCQ &&
+                  exam["User_answer_MCQ"] !== "" &&
+                  userAnswer !== correctAnswer
+                )
                   temp[i].lastChild.className =
                     "text-wrong fas fa-times fa-lg wrong-icon";
                 else if (!isMCQ) {
                   temp[i].lastChild.className =
-                    "text-constructive fas fa-pencil-alt fa-lg wrong-icon";
+                    "text-constructive fas fa-pencil-alt fa-lg";
                 } else {
                   temp[i].lastChild.className =
                     "text-unanswer fas fa-minus fa-lg hyphen-icon";

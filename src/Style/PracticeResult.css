@@ -56,6 +56,9 @@
   font-weight: 400;
   line-height: 1.45;
 }
+.mt-2 {
+  margin-top: 0.5rem !important;
+}
 .text-correct {
   color: #3cb46e;
 }

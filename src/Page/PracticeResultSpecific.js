@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Navigate } from "react-router-dom";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -17,6 +17,7 @@ import {
   useGetRecordId,
   useGetIdentity,
   useRedirect,
+  Error404,
 } from "react-admin";
 import { RichTextInput, RichTextInputToolbar } from "ra-input-rich-text";
 import SaveIcon from "@mui/icons-material/Save";
@@ -29,10 +30,11 @@ import Countdown from "react-countdown";
 import { useMediaQuery, useTheme, Container, Grid } from "@mui/material";
 import "../Style/PracticeResultSpecific.css";
 import "../Style/PracticeStyle.css";
-import { wait } from "@testing-library/user-event/dist/utils";
-
+import { NotFound } from "./NotFound";
+import { eventWrapper, wait } from "@testing-library/user-event/dist/utils";
+import { useLocation, useNavigate } from "react-router-dom";
 function convertQueryDataToQuestionList(data) {
-  let questionList = []; // questionList bao gồm: questionText, answerOptions, correctAnswer đối với MCQ, type
+  let questionList = []; // questionList bao gồm: questionText, answerOptions, correctAnswer đối với MCQ, type, câu trả lời và điểm số.
   for (let e of data) {
     let k = {};
     if (e.Is_MCQ) {
@@ -44,15 +46,16 @@ function convertQueryDataToQuestionList(data) {
           { answerText: e.Answer_c },
           { answerText: e.Answer_d },
         ],
-        userAnswer: "",
         correctAnswer: e.Correct_answer,
+        userAnswer: e.User_answer_MCQ,
         type: "MCQ",
+        mark: e.Mark,
       };
     } else {
       k = {
         questionText: e.Question,
         answerOptions: e.Solution,
-        userAnswer: "",
+        userAnswer: e.User_answer_CONS,
         type: "Cons",
       };
     }
@@ -61,47 +64,101 @@ function convertQueryDataToQuestionList(data) {
   console.log("Question List: ", questionList);
   return questionList;
 }
-
-export function PraceticeResultSpecific() {
+// const CssTextField = styled(TextField)({
+//   "& label.Mui-focused": {
+//     color: "green",
+//   },
+//   "& .MuiInput-underline:after": {
+//     borderBottomColor: "red",
+//   },
+//   "& label": {
+//     color: "green",
+//   },
+//   "& .MuiOutlinedInput-root": {
+//     "& fieldset": {
+//       borderColor: "green",
+//     },
+//     "&:hover fieldset": {
+//       borderColor: "green",
+//     },
+//     "&.Mui-focused fieldset": {
+//       borderColor: "green",
+//     },
+//   },
+// });
+export const PraceticeResultSpecific = () => {
   //edit create test
   const [questionList, setQuestionList] = useState([]); // list các câu hỏi bao gồm biến và đáp án
   const [create, { error }] = useCreate();
+  const location = useLocation();
   const params1 = new URLSearchParams();
+  const searchParams = new URLSearchParams(location.search);
+  const id = searchParams.get("id");
+  const exam_id = searchParams.get("exam_id");
+  console.log("ID test: ", id, "\nExam id: ", exam_id);
   params1.append("name", "John");
   params1.append("age", "32");
   console.log("Param: ", params1.toString());
-  const notify = useNotify();
+  const [time, setTime] = useState(0);
   const params = useParams();
-  const [duration, setDuration] = useState();
   const { data: userInfo, isLoading, error1 } = useGetIdentity();
-  const [countdown, setCountdown] = useState();
   const redirect = useRedirect();
-  var today = new Date();
-  const start_time =
-    today.getHours() +
-    ":" +
-    today.getMinutes() +
-    ":" +
-    today.getSeconds().toFixed(2);
-  console.log("Start Time: ", start_time);
+  let navigate = useNavigate();
+  let text_blue =
+    '{ "& label.Mui-focused" : { "color":"green" },' +
+    '"& .MuiInput-underline:after" : { "borderBottomColor":"green" },' +
+    '"& label" : { "color":"green" },' +
+    '"& .MuiOutlinedInput-root": { "& fieldset": {  "borderColor": "green" },' +
+    '"&:hover fieldset": {  "borderColor": "green" },' +
+    '"&.Mui-focused fieldset": {  "borderWidth": "1px", "borderColor":"green" }}' +
+    "}";
+  let text_red =
+    '{ "& label.Mui-focused" : { "color":"red" },' +
+    '"& .MuiInput-underline:after" : { "borderBottomColor":"red" },' +
+    '"& label" : { "color":"red" },' +
+    '"& .MuiOutlinedInput-root": { "& fieldset": {  "borderColor": "red" },' +
+    '"&:hover fieldset": {  "borderColor": "red" },' +
+    '"&.Mui-focused fieldset": {  "borderWidth": "1px", "borderColor":"red" }}' +
+    "}";
+  let text_yellow =
+    '{ "& label.Mui-focused" : { "color":"#ccc129" },' +
+    '"& .MuiInput-underline:after" : { "borderBottomColor":"#ccc129" },' +
+    '"& label" : { "color":"#ccc129" },' +
+    '"& .MuiOutlinedInput-root": { "& fieldset": {  "borderColor": "#ccc129" },' +
+    '"&:hover fieldset": {  "borderColor": "#ccc129" },' +
+    '"&.Mui-focused fieldset": {  "borderWidth": "1px", "borderColor":"#ccc129" }}' +
+    "}";
+  // #ccc129
+  let text_gray =
+    '{ "& label.Mui-focused" : { "color":"#71869d" },' +
+    '"& .MuiInput-underline:after" : { "borderBottomColor":"#71869d" },' +
+    '"& label" : { "color":"#71869d" },' +
+    '"& .MuiOutlinedInput-root": { "& fieldset": {  "borderColor": "#71869d" },' +
+    '"&:hover fieldset": {  "borderColor": "#71869d" },' +
+    '"&.Mui-focused fieldset": {  "borderWidth": "1px", "borderColor":"#71869d" }}' +
+    "}";
+  const blue_color = JSON.parse(text_blue);
+  const red_color = JSON.parse(text_red);
+  const yellow_color = JSON.parse(text_yellow);
+  const gray_color = JSON.parse(text_gray);
   useEffect(() => {
     // get the data from the api
     axios
-      .get(
-        "http://localhost:8000/query_questions_and_answers_by_examid/".concat(
-          params.id
-        )
-      )
+      .get("http://localhost:8000/test_result/".concat(id))
       .then((res) => {
-        setQuestionList(convertQueryDataToQuestionList(res.data["q_and_a"]));
-        setDuration(res.data["duration"]);
-
-        console.log(
-          "Set duration: ",
-          res.data["duration"],
-          typeof res.data["duration"]
+        setQuestionList(
+          convertQueryDataToQuestionList(res.data["test_specific"])
         );
-        setCountdown(Date.now() + res.data["duration"] * 60 * 1000);
+        var start = res.data["test_info"]["Start_time"];
+        var end = res.data["test_info"]["End_time"];
+        var diff = start
+          .split(":")
+          .map((item, index) =>
+            Math.max((end.split(":")[index] - item).toFixed(0), 0)
+          )
+          .join(":");
+        console.log("Time done: ", diff);
+        setTime(diff);
       })
       .catch((err) => {
         console.log(err);
@@ -184,10 +241,6 @@ export function PraceticeResultSpecific() {
     }
     return buttonGroupList;
   };
-  const Completionist = () => {
-    // chấm bài
-    return <span style={{ color: "red" }}>Time is up!</span>;
-  };
   // Renderer callback with condition
   const renderer = ({ hours, minutes, seconds, completed }) => {
     for (let i = 0; i < questionList.length; i++) {
@@ -199,19 +252,13 @@ export function PraceticeResultSpecific() {
         document.getElementById(bien).style.width = "100%";
     }
     // console.log("Bị render lại!!!", duration);
-    if (duration > 0) {
-      if (completed) {
-        // Render a completed state
-        return <Completionist />;
-      } else {
-        // Render a countdown
-        return (
-          <span style={{ color: "black" }}>
-            {hours}:{minutes}:{seconds}
-          </span>
-        );
-      }
-    }
+
+    return (
+      <span style={{ color: "black" }}>
+        {time}
+        {/* {hours}:{minutes}:{seconds} */}
+      </span>
+    );
   };
   const Aside = () => (
     <Box
@@ -234,6 +281,7 @@ export function PraceticeResultSpecific() {
         >
           Question List
         </div>
+        <div>Time completion</div>
         <div style={{ paddingBottom: "8px" }}>
           <div
             style={{
@@ -253,11 +301,7 @@ export function PraceticeResultSpecific() {
               display: "inline-block",
             }}
           >
-            <Countdown
-              // date={Date.now() + duration * 60 * 1000}
-              date={countdown}
-              renderer={renderer}
-            />
+            <Countdown date={Date.now()} renderer={renderer} />
           </div>
         </div>
         <Box
@@ -265,6 +309,7 @@ export function PraceticeResultSpecific() {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
+            marginBottom: "8px",
             "& > *": {
               m: 1,
             },
@@ -272,172 +317,17 @@ export function PraceticeResultSpecific() {
         >
           {addNavigationMenu()}
         </Box>
-        <LoadingButton
-          color="primary"
-          onClick={() => {
-            // test_result_Save();
-          }}
-          loading={false}
-          loadingPosition="start"
-          variant="contained"
-          className="SaveButton"
-          sx={{ marginBottom: "12px", marginTop: "8px" }}
-        >
-          Submit
-        </LoadingButton>
       </Paper>
     </Box>
   );
-  const test_result_specific_Gen = async (id) => {
-    // tạo array dict data của bài làm
-    let saveData = []; // array of dict
-    let nums_right_question = 0;
-    for (let i = 0; i < questionList.length; i++) {
-      if (questionList[i].type === "MCQ") {
-        console.log(
-          "So sanh dap an: ",
-          questionList[i].correctAnswer,
-          questionList[i].userAnswer
-        );
-        if (questionList[i].correctAnswer === questionList[i].userAnswer)
-          nums_right_question += 1;
-
-        let k = {
-          Ordinal: i + 1,
-          Question: questionList[i].questionText,
-          Is_MCQ: true,
-          Answer_a: questionList[i].answerOptions[0].answerText,
-          Answer_b: questionList[i].answerOptions[1].answerText,
-          Answer_c: questionList[i].answerOptions[2].answerText,
-          Answer_d: questionList[i].answerOptions[3].answerText,
-          Correct_answer: questionList[i].correctAnswer,
-          Solution: null,
-          User_answer_MCQ: questionList[i].userAnswer,
-          User_answer_CONS: null,
-          Mark: questionList[i].correctAnswer === questionList[i].userAnswer,
-          test_result_id: id,
-        };
-        saveData.push(k);
-      } else if (questionList[i].type === "Cons") {
-        let k = {
-          Ordinal: i + 1,
-          Question: questionList[i].questionText,
-          Is_MCQ: false,
-          Answer_a: null,
-          Answer_b: null,
-          Answer_c: null,
-          Answer_d: null,
-          Correct_answer: null,
-          Solution: questionList[i].answerOptions,
-          User_answer_MCQ: null,
-          User_answer_CONS: questionList[i].userAnswer,
-          Mark: 0,
-          test_result_id: id,
-        };
-        saveData.push(k);
-      }
-    }
-    console.log("Số câu đúng: ", nums_right_question);
-    return [saveData, nums_right_question];
-  };
-  const test_result_Gen = () => {
-    // tạo array dict data của đề thi
-    const data = [];
-    var today = new Date();
-    var end_time =
-      today.getHours() +
-      ":" +
-      today.getMinutes() +
-      ":" +
-      today.getSeconds().toFixed(2);
-    console.log("End time: ", end_time);
-    let k = {
-      Score: 0,
-      Start_time: start_time,
-      End_time: end_time,
-      exam_id: params.id,
-      user_id: userInfo["id"],
-    };
-    data.push(k);
-    return data;
-  };
-  async function test_result_Save_API(data) {
-    var id;
-    await axios // post  lich sử làm bài và kết quả
-      .post("http://localhost:8000/test_result/".concat(params.id), data)
-      .then((res) => {
-        console.log("Data: ", res.data);
-        console.log("ID: ", res.data["id"], typeof res.data["id"]);
-        id = res.data["id"];
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-    return id;
+  if (id == null) {
+    // <Navigate to="/" />;
+    return <NotFound />;
   }
-  async function updateTestMark(Score, id) {
-    await axios // post  lich sử làm bài và kết quả
-      .patch("http://localhost:8000/test_result/".concat(id), {
-        Score,
-      })
-      .then((res) => {
-        console.log("Data: ", res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
-  const test_result_Save = async () => {
-    handleMCQChange();
-    for (let i in questionList) {
-      if (questionList[i].type === "MCQ") {
-      } else {
-        handleTextField_ConsChange(i);
-      }
-    }
-    // console.log("Question List", questionList);
-    var data = test_result_Gen();
-    console.log("DATA TEST", data);
-    const id = await test_result_Save_API(data); // post  lich sử làm bài và kết quả
-    var [data1, score] = await test_result_specific_Gen(id);
-    data = data1;
-    console.log("DATA specific will be saved: ", data);
-    create("test_result_specific/".concat(params.id), { data }); // post chi tiết bài làm
-    console.log("Điểm bài làm: ", score); // update điểm bài làm
-    await updateTestMark(score, id);
-    if (error) {
-      notify("Cannot save!", { type: "error" });
-    } else {
-      notify("Save successfully!", { type: "success" });
-      wait(1000);
-      redirect("/practice_tests/result/".concat(id));
-    }
-  };
-  const handleMCQChange = () => {
-    let valueFieldElement = document.querySelectorAll(".Mui-checked");
-    let newArr = [...questionList];
-    for (let e of valueFieldElement) {
-      let i = e.parentElement.parentElement.parentElement.id.slice(
-        "textAnswerMCQ".length
-      );
-      let value = e.firstChild.value;
-      console.log("value all: ", i);
-      console.log("value ", ": ", value);
-      newArr[i].userAnswer = value;
-    }
-    setQuestionList(newArr);
-    console.log("Update user Answer");
-  };
-  const handleTextField_ConsChange = (i) => {
-    let textFieldElement = document.getElementById("textAnswerCons".concat(i));
-    let newArr = [...questionList];
-    newArr[i].userAnswer = textFieldElement.value;
-    setQuestionList(newArr);
-  };
   return (
     <Container Container sx={{ maxWidth: { xl: 1280 } }}>
       <Grid container justifyContent="space-between" spacing={2}>
-        <Grid item xs={12} style={{ paddingTop: "48px" }}>
+        <Grid item xs={12} sm={8} md={9} lg={10} style={{ paddingTop: "48px" }}>
           <div style={{ marginTop: "14px" }}>
             <SimpleForm
               toolbar={<PostEditToolbar1 />}
@@ -464,6 +354,20 @@ export function PraceticeResultSpecific() {
                               id={"question".concat(i + 1)}
                             >
                               <span>Question {i + 1}</span>
+                              <span
+                                style={{
+                                  marginRight: "0.25em",
+                                  display: "inline-block",
+                                }}
+                              >
+                                &nbsp;
+                              </span>
+
+                              {questionList[i].mark === 1 ? (
+                                <span className="text-correct fas fa-check fa-lg correct-icon " />
+                              ) : (
+                                <span className="text-wrong fas fa-times fa-lg wrong-icon " />
+                              )}
                             </div>
                             <div
                               style={{
@@ -490,13 +394,14 @@ export function PraceticeResultSpecific() {
                             </div>
                             <RadioGroup
                               row
+                              disabled
                               aria-labelledby="demo-row-radio-buttons-group-label"
                               name="row-radio-buttons-group"
                               style={{
                                 marginTop: "0.5em",
                                 marginLeft: "0px",
                               }}
-                              defaultValue={questionList[i].correctAnswer}
+                              defaultValue={questionList[i].userAnswer}
                               id={"textAnswerMCQ".concat(i)}
                             >
                               <Box
@@ -506,6 +411,9 @@ export function PraceticeResultSpecific() {
                                 }}
                               >
                                 <FormControlLabel
+                                  style={{
+                                    pointerEvents: "none",
+                                  }}
                                   value="A"
                                   control={<Radio />}
                                   label=""
@@ -524,6 +432,12 @@ export function PraceticeResultSpecific() {
                                     id={"textAnswerA".concat(i)}
                                     label="Answer A"
                                     variant="outlined"
+                                    sx={() => {
+                                      return questionList[i].correctAnswer ===
+                                        "A"
+                                        ? blue_color
+                                        : red_color;
+                                    }}
                                     InputProps={{
                                       readOnly: true,
                                     }}
@@ -541,6 +455,9 @@ export function PraceticeResultSpecific() {
                                 }}
                               >
                                 <FormControlLabel
+                                  style={{
+                                    pointerEvents: "none",
+                                  }}
                                   value="B"
                                   control={<Radio />}
                                   label=""
@@ -562,6 +479,12 @@ export function PraceticeResultSpecific() {
                                     InputProps={{
                                       readOnly: true,
                                     }}
+                                    sx={() => {
+                                      return questionList[i].correctAnswer ===
+                                        "B"
+                                        ? blue_color
+                                        : red_color;
+                                    }}
                                     defaultValue={
                                       questionList[i].answerOptions[1]
                                         .answerText
@@ -576,6 +499,9 @@ export function PraceticeResultSpecific() {
                                 }}
                               >
                                 <FormControlLabel
+                                  style={{
+                                    pointerEvents: "none",
+                                  }}
                                   value="C"
                                   control={<Radio />}
                                   label=""
@@ -597,6 +523,12 @@ export function PraceticeResultSpecific() {
                                     InputProps={{
                                       readOnly: true,
                                     }}
+                                    sx={() => {
+                                      return questionList[i].correctAnswer ===
+                                        "C"
+                                        ? blue_color
+                                        : red_color;
+                                    }}
                                     defaultValue={
                                       questionList[i].answerOptions[2]
                                         .answerText
@@ -611,6 +543,9 @@ export function PraceticeResultSpecific() {
                                 }}
                               >
                                 <FormControlLabel
+                                  style={{
+                                    pointerEvents: "none",
+                                  }}
                                   value="D"
                                   control={<Radio />}
                                   label=""
@@ -632,6 +567,12 @@ export function PraceticeResultSpecific() {
                                     InputProps={{
                                       readOnly: true,
                                     }}
+                                    sx={() => {
+                                      return questionList[i].correctAnswer ===
+                                        "D"
+                                        ? blue_color
+                                        : red_color;
+                                    }}
                                     defaultValue={
                                       questionList[i].answerOptions[3]
                                         .answerText
@@ -648,11 +589,27 @@ export function PraceticeResultSpecific() {
                             <div
                               id={"question".concat(i + 1)}
                               className="question-count"
-                              style={{ marginTop: "1em" }}
+                              style={{
+                                marginTop: "1em",
+                              }}
                             >
                               <span>Question {i + 1}</span>
+                              <span
+                                style={{
+                                  marginRight: "0.25em",
+                                  display: "inline-block",
+                                }}
+                              >
+                                &nbsp;
+                              </span>
+                              <span className="text-constructive fas fa-pencil-alt fa-lg" />
                             </div>
-                            <div style={{ width: "100%", marginTop: "-20px" }}>
+                            <div
+                              style={{
+                                width: "100%",
+                                marginTop: "-20px",
+                              }}
+                            >
                               <RichTextInput
                                 id={"questionText"}
                                 style={{
@@ -670,16 +627,30 @@ export function PraceticeResultSpecific() {
                                 }
                               />
                             </div>
-                            <div>
+                            <div className="question-answers">
                               <TextField
                                 id={"textAnswerCons".concat(i)}
-                                label="Answer"
+                                label="User Answer"
                                 multiline
-                                rows={5}
-                                variant="filled"
-                                style={{ width: "100%" }}
-                                defaultValue={""}
+                                // rows={5}
+                                sx={yellow_color}
+                                variant="outlined"
+                                style={{
+                                  width: "100%",
+                                }}
+                                defaultValue={
+                                  questionList[i].userAnswer !== ""
+                                    ? questionList[i].userAnswer
+                                    : " "
+                                }
+                                className="constructive"
+                                InputProps={{
+                                  readOnly: true,
+                                }}
                               />
+                            </div>
+                            <div className="text-correct mt-2">
+                              Answer: {questionList[i].answerOptions}
                             </div>
                           </div>
                         );
@@ -691,10 +662,23 @@ export function PraceticeResultSpecific() {
             </SimpleForm>
           </div>
         </Grid>
-        {/* <Grid item xs={0} sm={4} md={3} lg={2} style={{ paddingTop: "64px" }}>
+        <Grid item xs={0} sm={4} md={3} lg={2} style={{ paddingTop: "64px" }}>
           <Aside />
-        </Grid> */}
+        </Grid>
+        <Grid item xs="12">
+          <LoadingButton
+            color="primary"
+            onClick={() => redirect("/practice_tests/result/".concat(id))}
+            loading={false}
+            loadingPosition="start"
+            variant="contained"
+            className="SaveButton"
+            sx={{ marginBottom: "12px", marginTop: "8px" }}
+          >
+            Back
+          </LoadingButton>
+        </Grid>
       </Grid>
     </Container>
   );
-}
+};

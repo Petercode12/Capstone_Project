@@ -1,0 +1,33 @@
+.RaNotFound-icon {
+  width: 9em !important;
+  height: 9em !important;
+}
+.RaNotFound-toolbar {
+  text-align: center;
+  margin-top: 2em;
+}
+.css-hung-MuiSvgIcon-root {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  display: inline-block;
+  fill: rgb(142, 142, 142) !important;
+  -webkit-flex-shrink: 0;
+  -ms-flex-negative: 0;
+  flex-shrink: 0;
+  font-size: 1.5rem;
+}
+.not-found-font {
+  display: block;
+  font-size: 2em;
+  margin-block-start: 0.67em;
+  margin-block-end: 0.67em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+  font-weight: bold;
+  color: rgb(142, 142, 142) !important;
+}
+.not-found-subfont {
+  color: rgb(179, 179, 179) !important;
+}

@@ -1,0 +1,12 @@
+.question-content .wrong {
+  border-color: #e43a45;
+}
+.question-content .correct {
+  border-color: #3cb46e;
+}
+.question-content .constructive {
+  border-color: #ccc129;
+}
+.question-content input[type="text"][readonly] {
+  color: #677788;
+}
