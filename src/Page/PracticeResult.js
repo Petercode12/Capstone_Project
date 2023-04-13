@@ -146,8 +146,8 @@ export function PracticeResult() {
         </Grid>
         <Grid item xs={12} md={4}>
           {/* <Item>xs=8</Item> */}
-          <div className="TestResult-BoxDetail NavigationAsidePaper">
-            <div style={{ margin: "0 4px" }}>
+          <div className="TestResult-BoxDetail TestResultPaper">
+            <div style={{ margin: "1px 4px" }}>
               <div
                 style={{
                   transform: "translateY(2px)",
@@ -163,11 +163,7 @@ export function PracticeResult() {
                   margin="0 4px"
                 />
               </div>
-              <Typography
-                variant="h6"
-                display="inline"
-                style={{ color: "blue" }}
-              >
+              <Typography variant="h6" display="inline">
                 Total questions:
               </Typography>
               <Typography
@@ -193,11 +189,7 @@ export function PracticeResult() {
                   sx={{ margin: "0px 4px" }}
                 />
               </div>
-              <Typography
-                variant="h6"
-                display="inline"
-                style={{ color: "blue" }}
-              >
+              <Typography variant="h6" display="inline">
                 Result:
               </Typography>
               <Typography
@@ -227,9 +219,7 @@ export function PracticeResult() {
                 />
               </div>
               <div style={{ display: "inline-block" }}>
-                <Typography variant="h6" style={{ color: "blue" }}>
-                  Accuracy:
-                </Typography>
+                <Typography variant="h6">Accuracy:</Typography>
                 <Typography variant="body1">(#right/#total)</Typography>
               </div>
               <div
@@ -259,11 +249,7 @@ export function PracticeResult() {
                   margin="0 4px"
                 />
               </div>
-              <Typography
-                variant="h6"
-                display="inline"
-                style={{ color: "blue" }}
-              >
+              <Typography variant="h6" display="inline">
                 Time completion:
               </Typography>
               <Typography
