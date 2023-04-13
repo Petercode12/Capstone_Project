@@ -87,7 +87,7 @@ const App = () => (
       <Route path="/all_exams/share/:id" element={<ShareForm />} />
       <Route path="/practice_tests/result/:id" element={<PracticeResult />} />
       <Route
-        path="/practice_tests/result_specific/:id"
+        path="/practice_tests/result_specific/"
         element={<PraceticeResultSpecific />}
       />
     </CustomRoutes>

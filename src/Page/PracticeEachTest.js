@@ -287,7 +287,10 @@ export function PracticeTest() {
           questionList[i].correctAnswer,
           questionList[i].userAnswer
         );
-        if (questionList[i].correctAnswer === questionList[i].userAnswer)
+        if (
+          questionList[i].correctAnswer === questionList[i].userAnswer &&
+          questionList[i].userAnswer !== ""
+        )
           nums_right_question += 1;
 
         let k = {

@@ -305,7 +305,7 @@ export function PostEdit() {
       }
     }
     const data = saveDataGen();
-
+    console.log("DATA will be saved: ", data);
     create("save_questions_and_answers/".concat(params.id), { data });
     if (error) {
       notify("Cannot save!", { type: "error" });

@@ -12,6 +12,8 @@ from datetime import date
 import datetime
 
 test_result_pk = 1
+
+
 # Create your views here.
 @csrf_exempt
 def query_all_exams_api(request):
@@ -139,7 +141,7 @@ def insert_questions_and_answers(request, exam_id):
             Solution = data["Solution"]
             Split_content = False
             Is_MCQ = data["Is_MCQ"]
-            exam_id = data["exam_id"]
+            exam_id1 = data["exam_id"]
             questions_and_answers = QUESTIONS_AND_ANSWERS(
                 Ordinal=Ordinal,
                 Question=Question,
@@ -151,7 +153,7 @@ def insert_questions_and_answers(request, exam_id):
                 Solution=Solution,
                 Split_content=Split_content,
                 Is_MCQ=Is_MCQ,
-                exam_id=exam_id,
+                exam_id=exam_id1,
             )
             questions_and_answers.save()
             q_and_a_serializer = questions_and_answers_serializer(questions_and_answers)
@@ -163,7 +165,7 @@ def insert_questions_and_answers(request, exam_id):
         # datetime.datetime.now() # Returns 2018-01-15 09:00
         print(datetime.date.today())
         test.save()
-        test_ser = exams_collection_serializer(test)
+        test_ser = test_result_serializer(test)
         return JsonResponse(
             {"test_data": test_ser.data, "q_and_a": q_and_a_serializer.data}, safe=False
         )
@@ -237,6 +239,9 @@ def test_result(request, exam_id):
         ).order_by("Ordinal")
         num_test_skip = test_specific.filter(
             User_answer_MCQ__isnull=True, User_answer_CONS__isnull=True
+        ).count()
+        num_test_skip = test_specific.filter(
+            User_answer_MCQ__exact="", User_answer_CONS__isnull=True
         ).count()
         num_cons_question = test_specific.filter(Is_MCQ=0).count()
         print(test_specific_ser.data)
