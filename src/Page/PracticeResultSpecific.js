@@ -105,12 +105,12 @@ export const PraceticeResultSpecific = () => {
   const redirect = useRedirect();
   let navigate = useNavigate();
   let text_blue =
-    '{ "& label.Mui-focused" : { "color":"green" },' +
-    '"& .MuiInput-underline:after" : { "borderBottomColor":"green" },' +
-    '"& label" : { "color":"green" },' +
-    '"& .MuiOutlinedInput-root": { "& fieldset": {  "borderColor": "green" },' +
-    '"&:hover fieldset": {  "borderColor": "green" },' +
-    '"&.Mui-focused fieldset": {  "borderWidth": "1px", "borderColor":"green" }}' +
+    '{ "& label.Mui-focused" : { "color":"#3cb46e" },' +
+    '"& .MuiInput-underline:after" : { "borderBottomColor":"#3cb46e" },' +
+    '"& label" : { "color":"#3cb46e" },' +
+    '"& .MuiOutlinedInput-root": { "& fieldset": {  "borderColor": "#3cb46e" },' +
+    '"&:hover fieldset": {  "borderColor": "#3cb46e" },' +
+    '"&.Mui-focused fieldset": {  "borderWidth": "1px", "borderColor":"#3cb46e" }}' +
     "}";
   let text_red =
     '{ "& label.Mui-focused" : { "color":"red" },' +
