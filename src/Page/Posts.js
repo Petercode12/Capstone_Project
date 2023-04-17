@@ -20,6 +20,7 @@ import {
   useGetIdentity,
   ReferenceInput,
   SelectInput,
+  AutocompleteArrayInput,
 } from "react-admin";
 import {
   Box,
@@ -94,10 +95,8 @@ export const PostCreate = () => {
     if (data["image"]) data["image"] = await toBase64(data["image"].rawFile);
     else data["image"] = "";
     data = { ...data, User_id: userInfo.id };
-    console.log(isSetDuration);
     if (isSetDuration === true) data["duration"] = num;
     else data["duration"] = 0;
-    console.log("Duration: ", data["duration"], typeof data["duration"]);
     console.log("Data saved: ", data);
     create("save_exam/", { data });
     if (error) {
@@ -198,6 +197,20 @@ export const PostCreate = () => {
                 </FormHelperText>
               </FormControl>
             </Container>
+            <AutocompleteArrayInput
+              source="tags"
+              label="Tag"
+              choices={[
+                { id: "1", name: "Math" },
+                { id: "2", name: "English" },
+                { id: "3", name: "Geography" },
+                { id: "4", name: "Physics" },
+                { id: "5", name: "Calculus" },
+                { id: "6", name: "IELTS" },
+              ]}
+              fullWidth
+              options={{ fullWidth: true }}
+            />
             <TextInput
               label="Description"
               source="description"

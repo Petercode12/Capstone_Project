@@ -16,3 +16,6 @@
   column-gap: 15px;
   padding-bottom: 20px;
 }
+.labelTagFilter.css-1mog9k0-MuiFormLabel-root-MuiInputLabel-root {
+  transform: translate(12px, 24px) scale(1);
+}

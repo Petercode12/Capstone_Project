@@ -12,6 +12,8 @@ from datetime import date
 import datetime
 
 test_result_pk = 1
+
+
 # Create your views here.
 @csrf_exempt
 def query_all_exams_api(request):
@@ -111,6 +113,8 @@ def insert_new_exam(request):
         User_id = data["User_id"]
         image = data["image"]
         duration = data["duration"]
+        tags = data["tags"]
+        print("Tags: ", tags)
         description = data["description"]
         exam = EXAMS_COLLECTION(
             Name=Name,
@@ -127,7 +131,7 @@ def insert_new_exam(request):
     
      
 @csrf_exempt
-def insert_questions_and_answers(request, exam_id): 
+def insert_questions_and_answers(request, exam_id):
     if request.method == "POST":
         # ko nên xóa chi tiết câu hỏi của những lần thay đổi trước
         delete_questions_and_answers = QUESTIONS_AND_ANSWERS.objects.filter(
@@ -136,6 +140,7 @@ def insert_questions_and_answers(request, exam_id):
         delete_questions_and_answers.delete()
         dataList = json.loads(request.body)
         questions_and_answers = None
+        print("DataList: ", dataList)
         for data in dataList:  # dataList là array of dict
             Ordinal = data["Ordinal"]
             Question = data["Question"]
@@ -166,16 +171,10 @@ def insert_questions_and_answers(request, exam_id):
         # sau khi update phải cập nhật lại thời gian thay đổi
         test = EXAMS_COLLECTION.objects.get(id=exam_id)
         test.Last_Modified_Date = datetime.date.today()
-        # import datetime
-        # datetime.date.today()  # Returns 2018-01-15
-        # datetime.datetime.now() # Returns 2018-01-15 09:00
-        print(datetime.date.today())
         test.save()
         test_ser = exams_collection_serializer(test)
         return JsonResponse({"test_data": test_ser.data,"q_and_a":q_and_a_serializer.data}, safe=False)
     
-
-
 @csrf_exempt
 def query_questions_and_answers_by_examid(request, exam_id):
     if request.method == "GET":
@@ -195,6 +194,8 @@ def query_questions_and_answers_by_examid(request, exam_id):
             },
             safe=False,
         )
+
+
 @csrf_exempt
 def test_result(request, exam_id):
     if request.method == "POST":
@@ -209,8 +210,8 @@ def test_result(request, exam_id):
             test_result = TEST_RESULT(
                 Score=Score,
                 Date=Date,
-                Start_time = Start_time,
-                End_time = End_time,
+                Start_time=Start_time,
+                End_time=End_time,
                 exam_id=exam_id,
                 user_id=user_id,
             )
@@ -236,9 +237,7 @@ def test_result(request, exam_id):
             test_result_id=exam_id
         ).order_by("Ordinal")
         print("exam_id", test_ser.data["exam_id"])
-        test_specific_ser = test_result_specific_serializer(
-            test_specific, many=True
-        )
+        test_specific_ser = test_result_specific_serializer(test_specific, many=True)
         test_specific = TEST_RESULT_SPECIFIC.objects.filter(
             test_result_id=exam_id
         ).order_by("Ordinal")
@@ -255,7 +254,7 @@ def test_result(request, exam_id):
             },
             safe=False,
         )
-        
+
 
 @csrf_exempt
 def insert_test_result_specific(request, exam_id):

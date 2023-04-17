@@ -1,7 +1,6 @@
 import * as React from "react";
 import Button from "@mui/material/Button";
 import {
-  Grid,
   Card,
   CardMedia,
   CardContent,
@@ -11,17 +10,38 @@ import {
   InputAdornment,
   TextField,
 } from "@mui/material";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import ListItemText from "@mui/material/ListItemText";
+import Select from "@mui/material/Select";
+import Checkbox from "@mui/material/Checkbox";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import SearchIcon from "@mui/icons-material/Search";
 import { useGetIdentity } from "react-admin";
 import "../Style/TestPoolStyle.css";
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 15;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
+const tags = ["Math", "English", "Geography", "Physics", "Calculus", "IELTS"];
+
 export function TestPool() {
   const [originalExamList, setOriginalExamList] = useState([]);
   const [examList, setExamList] = useState([]);
+  const [tagName, setTagName] = useState([]);
   let infinity = "♾️";
   const { data: userInfo, isLoading, error } = useGetIdentity();
-  console.log("UserInfo: ", userInfo);
+
   useEffect(() => {
     axios
       .get(
@@ -30,7 +50,6 @@ export function TestPool() {
         )
       )
       .then((res) => {
-        console.log("Data: ", res.data);
         setOriginalExamList(res.data);
         setExamList(res.data);
       })
@@ -44,6 +63,16 @@ export function TestPool() {
     });
     setExamList(filteredExamList);
   };
+  const handleTagFilterChange = (event) => {
+    const {
+      target: { value },
+    } = event;
+    setTagName(
+      // On autofill we get a stringified value.
+      typeof value === "string" ? value.split(",") : value
+    );
+  };
+  console.log("tagName: ", tagName);
   return (
     <>
       <Container
@@ -70,13 +99,40 @@ export function TestPool() {
             ),
           }}
         />
+        <div>
+          <FormControl sx={{ m: 1, width: 300, bottom: "-3px" }}>
+            <InputLabel
+              id="demo-multiple-checkbox-label"
+              style={{
+                top: "-12px",
+                // transform: "translate(12px, 20px) scale(1)",
+              }}
+              className="labelTagFilter"
+            >
+              Tag
+            </InputLabel>
+            <Select
+              labelId="demo-multiple-checkbox-label"
+              id="demo-multiple-checkbox"
+              multiple
+              value={tagName}
+              onChange={handleTagFilterChange}
+              input={<OutlinedInput label="Tag" />}
+              renderValue={(selected) => selected.join(", ")}
+              MenuProps={MenuProps}
+              style={{ verticalAlign: "middle", height: "48px" }}
+            >
+              {tags.map((name) => (
+                <MenuItem key={name} value={name}>
+                  <Checkbox checked={tagName.indexOf(name) > -1} />
+                  <ListItemText primary={name} />
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </div>
       </Container>
-
-      <div
-        // container
-        spacing={2}
-        className="GridContainer"
-      >
+      <div spacing={2} className="GridContainer">
         {examList.map((exam, i) => {
           if (exam["description"] === "") {
             exam["description"] = "No description";
