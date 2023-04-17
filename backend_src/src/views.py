@@ -21,6 +21,13 @@ def query_all_exams_api(request):
         exams = EXAMS_COLLECTION.objects.all()
         start = int(request.GET["_start"])
         end = int(request.GET["_end"])
+        sort = str(request.GET["_sort"])
+        order = str(request.GET["_order"])
+        print("Sort: ", sort, " ; Order: ", order)
+        if order == "ASC":
+            exams = exams.order_by(sort)
+        elif order == 'DESC':
+            exams = exams.order_by('-'+sort)
         per_page = end - start
         page = floor(end / per_page)
         exams_paginator = Paginator(exams, per_page)
