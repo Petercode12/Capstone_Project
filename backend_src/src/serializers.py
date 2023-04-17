@@ -103,7 +103,7 @@ class shared_users_serializer(serializers.ModelSerializer):
         fields = ("id", "exam_id", "User_id", "Shared_user_id")
 
 
-class exam_tags_serializer(serializers.ModelSerializer):
-    class Meta:
-        model = EXAM_TAGS
-        fields = ("id", "exam_id", "tag")
+# class exam_tags_serializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = EXAM_TAGS
+#         fields = ("id", "exam_id", "tag")
