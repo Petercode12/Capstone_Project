@@ -1,22 +1,10 @@
 import {
-  email,
   SimpleForm,
   useCreate,
   useNotify,
   AutocompleteArrayInput,
-  Create,
-  List,
-  Datagrid,
-  DateField,
-  TextField,
-  EditButton,
-  TextInput,
-  BooleanInput,
-  ImageInput,
-  ImageField,
   Toolbar,
   SaveButton,
-  ReferenceInput,
   ReferenceArrayInput,
 } from "react-admin";
 import * as React from "react";
@@ -30,12 +18,7 @@ import {
   Grid,
   createTheme,
   TextField as TextField1,
-  InputAdornment,
-  FormControl,
-  OutlinedInput,
-  FilledInput,
-  InputLabel,
-  FormHelperText,
+
 } from "@mui/material";
 import "../Style/ShareForm.css";
 const PostCreateToolbar = () => {
@@ -100,40 +83,43 @@ export function ShareForm() {
         justifyContent: "center",
         marginTop: "24px",
       }}
-    >{defaultIdList.map((id_list, i) => {
+    >
+      {defaultIdList.map((id_list, i) => {
         return (
-      <SimpleForm
-      key={i}
-        onSubmit={postSave}
-        warnWhenUnsavedChanges
-        sx={{ display: "flex", maxWidth: 500 }}
-        toolbar={<PostCreateToolbar />}
-        className="PaperBox-formContent"
-        defaultValues={id_list}
-      >
-        <Box
-          sx={{
-            minWidth: 450,
-          }}
-        >
-          <Typography variant="h6" gutterBottom>
-            Share this test with:
-          </Typography>
-          <ReferenceArrayInput
-            fullWidth
-            filterToQuery={(searchText) => ({ search: searchText })}
-            allowEmpty
+          <SimpleForm
+            key={i}
+            onSubmit={postSave}
+            warnWhenUnsavedChanges
+            sx={{ display: "flex", maxWidth: 500 }}
+            toolbar={<PostCreateToolbar />}
+            className="PaperBox-formContent"
+            defaultValues={id_list}
           >
-            <AutocompleteArrayInput
-              source="id"
-              label="Email"
-              choices={emailList}
-              fullWidth
-              options={{ fullWidth: true }}
-            />
-          </ReferenceArrayInput>
-        </Box>
-      </SimpleForm>);})}
+            <Box
+              sx={{
+                minWidth: 450,
+              }}
+            >
+              <Typography variant="h6" gutterBottom>
+                Share this test with:
+              </Typography>
+              <ReferenceArrayInput
+                fullWidth
+                filterToQuery={(searchText) => ({ search: searchText })}
+                allowEmpty
+              >
+                <AutocompleteArrayInput
+                  source="id"
+                  label="Email"
+                  choices={emailList}
+                  fullWidth
+                  options={{ fullWidth: true }}
+                />
+              </ReferenceArrayInput>
+            </Box>
+          </SimpleForm>
+        );
+      })}
     </Container>
   );
 }

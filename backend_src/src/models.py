@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.files.base import ContentFile
 
+
 # Create your models here.
 class USER(models.Model):
     id = models.AutoField(primary_key=True, null=False)
@@ -62,6 +63,12 @@ class TEST_RESULT(models.Model):
     End_time = models.TimeField(null=False)
     exam = models.ForeignKey(EXAMS_COLLECTION, on_delete=models.CASCADE)
     user = models.ForeignKey(USER, on_delete=models.CASCADE)
+
+
+class EXAM_TAGS(models.Model):
+    id = models.AutoField(primary_key=True, null=False)
+    exam = models.ForeignKey(EXAMS_COLLECTION, on_delete=models.CASCADE)
+    tag = models.IntegerField()
 
 
 class TEST_RESULT_SPECIFIC(models.Model):

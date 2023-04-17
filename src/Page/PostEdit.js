@@ -305,7 +305,6 @@ export function PostEdit() {
       }
     }
     const data = saveDataGen();
-    console.log("DATA will be saved: ", data);
     create("save_questions_and_answers/".concat(params.id), { data });
     if (error) {
       notify("Cannot save!", { type: "error" });
@@ -388,7 +387,73 @@ export function PostEdit() {
     false
   );
   const removeQuestionAndAnswerFromQuestionList = (i) => {
-    let newArr = [...questionList];
+    let newArr = [...questionList]; // Redo: Lấy từ document element
+    //
+    for (let i = 0; i < newArr.length; i++) {
+      if (questionList[i].type === "MCQ") {
+        // questionText
+        let questionTextElement = document.getElementById(
+          "questionText".concat(i)
+        );
+        if (questionTextElement !== null) {
+          newArr[i].questionText = questionTextElement.innerHTML;
+        }
+        // answerText A
+        let textFieldA_Element = document.getElementById(
+          "textAnswerA".concat(i)
+        );
+        if (textFieldA_Element !== null) {
+          newArr[i].answerOptions[0].answerText = textFieldA_Element.value;
+        }
+        // answerText B
+        let textFieldB_Element = document.getElementById(
+          "textAnswerB".concat(i)
+        );
+        if (textFieldB_Element !== null) {
+          newArr[i].answerOptions[1].answerText = textFieldB_Element.value;
+        }
+        // answerText C
+        let textFieldC_Element = document.getElementById(
+          "textAnswerC".concat(i)
+        );
+        if (textFieldC_Element !== null) {
+          newArr[i].answerOptions[2].answerText = textFieldC_Element.value;
+        }
+        // answerText D
+        let textFieldD_Element = document.getElementById(
+          "textAnswerD".concat(i)
+        );
+        if (textFieldD_Element !== null) {
+          newArr[i].answerOptions[3].answerText = textFieldD_Element.value;
+        }
+        // correctAnswer
+        let correctAnswer_Element = document.getElementById(
+          "correctAnswer".concat(i)
+        );
+        if (correctAnswer_Element !== null) {
+          newArr[i].correctAnswer =
+            correctAnswer_Element.value !== undefined
+              ? correctAnswer_Element.value
+              : "";
+        }
+      } else {
+        // questionText
+        let questionTextElement = document.getElementById(
+          "questionText".concat(i)
+        );
+        if (questionTextElement !== null) {
+          newArr[i].questionText = questionTextElement.innerHTML;
+        }
+        // textField
+        let textFieldElement = document.getElementById(
+          "textAnswerCons".concat(i)
+        );
+        if (textFieldElement !== null) {
+          newArr[i].answerOptions = textFieldElement.value;
+        }
+      }
+    }
+    //
     newArr.splice(i, 1);
     setQuestionList(newArr);
     setAssignNewValueForElementsCheck(true);
@@ -570,6 +635,7 @@ export function PostEdit() {
                   <div className="question-text">
                     {questionList.map((question, i) => {
                       if (question.type === "MCQ") {
+                        console.log("i: ", i);
                         return (
                           <div key={i}>
                             <div
@@ -750,6 +816,7 @@ export function PostEdit() {
                           </div>
                         );
                       } else {
+                        console.log("i: ", i);
                         return (
                           <div key={i}>
                             <div
