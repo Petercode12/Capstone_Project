@@ -87,10 +87,7 @@ export function PostEditInfo({ ...props }) {
   //edit create test
   const [data, setData] = useState([]);
   const [create, { error }] = useCreate();
-  const [Name, setName] = useState("abc");
   const [image, setImage] = useState("");
-  const [description, setDescription] = useState("");
-  const [duration, setDuration] = useState();
   const notify = useNotify();
   const params = useParams();
   const redirect = useRedirect();
@@ -157,8 +154,8 @@ export function PostEditInfo({ ...props }) {
   };
   const PostEditToolbar = (props) => (
     <Toolbar {...props}>
-      <SaveButton loading={false} alwaysEnable />
-      <DeleteButton />
+      <SaveButton alwaysEnable />
+      {/* <DeleteButton /> */}
     </Toolbar>
   );
   return (
