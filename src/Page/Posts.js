@@ -21,6 +21,8 @@ import {
   ReferenceInput,
   SelectInput,
   AutocompleteArrayInput,
+  Toolbar,
+  SaveButton,
 } from "react-admin";
 import {
   Box,
@@ -79,13 +81,17 @@ const toBase64 = (file) =>
     reader.onload = () => resolve(reader.result);
     reader.onerror = (error) => reject(error);
   });
-
+const PostEditToolbar = (props) => (
+  <Toolbar {...props}>
+    <SaveButton loading alwaysEnable />
+  </Toolbar>
+);
 export const PostCreate = () => {
   const notify = useNotify();
   const redirect = useRedirect();
   const [create, { error }] = useCreate();
   const { data: userInfo, isLoading, err } = useGetIdentity();
-  const [num, setNum] = React.useState();
+  const [num, setNum] = React.useState(0);
   const min = 1;
   const max = 999;
   const [timeError, setTimeError] = React.useState();
@@ -117,6 +123,7 @@ export const PostCreate = () => {
         <SimpleForm
           onSubmit={postSave}
           warnWhenUnsavedChanges
+          toolbar={<PostEditToolbar />}
           sx={{ display: "flex", maxWidth: 500 }}
         >
           <Box
