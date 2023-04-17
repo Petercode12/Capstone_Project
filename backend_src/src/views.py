@@ -375,22 +375,22 @@ def authentication(request):
             return HttpResponse(status=400)
 
 
-@csrf_exempt
-def test_api(request):
-    if request.method == "GET":
-        tests = TEST_API.objects.all()
-        start = int(request.GET["_start"])
-        end = int(request.GET["_end"])
-        per_page = end - start
-        total = len(tests)
-        page = floor(end / per_page)
-        tests_paginator = Paginator(tests, per_page)
-        tests_serializer = test_serializer(tests_paginator.page(page), many=True)  #
-        content_range = len(tests)
-        headers = {"X-Total-Count": content_range}
-        return JsonResponse(
-            status=200, headers=headers, data=tests_serializer.data, safe=False
-        )
+# @csrf_exempt
+# def test_api(request):
+#     if request.method == "GET":
+#         tests = TEST_API.objects.all()
+#         start = int(request.GET["_start"])
+#         end = int(request.GET["_end"])
+#         per_page = end - start
+#         total = len(tests)
+#         page = floor(end / per_page)
+#         tests_paginator = Paginator(tests, per_page)
+#         tests_serializer = test_serializer(tests_paginator.page(page), many=True)  #
+#         content_range = len(tests)
+#         headers = {"X-Total-Count": content_range}
+#         return JsonResponse(
+#             status=200, headers=headers, data=tests_serializer.data, safe=False
+#         )
 
 
 @csrf_exempt

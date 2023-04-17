@@ -64,11 +64,11 @@ class TEST_RESULT(models.Model):
     user = models.ForeignKey(USER, on_delete=models.CASCADE)
 
 
+
 class EXAM_TAGS(models.Model):
     id = models.AutoField(primary_key=True, null=False)
     exam = models.ForeignKey(EXAMS_COLLECTION, on_delete=models.CASCADE)
     tag = models.IntegerField()
-
 
 class TEST_RESULT_SPECIFIC(models.Model):
     id = models.AutoField(primary_key=True, null=False)
@@ -89,11 +89,11 @@ class TEST_RESULT_SPECIFIC(models.Model):
     test_result = models.ForeignKey(TEST_RESULT, on_delete=models.CASCADE)
 
 
-class TEST_API(models.Model):
-    userID = models.IntegerField()
-    id = models.AutoField(primary_key=True, null=False)
-    title = models.CharField(max_length=200, blank=False)
-    body = models.CharField(max_length=200, blank=False)
+# class TEST_API(models.Model):
+#     userID = models.IntegerField()
+#     id = models.AutoField(primary_key=True, null=False)
+#     title = models.CharField(max_length=200, blank=False)
+#     body = models.CharField(max_length=200, blank=False)
 
 
 class SHARED_USERS(models.Model):

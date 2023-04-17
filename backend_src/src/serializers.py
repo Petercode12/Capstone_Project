@@ -29,10 +29,10 @@ class exams_collection_serializer2(serializers.ModelSerializer):
         )
 
 
-class test_serializer(serializers.ModelSerializer):
-    class Meta:
-        model = TEST_API
-        fields = ("userID", "id", "title", "body")
+# class test_serializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = TEST_API
+#         fields = ("userID", "id", "title", "body")
 
 
 class questions_and_answers_serializer(serializers.ModelSerializer):
@@ -101,7 +101,7 @@ class shared_users_serializer(serializers.ModelSerializer):
         fields = ("id", "exam_id", "User_id", "Shared_user_id")
 
 
-class exam_tags_serializer(serializers.ModelSerializer):
-    class Meta:
-        model = EXAM_TAGS
-        fields = ("id", "exam_id", "tag")
+# class exam_tags_serializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = EXAM_TAGS
+#         fields = ("id", "exam_id", "tag")
