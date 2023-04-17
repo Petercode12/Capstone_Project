@@ -16,10 +16,9 @@ class EXAMS_COLLECTION(models.Model):
     Name = models.CharField(max_length=200, blank=False)
     Created_Date = models.DateField()
     Last_Modified_Date = models.DateField()
-    Is_split = models.BooleanField(default=True)
     User = models.ForeignKey(USER, on_delete=models.CASCADE, related_name="User_id1")
     duration = models.FloatField(default=0)
-    image = models.TextField()
+    image = models.TextField(null = False, default="")
     description = models.TextField(default=None)
 
 

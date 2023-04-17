@@ -12,10 +12,12 @@ import { SimpleForm } from "react-admin";
 import { ToggleButton } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import FunctionsIcon from "@mui/icons-material/Functions";
+import SettingsIcon from "@mui/icons-material/Settings";
 import Remove from "@mui/icons-material/Remove";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import { MathFormulaDialog } from "./MathFormulaDialog";
+import { PostEditInfo } from "./PostEditInfo";
 import {
   DefaultEditorOptions,
   RichTextInput,
@@ -33,6 +35,7 @@ import {
 } from "ra-input-rich-text";
 import HorizontalRule from "@tiptap/extension-horizontal-rule";
 import SaveIcon from "@mui/icons-material/Save";
+import EditNoteIcon from "@mui/icons-material/EditNote";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Toolbar, Edit, useCreate, useNotify } from "react-admin";
 import Paper from "@mui/material/Paper";
@@ -42,13 +45,17 @@ import { useMediaQuery, useTheme, Container, Grid } from "@mui/material";
 
 function convertQueryDataToQuestionList(data) {
   let questionList = [];
+  console.log("Data: ", data);
   for (let e of data) {
     let k = {};
+
     let temp = e.Question.replaceAll(
       "<MathJaxContext config={config}><MathJax>`",
       "&lt;Math&gt;"
     );
+    temp = temp.replaceAll('<br class="ProseMirror-trailingBreak">', "");
     temp = temp.replaceAll("`</MathJax></MathJaxContext>", "&lt;/Math&gt;");
+    console.log("Temp: ", temp);
     if (e.Is_MCQ) {
       k = {
         questionText: temp,
@@ -77,6 +84,7 @@ export function PostEdit() {
   //edit create test
   const [questionList, setQuestionList] = useState([]);
   const [open, setOpen] = useState(false);
+  const [openEditInfo, setOpenEditInfo] = useState(false);
   const [idx, setIdx] = useState();
   const [create, { error }] = useCreate();
   const notify = useNotify();
@@ -251,6 +259,27 @@ export function PostEdit() {
         >
           {addNavigationMenu()}
         </Box>
+        <Box sx={{ "& > button": { m: 1 } }}>
+          <LoadingButton
+            color="primary"
+            onClick={() => {
+              handleClickOpenDialogEditInfo();
+            }}
+            loading={false}
+            // loadingPosition="start"
+            // startIcon={<EditNoteIcon />}
+            startIcon={<SettingsIcon />}
+            variant="contained"
+            className="SettingButton"
+          >
+            Test Info
+          </LoadingButton>
+        </Box>
+        <PostEditInfo
+          open={openEditInfo}
+          setOpen={setOpenEditInfo}
+          handleCloseDialogEditInfo={handleCloseDialogEditInfo}
+        />
       </Paper>
     </Box>
   );
@@ -324,6 +353,10 @@ export function PostEdit() {
     let newArr = [...questionList];
     newArr[i].questionText = questionTextElement.innerHTML;
     newArr[i].questionText = newArr[i].questionText.replaceAll(
+      '<br class="ProseMirror-trailingBreak">',
+      ""
+    );
+    newArr[i].questionText = newArr[i].questionText.replaceAll(
       "&lt;Math&gt;",
       "<MathJaxContext config={config}><MathJax>`"
     );
@@ -332,6 +365,7 @@ export function PostEdit() {
       "`</MathJax></MathJaxContext>"
     );
     setQuestionList(newArr);
+    console.log("Question Text change: ", newArr[i]);
   };
   const handleTextFieldA_MCQChange = (i) => {
     let textFieldA_Element = document.getElementById("textAnswerA".concat(i));
@@ -468,15 +502,17 @@ export function PostEdit() {
   console.log("Questionlist: ", questionList);
   const MyEditorOptions = {
     ...DefaultEditorOptions,
-    extensions: [...DefaultEditorOptions.extensions, HorizontalRule],
+    // extensions: [...DefaultEditorOptions.extensions, HorizontalRule],
+    // extensions: [...DefaultEditorOptions.extensions],
   };
 
   const handleClickOpenDialog = (idx) => {
     setIdx(idx);
     setOpen(true);
   };
-  const handleCloseDialog = (eq) => {
-    if (eq !== null) {
+  const handleCloseDialog = (eq, reason) => {
+    if (reason && reason === "backdropClick" && "escapeKeyDown") return;
+    if (eq !== null && eq !== "") {
       let questionTextElement = document.getElementById(
         "questionText".concat(idx)
       );
@@ -486,6 +522,26 @@ export function PostEdit() {
       )}&lt;/Math&gt</p>`;
     }
     setOpen(false);
+  };
+  const handleClickOpenDialogEditInfo = () => {
+    setOpenEditInfo(true);
+  };
+  const handleCloseDialogEditInfo = (eq, reason) => {
+    if (reason && reason === "backdropClick" && "escapeKeyDown") {
+      setOpenEditInfo(false);
+      return;
+    }
+    // gửi lệnh patch
+    if (eq !== null && eq !== "") {
+      let questionTextElement = document.getElementById(
+        "questionText".concat(idx)
+      );
+      questionTextElement.innerHTML += `<p>&lt;Math&gt;${eq.substring(
+        1,
+        eq.length - 1
+      )}&lt;/Math&gt</p>`;
+    }
+    setOpenEditInfo(false);
   };
   const MyRichTextInputToolbar = ({ size, ...props }) => {
     const editor = useTiptapEditor();

@@ -144,7 +144,43 @@ div.css-46bh2p-MuiCardContent-root {
   margin-left: auto;
   overflow: hidden;
 }
-
+.previews {
+  box-sizing: border-box;
+  display: block;
+}
+.RaImageField-image {
+  margin: 0.25rem;
+  width: 200px;
+  height: 100px;
+  object-fit: contain;
+}
+.RaFileInput-removeButton {
+  display: inline-block;
+  position: relative;
+}
+.RaFileInput-removeButton button {
+  position: absolute !important;
+  top: 8px;
+  right: 8px;
+  min-width: 16px;
+  /* opacity: 1; */
+}
+.css-10fi992-MuiButtonBase-root-MuiButton-root {
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: border-box !important;
+  outline: 0 !important;
+  border: 0 !important;
+  margin: 0 !important;
+  border-radius: 50% !important;
+  overflow: visible !important;
+  transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms !important;
+  padding: 5px !important;
+  font-size: 1.125rem !important;
+}
+.css-10fi992-MuiButtonBase-root-MuiButton-root:hover {
+  background-color: rgba(0, 0, 0, 0.04) !important ;
+}
 /* Responsive tablet */
 @media only screen and (max-width: 1200px) {
   .NavigationAside {

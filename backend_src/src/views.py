@@ -90,7 +90,16 @@ def query_exam_by_id(request, event_id):
                 return HttpResponse(status=404)
             return JsonResponse(test_serializer.data, safe=False)
         return HttpResponse(status=400)
-
+    if request.method == "PATCH":
+        test_detail = EXAMS_COLLECTION.objects.get(id=event_id)
+        data = json.loads(request.body)
+        test_detail.Name = data["Name"]
+        test_detail.Last_Modified_Date = str(date.today())
+        test_detail.duration = data["duration"]
+        test_detail.description = data["description"]
+        test_detail.save()
+        test_result_ser = exams_collection_serializer2(test_detail)
+        return JsonResponse(test_result_ser.data, safe=False)
 
 @csrf_exempt
 def insert_new_exam(request):
@@ -99,7 +108,6 @@ def insert_new_exam(request):
         Name = data["Name"]
         Created_Date = str(date.today())
         Last_Modified_Date = str(date.today())
-        Is_split = data["Is_split"]
         User_id = data["User_id"]
         image = data["image"]
         duration = data["duration"]
@@ -108,7 +116,6 @@ def insert_new_exam(request):
             Name=Name,
             Created_Date=Created_Date,
             Last_Modified_Date=Last_Modified_Date,
-            Is_split=Is_split,
             User_id=User_id,
             image=image,
             duration=duration,
@@ -117,10 +124,12 @@ def insert_new_exam(request):
         exam.save()
         exam_serializer = exams_collection_serializer2(exam)
         return JsonResponse(exam_serializer.data, safe=False)
+    
      
 @csrf_exempt
 def insert_questions_and_answers(request, exam_id): 
     if request.method == "POST":
+        # ko nên xóa chi tiết câu hỏi của những lần thay đổi trước
         delete_questions_and_answers = QUESTIONS_AND_ANSWERS.objects.filter(
             exam_id=exam_id
         )
