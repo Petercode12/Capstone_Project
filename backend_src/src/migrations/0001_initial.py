@@ -5,138 +5,188 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='EXAMS_COLLECTION',
+            name="EXAMS_COLLECTION",
             fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False)),
-                ('Name', models.CharField(max_length=200)),
-                ('Created_Date', models.DateField()),
-                ('Last_Modified_Date', models.DateField()),
-                ('Is_split', models.BooleanField(default=True)),
-                ('duration', models.FloatField(default=0)),
-                ('image', models.TextField()),
-                ('description', models.TextField(default=None)),
+                ("id", models.AutoField(primary_key=True, serialize=False)),
+                ("Name", models.CharField(max_length=200)),
+                ("Created_Date", models.DateField()),
+                ("Last_Modified_Date", models.DateField()),
+                ("duration", models.FloatField(default=0)),
+                ("image", models.TextField(default="")),
+                ("description", models.TextField(default=None)),
             ],
         ),
         migrations.CreateModel(
-            name='TEST_API',
+            name="TEST_RESULT",
             fields=[
-                ('userID', models.IntegerField()),
-                ('id', models.AutoField(primary_key=True, serialize=False)),
-                ('title', models.CharField(max_length=200)),
-                ('body', models.CharField(max_length=200)),
+                ("id", models.AutoField(primary_key=True, serialize=False)),
+                ("Score", models.IntegerField(null=True)),
+                ("Date", models.DateTimeField(null=True)),
+                ("Start_time", models.TimeField()),
+                ("End_time", models.TimeField()),
+                (
+                    "exam",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="src.exams_collection",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='TEST_RESULT',
+            name="USER",
             fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False)),
-                ('Score', models.IntegerField(null=True)),
-                ('Date', models.DateTimeField(null=True)),
-                ('Start_time', models.TimeField()),
-                ('End_time', models.TimeField()),
-                ('exam', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='src.exams_collection')),
+                ("id", models.AutoField(primary_key=True, serialize=False)),
+                ("Username", models.CharField(max_length=200)),
+                ("Password", models.CharField(max_length=200)),
+                ("Email", models.EmailField(blank=True, max_length=200)),
+                ("Avatar", models.TextField(default=None)),
+                ("Created_Date", models.DateField()),
             ],
         ),
         migrations.CreateModel(
-            name='USER',
+            name="TEST_RESULT_SPECIFIC",
             fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False)),
-                ('Username', models.CharField(max_length=200)),
-                ('Password', models.CharField(max_length=200)),
-                ('Email', models.EmailField(blank=True, max_length=200)),
-                ('Avatar', models.TextField(default=None)),
-                ('Created_Date', models.DateField()),
-            ],
-        ),
-        migrations.CreateModel(
-            name='TEST_RESULT_SPECIFIC',
-            fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False)),
-                ('Ordinal', models.IntegerField(null=True)),
-                ('Question', models.TextField(null=True)),
-                ('Is_MCQ', models.BooleanField(default=True)),
-                ('Answer_a', models.TextField(null=True)),
-                ('Answer_b', models.TextField(null=True)),
-                ('Answer_c', models.TextField(null=True)),
-                ('Answer_d', models.TextField(null=True)),
-                ('Correct_answer', models.CharField(max_length=1, null=True)),
-                ('Solution', models.TextField(null=True)),
-                ('User_answer_MCQ', models.CharField(max_length=1, null=True)),
-                ('User_answer_CONS', models.TextField(null=True)),
-                ('Mark', models.IntegerField(null=True)),
-                ('test_result', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='src.test_result')),
-            ],
-        ),
-        migrations.AddField(
-            model_name='test_result',
-            name='user',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='src.user'),
-        ),
-        migrations.CreateModel(
-            name='SHARED_USERS',
-            fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False)),
-                ('Shared_user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='Shared_user_id', to='src.user')),
-                ('User', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='User_id', to='src.user')),
-                ('exam', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='src.exams_collection')),
-            ],
-        ),
-        migrations.CreateModel(
-            name='QUESTIONS_AND_ANSWERS',
-            fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False)),
-                ('Ordinal', models.IntegerField()),
-                ('Question', models.TextField()),
-                ('Correct_answer', models.CharField(max_length=1, null=True)),
-                ('Answer_a', models.TextField(null=True)),
-                ('Answer_b', models.TextField(null=True)),
-                ('Answer_c', models.TextField(null=True)),
-                ('Answer_d', models.TextField(null=True)),
-                ('Solution', models.TextField(null=True)),
-                ('Split_content', models.BooleanField(default=False)),
-                ('Is_MCQ', models.BooleanField(default=True)),
-                ('exam', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='src.exams_collection')),
+                ("id", models.AutoField(primary_key=True, serialize=False)),
+                ("Ordinal", models.IntegerField(null=True)),
+                ("Question", models.TextField(null=True)),
+                ("Is_MCQ", models.BooleanField(default=True)),
+                ("Answer_a", models.TextField(null=True)),
+                ("Answer_b", models.TextField(null=True)),
+                ("Answer_c", models.TextField(null=True)),
+                ("Answer_d", models.TextField(null=True)),
+                ("Correct_answer", models.CharField(max_length=1, null=True)),
+                ("Solution", models.TextField(null=True)),
+                ("User_answer_MCQ", models.CharField(max_length=1, null=True)),
+                ("User_answer_CONS", models.TextField(null=True)),
+                ("Mark", models.IntegerField(null=True)),
+                (
+                    "test_result",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="src.test_result",
+                    ),
+                ),
             ],
         ),
         migrations.AddField(
-            model_name='exams_collection',
-            name='User',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='User_id1', to='src.user'),
+            model_name="test_result",
+            name="user",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to="src.user"
+            ),
         ),
         migrations.CreateModel(
-            name='EXAM_TAGS',
+            name="SHARED_USERS",
             fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False)),
-                ('tag', models.IntegerField()),
-                ('exam', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='src.exams_collection')),
+                ("id", models.AutoField(primary_key=True, serialize=False)),
+                (
+                    "Shared_user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="Shared_user_id",
+                        to="src.user",
+                    ),
+                ),
+                (
+                    "User",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="User_id",
+                        to="src.user",
+                    ),
+                ),
+                (
+                    "exam",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="src.exams_collection",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='AUDIO_QUESTIONS_AND_SOLUTIONS',
+            name="QUESTIONS_AND_ANSWERS",
             fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False)),
-                ('Question', models.TextField()),
-                ('Solution', models.TextField()),
-                ('Ordinal', models.IntegerField()),
-                ('Split_content', models.BooleanField(default=True)),
-                ('exam', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='src.exams_collection')),
+                ("id", models.AutoField(primary_key=True, serialize=False)),
+                ("Ordinal", models.IntegerField()),
+                ("Question", models.TextField()),
+                ("Correct_answer", models.CharField(max_length=1, null=True)),
+                ("Answer_a", models.TextField(null=True)),
+                ("Answer_b", models.TextField(null=True)),
+                ("Answer_c", models.TextField(null=True)),
+                ("Answer_d", models.TextField(null=True)),
+                ("Solution", models.TextField(null=True)),
+                ("Split_content", models.BooleanField(default=False)),
+                ("Is_MCQ", models.BooleanField(default=True)),
+                (
+                    "exam",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="src.exams_collection",
+                    ),
+                ),
+            ],
+        ),
+        migrations.AddField(
+            model_name="exams_collection",
+            name="User",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="User_id1",
+                to="src.user",
+            ),
+        ),
+        migrations.CreateModel(
+            name="EXAM_TAGS",
+            fields=[
+                ("id", models.AutoField(primary_key=True, serialize=False)),
+                ("tag", models.IntegerField()),
+                (
+                    "exam",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="src.exams_collection",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='AUDIO',
+            name="AUDIO_QUESTIONS_AND_SOLUTIONS",
             fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False)),
-                ('Audio_name', models.CharField(max_length=200)),
-                ('Audio_link', models.URLField()),
-                ('exam', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='src.exams_collection')),
+                ("id", models.AutoField(primary_key=True, serialize=False)),
+                ("Question", models.TextField()),
+                ("Solution", models.TextField()),
+                ("Ordinal", models.IntegerField()),
+                ("Split_content", models.BooleanField(default=True)),
+                (
+                    "exam",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="src.exams_collection",
+                    ),
+                ),
+            ],
+        ),
+        migrations.CreateModel(
+            name="AUDIO",
+            fields=[
+                ("id", models.AutoField(primary_key=True, serialize=False)),
+                ("Audio_name", models.CharField(max_length=200)),
+                ("Audio_link", models.URLField()),
+                (
+                    "exam",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="src.exams_collection",
+                    ),
+                ),
             ],
         ),
     ]

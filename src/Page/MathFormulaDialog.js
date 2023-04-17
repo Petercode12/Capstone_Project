@@ -11,7 +11,11 @@ export function MathFormulaDialog({ ...props }) {
   };
 
   return (
-    <Dialog open={props.open} onClose={props.handleCloseDialog}>
+    <Dialog
+      open={props.open}
+      onClose={props.handleCloseDialog}
+      disableBackdropClick
+    >
       <div
         style={{ padding: 16, fontFamily: "sans-serif", textAlign: "center" }}
       >

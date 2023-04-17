@@ -50,7 +50,6 @@ export const PracticeList = () => (
       <TextField source="Name" />
       <DateField source="Created_Date" />
       <DateField source="Last_Modified_Date" />
-      <BooleanField source="Is_split" />
       <NumberField source="User_id" />
       <EditButton label="PRACTICE" />
     </Datagrid>

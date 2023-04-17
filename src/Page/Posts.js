@@ -65,7 +65,6 @@ export const PostList = () => (
       <TextField source="Name" />
       <DateField source="Created_Date" showDate locales="fr-FR" />
       <DateField source="Last_Modified_Date" locales="fr-FR" />
-      <BooleanField source="Is_split" />
       <NumberField source="User_id" />
       <EditButton />
       <ShareButton />
@@ -93,7 +92,8 @@ export const PostCreate = () => {
   const [isSetDuration, setIsSetDuration] = React.useState(false);
   const postSave = async function(data) {
     console.log("User info: ", userInfo);
-    data["image"] = await toBase64(data["image"].rawFile);
+    if (data["image"]) data["image"] = await toBase64(data["image"].rawFile);
+    else data["image"] = "";
     data = { ...data, User_id: userInfo.id };
     if (isSetDuration === true) data["duration"] = num;
     else data["duration"] = 0;
@@ -125,8 +125,6 @@ export const PostCreate = () => {
             }}
           >
             <TextInput source="Name" required resettable fullWidth />
-            <BooleanInput label="Is split?" source="Is_split" />
-
             <ImageInput
               source="image"
               label="Choose a profile picture:"
@@ -137,12 +135,12 @@ export const PostCreate = () => {
                 <p>Drop a picture to upload, or click to select one </p>
               }
               sx={{
-                "& .RaImageInput-preview": {
-                  fontSize: "1.5em !important",
+                "& .RaLabeled-label": {
+                  fontSize: "1rem",
                 },
               }}
             >
-              <ImageField source="src" title="title" />
+              <ImageField source="src" title="title" required />
             </ImageInput>
             <Container sx={{ display: "flex", padding: "0px !important" }}>
               <BooleanInput
@@ -173,6 +171,7 @@ export const PostCreate = () => {
                 <FilledInput
                   id="filled-adornment-timer"
                   type="number"
+                  required
                   endAdornment={
                     <InputAdornment position="end">minutes</InputAdornment>
                   }
@@ -180,17 +179,16 @@ export const PostCreate = () => {
                   size="small"
                   onChange={(e) => {
                     var value = parseInt(e.target.value, "10");
+                    console.log(value, e.target.value.length);
                     if (value > max) {
-                      // setTimeError(true);
                       value = max;
                     } else if (value < min) {
-                      setTimeError(true);
-                      value = 0;
+                      value = min;
                     } else {
                       setTimeError(false);
                     }
                     setNum(value);
-                    console.log(e.target.value, typeof value);
+                    console.log(e.target.value, typeof value, value);
                   }}
                   value={num}
                 />
@@ -216,9 +214,11 @@ export const PostCreate = () => {
             <TextInput
               label="Description"
               source="description"
+              required
               resettable
               multiline
               fullWidth
+              helperText={false}
             />
           </Box>
         </SimpleForm>

@@ -10,7 +10,6 @@ class exams_collection_serializer(serializers.ModelSerializer):
             "Name",
             "Created_Date",
             "Last_Modified_Date",
-            "Is_split",
             "User_id",
         )
 
@@ -23,7 +22,6 @@ class exams_collection_serializer2(serializers.ModelSerializer):
             "Name",
             "Created_Date",
             "Last_Modified_Date",
-            "Is_split",
             "User_id",
             "duration",
             "image",
@@ -31,10 +29,10 @@ class exams_collection_serializer2(serializers.ModelSerializer):
         )
 
 
-class test_serializer(serializers.ModelSerializer):
-    class Meta:
-        model = TEST_API
-        fields = ("userID", "id", "title", "body")
+# class test_serializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = TEST_API
+#         fields = ("userID", "id", "title", "body")
 
 
 class questions_and_answers_serializer(serializers.ModelSerializer):

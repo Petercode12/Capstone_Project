@@ -367,7 +367,7 @@ export function PracticeTest() {
     return id;
   }
   async function updateTestMark(Score, id) {
-    await axios // post  lich sử làm bài và kết quả
+    await axios // update lịch sử làm bài và kết quả
       .patch("http://localhost:8000/test_result/".concat(id), { Score })
       .then((res) => {
         console.log("Data: ", res.data);
