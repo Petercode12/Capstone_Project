@@ -103,6 +103,7 @@ def query_exam_by_id(request, event_id):
         test_result_ser = exams_collection_serializer2(test_detail)
         return JsonResponse(test_result_ser.data, safe=False)
 
+
 @csrf_exempt
 def insert_new_exam(request):
     if request.method == "POST":
@@ -125,11 +126,12 @@ def insert_new_exam(request):
             duration=duration,
             description=description,
         )
+
         exam.save()
         exam_serializer = exams_collection_serializer2(exam)
         return JsonResponse(exam_serializer.data, safe=False)
-    
-     
+
+
 @csrf_exempt
 def insert_questions_and_answers(request, exam_id):
     if request.method == "POST":
@@ -173,8 +175,11 @@ def insert_questions_and_answers(request, exam_id):
         test.Last_Modified_Date = datetime.date.today()
         test.save()
         test_ser = exams_collection_serializer(test)
-        return JsonResponse({"test_data": test_ser.data,"q_and_a":q_and_a_serializer.data}, safe=False)
-    
+        return JsonResponse(
+            {"test_data": test_ser.data, "q_and_a": q_and_a_serializer.data}, safe=False
+        )
+
+
 @csrf_exempt
 def query_questions_and_answers_by_examid(request, exam_id):
     if request.method == "GET":
@@ -241,7 +246,9 @@ def test_result(request, exam_id):
         test_specific = TEST_RESULT_SPECIFIC.objects.filter(
             test_result_id=exam_id
         ).order_by("Ordinal")
-        num_test_skip = test_specific.filter(User_answer_MCQ__exact="", User_answer_CONS__isnull=True).count()
+        num_test_skip = test_specific.filter(
+            User_answer_MCQ__exact="", User_answer_CONS__isnull=True
+        ).count()
         num_cons_question = test_specific.filter(Is_MCQ=0).count()
         print(test_specific_ser.data)
         return JsonResponse(

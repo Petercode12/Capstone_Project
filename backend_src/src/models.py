@@ -19,7 +19,7 @@ class EXAMS_COLLECTION(models.Model):
     Last_Modified_Date = models.DateField()
     User = models.ForeignKey(USER, on_delete=models.CASCADE, related_name="User_id1")
     duration = models.FloatField(default=0)
-    image = models.TextField(null = False, default="")
+    image = models.TextField(null=False, default="")
     description = models.TextField(default=None)
 
 
@@ -64,11 +64,11 @@ class TEST_RESULT(models.Model):
     user = models.ForeignKey(USER, on_delete=models.CASCADE)
 
 
-
 class EXAM_TAGS(models.Model):
     id = models.AutoField(primary_key=True, null=False)
     exam = models.ForeignKey(EXAMS_COLLECTION, on_delete=models.CASCADE)
     tag = models.IntegerField()
+
 
 class TEST_RESULT_SPECIFIC(models.Model):
     id = models.AutoField(primary_key=True, null=False)
