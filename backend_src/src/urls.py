@@ -44,6 +44,11 @@ urlpatterns = [
         name="querySharedInfoByExamId",
     ),
     path(
+        "query_exam_tags/",
+        views.query_exam_tags,
+        name="queryExamTags",
+    ),
+    path(
         "auth/",
         views.authentication,
         name="authentication",

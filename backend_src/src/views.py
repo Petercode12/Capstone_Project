@@ -18,7 +18,9 @@ test_result_pk = 1
 @csrf_exempt
 def query_all_exams_api(request):
     if request.method == "GET":
-        exams = EXAMS_COLLECTION.objects.all()
+        exams = EXAMS_COLLECTION.objects.all().order_by(
+            "id"
+        )  # Phuoc moi them vo .order_by("id")
         start = int(request.GET["_start"])
         end = int(request.GET["_end"])
         sort = str(request.GET["_sort"])
@@ -110,6 +112,7 @@ def query_exam_by_id(request, event_id):
         test_result_ser = exams_collection_serializer2(test_detail)
         return JsonResponse(test_result_ser.data, safe=False)
 
+
 @csrf_exempt
 def insert_new_exam(request):
     if request.method == "POST":
@@ -134,9 +137,13 @@ def insert_new_exam(request):
         )
         exam.save()
         exam_serializer = exams_collection_serializer2(exam)
+        if tags != []:
+            for i in tags:
+                exam_tag = EXAM_TAGS(exam_id=exam_serializer.data["id"], tag=i)
+                exam_tag.save()
         return JsonResponse(exam_serializer.data, safe=False)
-    
-     
+
+
 @csrf_exempt
 def insert_questions_and_answers(request, exam_id):
     if request.method == "POST":
@@ -180,8 +187,11 @@ def insert_questions_and_answers(request, exam_id):
         test.Last_Modified_Date = datetime.date.today()
         test.save()
         test_ser = exams_collection_serializer(test)
-        return JsonResponse({"test_data": test_ser.data,"q_and_a":q_and_a_serializer.data}, safe=False)
-    
+        return JsonResponse(
+            {"test_data": test_ser.data, "q_and_a": q_and_a_serializer.data}, safe=False
+        )
+
+
 @csrf_exempt
 def query_questions_and_answers_by_examid(request, exam_id):
     if request.method == "GET":
@@ -248,7 +258,9 @@ def test_result(request, exam_id):
         test_specific = TEST_RESULT_SPECIFIC.objects.filter(
             test_result_id=exam_id
         ).order_by("Ordinal")
-        num_test_skip = test_specific.filter(User_answer_MCQ__exact="", User_answer_CONS__isnull=True).count()
+        num_test_skip = test_specific.filter(
+            User_answer_MCQ__exact="", User_answer_CONS__isnull=True
+        ).count()
         num_cons_question = test_specific.filter(Is_MCQ=0).count()
         print(test_specific_ser.data)
         return JsonResponse(
@@ -366,6 +378,14 @@ def query_shared_info_by_examid(request, exam_id):
         info = SHARED_USERS.objects.filter(exam_id=exam_id).order_by("id")
         info_serializer = shared_users_serializer(info, many=True)
         return JsonResponse(info_serializer.data, safe=False)
+
+
+@csrf_exempt
+def query_exam_tags(request):
+    if request.method == "GET":
+        exam_tags = EXAM_TAGS.objects.all()
+        tags_serializer = exam_tags_serializer(exam_tags, many=True)
+        return JsonResponse(tags_serializer.data, safe=False)
 
 
 @csrf_exempt

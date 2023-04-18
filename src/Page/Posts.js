@@ -32,12 +32,10 @@ import {
   TextField as TextField1,
   InputAdornment,
   FormControl,
-  OutlinedInput,
   FilledInput,
   InputLabel,
   FormHelperText,
 } from "@mui/material";
-import ShareIcon from "@mui/icons-material/Share";
 import { ShareButton } from "./ShareButton";
 const theme = createTheme({
   components: {
@@ -156,7 +154,6 @@ export const PostCreate = () => {
                 options={{ display: "flex" }}
                 onChange={() => {
                   setIsSetDuration(!isSetDuration);
-                  console.log(isSetDuration);
                   if (isSetDuration === false) {
                     const note = document.querySelector("#clock");
                     note.classList.remove("Duration");
@@ -186,7 +183,6 @@ export const PostCreate = () => {
                   size="small"
                   onChange={(e) => {
                     var value = parseInt(e.target.value, "10");
-                    console.log(value, e.target.value.length);
                     if (value > max) {
                       value = max;
                     } else if (value < min) {
@@ -195,7 +191,6 @@ export const PostCreate = () => {
                       setTimeError(false);
                     }
                     setNum(value);
-                    console.log(e.target.value, typeof value, value);
                   }}
                   value={num}
                 />
@@ -208,12 +203,12 @@ export const PostCreate = () => {
               source="tags"
               label="Tag"
               choices={[
-                { id: "1", name: "Math" },
-                { id: "2", name: "English" },
-                { id: "3", name: "Geography" },
-                { id: "4", name: "Physics" },
-                { id: "5", name: "Calculus" },
-                { id: "6", name: "IELTS" },
+                { id: "0", name: "Math" },
+                { id: "1", name: "English" },
+                { id: "2", name: "Geography" },
+                { id: "3", name: "Physics" },
+                { id: "4", name: "Calculus" },
+                { id: "5", name: "IELTS" },
               ]}
               fullWidth
               options={{ fullWidth: true }}
