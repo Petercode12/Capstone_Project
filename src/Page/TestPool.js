@@ -22,6 +22,7 @@ import axios from "axios";
 import SearchIcon from "@mui/icons-material/Search";
 import { useGetIdentity } from "react-admin";
 import "../Style/TestPoolStyle.css";
+import { ExpandMore } from "@mui/icons-material";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 15;
@@ -39,6 +40,8 @@ export function TestPool() {
   const [originalExamList, setOriginalExamList] = useState([]);
   const [examList, setExamList] = useState([]);
   const [tagName, setTagName] = useState([]);
+  const [indexTagName, setIndexTagName] = useState([]);
+  const [examTagList, setExamTagList] = useState([]);
   let infinity = "♾️";
   const { data: userInfo, isLoading, error } = useGetIdentity();
 
@@ -57,11 +60,68 @@ export function TestPool() {
         console.log(err);
       });
   }, [userInfo]);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:8000/query_exam_tags/")
+      .then((res) => {
+        let temp = [];
+        for (let e of res.data) {
+          temp.push({ examId: e.exam_id, tag: e.tag });
+        }
+        setExamTagList(temp);
+        let searchBarElementValue = document.getElementById("search").value;
+        if (indexTagName.length === 0) {
+          const filteredExamList = originalExamList.filter((e) => {
+            return e.Name.toLowerCase().includes(
+              searchBarElementValue.toLowerCase()
+            );
+          });
+          setExamList(filteredExamList);
+        } else {
+          let tempExamList = [];
+          for (let e of temp) {
+            if (indexTagName.includes(e.tag)) {
+              tempExamList.push(e.examId);
+            }
+          }
+          setExamList(
+            originalExamList.filter((exam) => {
+              return (
+                exam.Name.toLowerCase().includes(
+                  searchBarElementValue.toLowerCase()
+                ) && tempExamList.includes(exam.id)
+              );
+            })
+          );
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [indexTagName]);
+
   const handleSearchChange = (event) => {
-    const filteredExamList = originalExamList.filter((e) => {
-      return e.Name.toLowerCase().includes(event.target.value.toLowerCase());
-    });
-    setExamList(filteredExamList);
+    if (indexTagName.length === 0) {
+      const filteredExamList = originalExamList.filter((e) => {
+        return e.Name.toLowerCase().includes(event.target.value.toLowerCase());
+      });
+      setExamList(filteredExamList);
+    } else {
+      let tempExamList = [];
+      for (let e of examTagList) {
+        if (indexTagName.includes(e.tag)) {
+          tempExamList.push(e.examId);
+        }
+      }
+      const filteredExamList = originalExamList.filter((e) => {
+        return (
+          e.Name.toLowerCase().includes(event.target.value.toLowerCase()) &&
+          tempExamList.includes(e.id)
+        );
+      });
+      setExamList(filteredExamList);
+    }
   };
   const handleTagFilterChange = (event) => {
     const {
@@ -71,8 +131,12 @@ export function TestPool() {
       // On autofill we get a stringified value.
       typeof value === "string" ? value.split(",") : value
     );
+    let indexTagList = [];
+    for (let e of value) {
+      indexTagList.push(tags.indexOf(e));
+    }
+    setIndexTagName(indexTagList);
   };
-  console.log("tagName: ", tagName);
   return (
     <>
       <Container

@@ -18,7 +18,9 @@ test_result_pk = 1
 @csrf_exempt
 def query_all_exams_api(request):
     if request.method == "GET":
-        exams = EXAMS_COLLECTION.objects.all()
+        exams = EXAMS_COLLECTION.objects.all().order_by(
+            "id"
+        )  # Phuoc moi them vo .order_by("id")
         start = int(request.GET["_start"])
         end = int(request.GET["_end"])
         per_page = end - start
@@ -126,9 +128,12 @@ def insert_new_exam(request):
             duration=duration,
             description=description,
         )
-
         exam.save()
         exam_serializer = exams_collection_serializer2(exam)
+        if tags != []:
+            for i in tags:
+                exam_tag = EXAM_TAGS(exam_id=exam_serializer.data["id"], tag=i)
+                exam_tag.save()
         return JsonResponse(exam_serializer.data, safe=False)
 
 
@@ -366,6 +371,14 @@ def query_shared_info_by_examid(request, exam_id):
         info = SHARED_USERS.objects.filter(exam_id=exam_id).order_by("id")
         info_serializer = shared_users_serializer(info, many=True)
         return JsonResponse(info_serializer.data, safe=False)
+
+
+@csrf_exempt
+def query_exam_tags(request):
+    if request.method == "GET":
+        exam_tags = EXAM_TAGS.objects.all()
+        tags_serializer = exam_tags_serializer(exam_tags, many=True)
+        return JsonResponse(tags_serializer.data, safe=False)
 
 
 @csrf_exempt
