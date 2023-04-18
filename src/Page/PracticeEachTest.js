@@ -29,6 +29,7 @@ import Countdown from "react-countdown";
 import { useMediaQuery, useTheme, Container, Grid } from "@mui/material";
 import "../Style/PracticeStyle.css";
 import { wait } from "@testing-library/user-event/dist/utils";
+import { MathJax, MathJaxContext } from "better-react-mathjax";
 
 function convertQueryDataToQuestionList(data) {
   let questionList = []; // questionList bao gồm: questionText, answerOptions, correctAnswer đối với MCQ, type
@@ -70,6 +71,9 @@ export function PracticeTest() {
   const { data: userInfo, isLoading, error1 } = useGetIdentity();
   const [countdown, setCountdown] = useState();
   const redirect = useRedirect();
+  const config = {
+    loader: { load: ["input/asciimath"] },
+  };
   var today = new Date();
   const start_time =
     today.getHours() +
@@ -467,10 +471,22 @@ export function PracticeTest() {
                             <div
                               style={{
                                 width: "100%",
-                                marginTop: "-20px",
+                                // marginTop: "-20px",
                               }}
+                              className={"question-".concat(i + 1)}
                             >
-                              <RichTextInput
+                              <MathJaxContext config={config}>
+                                <MathJax>`a^2+b^2`</MathJax>
+                              </MathJaxContext>
+                              <p>
+                                <MathJaxContext config={config}>
+                                  <MathJax>`a^2+b^2`</MathJax>
+                                </MathJaxContext>
+                              </p>
+                              <p />
+                              <h1>okok</h1>
+                              {questionList[i].questionText}
+                              {/* <RichTextInput
                                 id={"questionText"} //.concat(i)
                                 source=""
                                 defaultValue={questionList[i].questionText}
@@ -485,7 +501,7 @@ export function PracticeTest() {
                                     className="RichTextToolbar"
                                   />
                                 }
-                              />
+                              /> */}
                             </div>
                             <RadioGroup
                               row
@@ -682,6 +698,41 @@ export function PracticeTest() {
                           </div>
                         );
                       }
+                    })}
+                    {questionList.map((question, i) => {
+                      var div_question = document.querySelector(
+                        ".question-".concat(i + 1)
+                      );
+                      console.log("All divs: ", div_question);
+                      console.log(
+                        "Question ",
+                        i + 1,
+                        ": ",
+                        questionList[i].questionText,
+                        typeof questionList[i].questionText
+                      );
+                      var xml =
+                        '<myElements type="AA" coID="A923"><myHouse>01</myHouse> <myCars>02</myCars><myWifeAndDog>03</myWifeAndDog></myElements>';
+                      var parser = new DOMParser();
+                      var xml1 =
+                        "<MathJaxContext config= { 'config &#x7D;'><MathJax>`a^2+b^2`</MathJax></MathJaxContext><h1>okok</h1>";
+                      var xmlDoc = parser.parseFromString(xml, "text/xml");
+                      var xmlDoc1 = parser.parseFromString(xml1, "text/xml");
+                      var doc = new DOMParser().parseFromString(
+                        questionList[i].questionText,
+                        "text/html"
+                      );
+                      console.log("xml: ", xmlDoc);
+                      console.log("xml1: ", xmlDoc1);
+                      console.log("doc: ", doc, typeof doc);
+                      // div_question.appendChild(doc.body);
+                      // return doc.body;
+                      // div_question.insertAdjacentHTML(
+                      //   "beforeend",
+                      //   "<li>third</li>"
+                      // );
+                      // div_question.appendChild(questionList[i].questionText);
+                      return <></>;
                     })}
                   </div>
                 </div>
