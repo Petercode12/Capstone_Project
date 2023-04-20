@@ -23,6 +23,7 @@ import {
   AutocompleteArrayInput,
   Toolbar,
   SaveButton,
+  required,
 } from "react-admin";
 import {
   Box,
@@ -89,7 +90,7 @@ export const PostCreate = () => {
   const redirect = useRedirect();
   const [create, { error }] = useCreate();
   const { data: userInfo, isLoading, err } = useGetIdentity();
-  const [num, setNum] = React.useState(0);
+  const [num, setNum] = React.useState(1);
   const min = 1;
   const max = 999;
   const [timeError, setTimeError] = React.useState();
@@ -200,6 +201,7 @@ export const PostCreate = () => {
               </FormControl>
             </Container>
             <AutocompleteArrayInput
+              validate={required()}
               source="tags"
               label="Tag"
               choices={[
@@ -209,6 +211,7 @@ export const PostCreate = () => {
                 { id: "3", name: "Physics" },
                 { id: "4", name: "Calculus" },
                 { id: "5", name: "IELTS" },
+                { id: "6", name: "Others" },
               ]}
               fullWidth
               options={{ fullWidth: true }}

@@ -33,6 +33,7 @@ import "../Style/PracticeStyle.css";
 import { NotFound } from "./NotFound";
 import { eventWrapper, wait } from "@testing-library/user-event/dist/utils";
 import { useLocation, useNavigate } from "react-router-dom";
+import { MathJaxContext, MathJax } from "better-react-mathjax";
 function convertQueryDataToQuestionList(data) {
   let questionList = []; // questionList bao gồm: questionText, answerOptions, correctAnswer đối với MCQ, type, câu trả lời và điểm số.
   for (let e of data) {
@@ -103,6 +104,9 @@ export const PraceticeResultSpecific = () => {
   const params = useParams();
   const { data: userInfo, isLoading, error1 } = useGetIdentity();
   const redirect = useRedirect();
+  const config = {
+    loader: { load: ["input/asciimath"] },
+  };
   let navigate = useNavigate();
   let text_blue =
     '{ "& label.Mui-focused" : { "color":"#3cb46e" },' +
@@ -178,6 +182,7 @@ export const PraceticeResultSpecific = () => {
       access.scrollIntoView({ behavior: "smooth" }, true);
     }
   };
+
   const addNavigationMenu = () => {
     let buttonGroupList = [];
     let buttonList = [];
@@ -241,6 +246,15 @@ export const PraceticeResultSpecific = () => {
     }
     return buttonGroupList;
   };
+  let stringToHTML = (str) => {
+    let dom = document.createElement("div");
+    dom.innerHTML = str;
+    // let xml = new DOMParser().parseFromString(str, "text/xml");
+    // console.log("xml: ", xml, typeof xml);
+    console.log("dom: ", dom, typeof dom, str);
+    console.log("dom html: ", dom.firstChild.innerHTML);
+    return dom;
+  };
   // Renderer callback with condition
   const renderer = ({ hours, minutes, seconds, completed }) => {
     for (let i = 0; i < questionList.length; i++) {
@@ -250,8 +264,12 @@ export const PraceticeResultSpecific = () => {
         document.getElementById(bien).style.width !== null
       )
         document.getElementById(bien).style.width = "100%";
+      var div_question = document.querySelector(".question-".concat(i + 1));
+      let temp = stringToHTML(`${questionList[i].questionText}`);
+      if (div_question != null) {
+        div_question.parentNode.replaceChild(temp, div_question);
+      }
     }
-    // console.log("Bị render lại!!!", duration);
 
     return (
       <span style={{ color: "black" }}>
@@ -369,29 +387,16 @@ export const PraceticeResultSpecific = () => {
                                 <span className="text-wrong fas fa-times fa-lg wrong-icon " />
                               )}
                             </div>
-                            <div
-                              style={{
-                                width: "100%",
-                                marginTop: "-20px",
-                              }}
-                            >
-                              <RichTextInput
-                                id={"questionText"} //.concat(i)
-                                source=""
-                                defaultValue={questionList[i].questionText}
-                                style={{
-                                  width: "100% !important",
-                                  display: "none",
-                                }}
-                                className="RichTextContent"
-                                toolbar={
-                                  <RichTextInputToolbar
-                                    size="small"
-                                    className="RichTextToolbar"
-                                  />
-                                }
-                              />
-                            </div>
+                            <MathJaxContext config={config}>
+                              <MathJax>
+                                <div
+                                  style={{
+                                    width: "100%",
+                                  }}
+                                  className={"question-".concat(i + 1)}
+                                />
+                              </MathJax>
+                            </MathJaxContext>
                             <RadioGroup
                               row
                               disabled
@@ -604,29 +609,16 @@ export const PraceticeResultSpecific = () => {
                               </span>
                               <span className="text-constructive fas fa-pencil-alt fa-lg" />
                             </div>
-                            <div
-                              style={{
-                                width: "100%",
-                                marginTop: "-20px",
-                              }}
-                            >
-                              <RichTextInput
-                                id={"questionText"}
-                                style={{
-                                  width: "100% !important",
-                                  display: "none",
-                                }}
-                                source=""
-                                defaultValue={questionList[i].questionText}
-                                className="RichTextContent"
-                                toolbar={
-                                  <RichTextInputToolbar
-                                    size="small"
-                                    className="RichTextToolbar"
-                                  />
-                                }
-                              />
-                            </div>
+                            <MathJaxContext config={config}>
+                              <MathJax>
+                                <div
+                                  style={{
+                                    width: "100%",
+                                  }}
+                                  className={"question-".concat(i + 1)}
+                                />
+                              </MathJax>
+                            </MathJaxContext>
                             <div className="question-answers">
                               <TextField
                                 id={"textAnswerCons".concat(i)}

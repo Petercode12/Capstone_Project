@@ -92,7 +92,7 @@ export function PostEditInfo({ ...props }) {
   const params = useParams();
   const redirect = useRedirect();
   const { data: userInfo, isLoading, err } = useGetIdentity();
-  const [num, setNum] = useState();
+  const [num, setNum] = useState(1);
   const min = 1;
   const max = 999;
   const [timeError, setTimeError] = useState();
@@ -102,8 +102,8 @@ export function PostEditInfo({ ...props }) {
       .get("http://localhost:8000/all_exams/".concat(params.id))
       .then((res) => {
         setData([res.data]);
-        setNum(res.data["duration"]);
         setIsSetDuration(res.data["duration"] > 0);
+        if (res.data["duration"] !== 0) setNum(res.data["duration"]);
         setImage(res.data["image"]);
         if (res.data["duration"] > 0) {
           const note = document.querySelector("#clock");

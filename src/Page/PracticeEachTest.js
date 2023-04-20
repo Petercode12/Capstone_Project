@@ -29,7 +29,7 @@ import Countdown from "react-countdown";
 import { useMediaQuery, useTheme, Container, Grid } from "@mui/material";
 import "../Style/PracticeStyle.css";
 import { wait } from "@testing-library/user-event/dist/utils";
-import { MathJax, MathJaxContext } from "better-react-mathjax";
+import { MathJaxContext, MathJax } from "better-react-mathjax";
 
 function convertQueryDataToQuestionList(data) {
   let questionList = []; // questionList bao gồm: questionText, answerOptions, correctAnswer đối với MCQ, type
@@ -64,6 +64,7 @@ function convertQueryDataToQuestionList(data) {
 export function PracticeTest() {
   //edit create test
   const [questionList, setQuestionList] = useState([]); // list các câu hỏi bao gồm biến và đáp án
+  const loopOneTime = [{ questionText: "123" }, { questionText: "456" }];
   const [create, { error }] = useCreate();
   const notify = useNotify();
   const params = useParams();
@@ -71,6 +72,7 @@ export function PracticeTest() {
   const { data: userInfo, isLoading, error1 } = useGetIdentity();
   const [countdown, setCountdown] = useState();
   const redirect = useRedirect();
+
   const config = {
     loader: { load: ["input/asciimath"] },
   };
@@ -81,7 +83,6 @@ export function PracticeTest() {
     today.getMinutes() +
     ":" +
     today.getSeconds().toFixed(2);
-  console.log("Start Time: ", start_time);
   useEffect(() => {
     // get the data from the api
     axios
@@ -91,14 +92,10 @@ export function PracticeTest() {
         )
       )
       .then((res) => {
+        console.log("Question List: ", res.data["q_and_a"]);
+        // xử lý string
         setQuestionList(convertQueryDataToQuestionList(res.data["q_and_a"]));
         setDuration(res.data["duration"]);
-
-        console.log(
-          "Set duration: ",
-          res.data["duration"],
-          typeof res.data["duration"]
-        );
         setCountdown(Date.now() + res.data["duration"] * 60 * 1000);
       })
       .catch((err) => {
@@ -197,6 +194,12 @@ export function PracticeTest() {
         document.getElementById(bien).style.width !== null
       )
         document.getElementById(bien).style.width = "100%";
+      var div_question = document.querySelector(".question-".concat(i + 1));
+
+      let temp = stringToHTML(`${questionList[i].questionText}`);
+      if (div_question != null) {
+        div_question.parentNode.replaceChild(temp, div_question);
+      }
     }
     // console.log("Bị render lại!!!", duration);
     if (duration > 0) {
@@ -280,6 +283,7 @@ export function PracticeTest() {
       </Paper>
     </Box>
   );
+
   const test_result_specific_Gen = async (id) => {
     // tạo array dict data của bài làm
     let saveData = []; // array of dict
@@ -433,6 +437,16 @@ export function PracticeTest() {
     newArr[i].userAnswer = textFieldElement.value;
     setQuestionList(newArr);
   };
+  let stringToHTML = (str) => {
+    let dom = document.createElement("div");
+    dom.innerHTML = str;
+    // let xml = new DOMParser().parseFromString(str, "text/xml");
+    // console.log("xml: ", xml, typeof xml);
+    console.log("dom: ", dom, typeof dom, str);
+    console.log("dom html: ", dom.firstChild.innerHTML);
+    return dom;
+  };
+
   return (
     <Container Container sx={{ maxWidth: { xl: 1280 } }}>
       <Grid container justifyContent="space-between" spacing={2}>
@@ -450,6 +464,13 @@ export function PracticeTest() {
                 <div className="question-section">
                   <div className="question-text">
                     {questionList.map((question, i) => {
+                      var xml =
+                        '<myElements type="AA" coID="A923"><myHouse>01</myHouse> <myCars>02</myCars><myWifeAndDog>03</myWifeAndDog></myElements>';
+                      var parser = new DOMParser();
+                      var xml1 =
+                        "<div><MathJaxContext config={config}><MathJax>`a^2+b^2`</MathJax></MathJaxContext><h1>okok</h1></div>";
+                      var xmlDoc = parser.parseFromString(xml, "text/xml");
+                      var xmlDoc1 = parser.parseFromString(xml1, "text/xml");
                       if (question.type === "MCQ") {
                         return (
                           <div
@@ -468,41 +489,16 @@ export function PracticeTest() {
                             >
                               <span>Question {i + 1}</span>
                             </div>
-                            <div
-                              style={{
-                                width: "100%",
-                                // marginTop: "-20px",
-                              }}
-                              className={"question-".concat(i + 1)}
-                            >
-                              <MathJaxContext config={config}>
-                                <MathJax>`a^2+b^2`</MathJax>
-                              </MathJaxContext>
-                              <p>
-                                <MathJaxContext config={config}>
-                                  <MathJax>`a^2+b^2`</MathJax>
-                                </MathJaxContext>
-                              </p>
-                              <p />
-                              <h1>okok</h1>
-                              {questionList[i].questionText}
-                              {/* <RichTextInput
-                                id={"questionText"} //.concat(i)
-                                source=""
-                                defaultValue={questionList[i].questionText}
-                                style={{
-                                  width: "100% !important",
-                                  display: "none",
-                                }}
-                                className="RichTextContent"
-                                toolbar={
-                                  <RichTextInputToolbar
-                                    size="small"
-                                    className="RichTextToolbar"
-                                  />
-                                }
-                              /> */}
-                            </div>
+                            <MathJaxContext config={config}>
+                              <MathJax>
+                                <div
+                                  style={{
+                                    width: "100%",
+                                  }}
+                                  className={"question-".concat(i + 1)}
+                                />
+                              </MathJax>
+                            </MathJaxContext>
                             <RadioGroup
                               row
                               aria-labelledby="demo-row-radio-buttons-group-label"
@@ -662,28 +658,23 @@ export function PracticeTest() {
                             <div
                               id={"question".concat(i + 1)}
                               className="question-count"
-                              style={{ marginTop: "1em" }}
+                              style={{
+                                marginTop: "1em",
+                              }}
                             >
                               <span>Question {i + 1}</span>
                             </div>
-                            <div style={{ width: "100%", marginTop: "-20px" }}>
-                              <RichTextInput
-                                id={"questionText"}
-                                style={{
-                                  width: "100% !important",
-                                  display: "none",
-                                }}
-                                source=""
-                                defaultValue={questionList[i].questionText}
-                                className="RichTextContent"
-                                toolbar={
-                                  <RichTextInputToolbar
-                                    size="small"
-                                    className="RichTextToolbar"
-                                  />
-                                }
-                              />
-                            </div>
+                            <MathJaxContext config={config}>
+                              <MathJax>
+                                <div
+                                  style={{
+                                    width: "100%",
+                                  }}
+                                  className={"question-".concat(i + 1)}
+                                />
+                              </MathJax>
+                            </MathJaxContext>
+
                             <div>
                               <TextField
                                 id={"textAnswerCons".concat(i)}
@@ -691,48 +682,15 @@ export function PracticeTest() {
                                 multiline
                                 rows={5}
                                 variant="filled"
-                                style={{ width: "100%" }}
+                                style={{
+                                  width: "100%",
+                                }}
                                 defaultValue={""}
                               />
                             </div>
                           </div>
                         );
                       }
-                    })}
-                    {questionList.map((question, i) => {
-                      var div_question = document.querySelector(
-                        ".question-".concat(i + 1)
-                      );
-                      console.log("All divs: ", div_question);
-                      console.log(
-                        "Question ",
-                        i + 1,
-                        ": ",
-                        questionList[i].questionText,
-                        typeof questionList[i].questionText
-                      );
-                      var xml =
-                        '<myElements type="AA" coID="A923"><myHouse>01</myHouse> <myCars>02</myCars><myWifeAndDog>03</myWifeAndDog></myElements>';
-                      var parser = new DOMParser();
-                      var xml1 =
-                        "<MathJaxContext config= { 'config &#x7D;'><MathJax>`a^2+b^2`</MathJax></MathJaxContext><h1>okok</h1>";
-                      var xmlDoc = parser.parseFromString(xml, "text/xml");
-                      var xmlDoc1 = parser.parseFromString(xml1, "text/xml");
-                      var doc = new DOMParser().parseFromString(
-                        questionList[i].questionText,
-                        "text/html"
-                      );
-                      console.log("xml: ", xmlDoc);
-                      console.log("xml1: ", xmlDoc1);
-                      console.log("doc: ", doc, typeof doc);
-                      // div_question.appendChild(doc.body);
-                      // return doc.body;
-                      // div_question.insertAdjacentHTML(
-                      //   "beforeend",
-                      //   "<li>third</li>"
-                      // );
-                      // div_question.appendChild(questionList[i].questionText);
-                      return <></>;
                     })}
                   </div>
                 </div>
