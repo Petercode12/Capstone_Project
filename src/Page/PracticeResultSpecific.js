@@ -248,6 +248,7 @@ export const PraceticeResultSpecific = () => {
   };
   let stringToHTML = (str) => {
     let dom = document.createElement("div");
+    dom.style.cssText = "line-break: anywhere;";
     dom.innerHTML = str;
     // let xml = new DOMParser().parseFromString(str, "text/xml");
     // console.log("xml: ", xml, typeof xml);
