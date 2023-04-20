@@ -157,8 +157,9 @@ def insert_questions_and_answers(request, exam_id):
             Answer_c = data["Answer_c"]
             Answer_d = data["Answer_d"]
             Solution = data["Solution"]
-            Split_content = False
-            Is_MCQ = data["Is_MCQ"]
+            Type = data["Type"]
+            audioName = data["audioName"]
+            audio = data["audio"]
             exam_id1 = data["exam_id"]
             questions_and_answers = QUESTIONS_AND_ANSWERS(
                 Ordinal=Ordinal,
@@ -169,8 +170,9 @@ def insert_questions_and_answers(request, exam_id):
                 Answer_c=Answer_c,
                 Answer_d=Answer_d,
                 Solution=Solution,
-                Split_content=Split_content,
-                Is_MCQ=Is_MCQ,
+                Type=Type,
+                audioName=audioName,
+                audio=audio,
                 exam_id=exam_id1,
             )
             questions_and_answers.save()
@@ -254,7 +256,7 @@ def test_result(request, exam_id):
         num_test_skip = test_specific.filter(
             User_answer_MCQ__exact="", User_answer_CONS__isnull=True
         ).count()
-        num_cons_question = test_specific.filter(Is_MCQ=0).count()
+        num_cons_question = test_specific.filter(Type="Cons").count()
         print(test_specific_ser.data)
         return JsonResponse(
             {
@@ -276,7 +278,7 @@ def insert_test_result_specific(request, exam_id):
         for data in dataList:
             Ordinal = data["Ordinal"]
             Question = data["Question"]
-            Is_MCQ = data["Is_MCQ"]
+            Type = data["Type"]
             Answer_a = data["Answer_a"]
             Answer_b = data["Answer_b"]
             Answer_c = data["Answer_c"]
@@ -290,7 +292,7 @@ def insert_test_result_specific(request, exam_id):
             questions_and_answers = TEST_RESULT_SPECIFIC(
                 Ordinal=Ordinal,
                 Question=Question,
-                Is_MCQ=Is_MCQ,
+                Type=Type,
                 Answer_a=Answer_a,
                 Answer_b=Answer_b,
                 Answer_c=Answer_c,

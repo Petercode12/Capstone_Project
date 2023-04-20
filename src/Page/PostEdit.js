@@ -45,7 +45,6 @@ import { useMediaQuery, useTheme, Container, Grid } from "@mui/material";
 
 function convertQueryDataToQuestionList(data) {
   let questionList = [];
-  console.log("Data: ", data);
   for (let e of data) {
     let k = {};
 
@@ -55,8 +54,7 @@ function convertQueryDataToQuestionList(data) {
     );
     temp = temp.replaceAll('<br class="ProseMirror-trailingBreak">', "");
     temp = temp.replaceAll("`</MathJax></MathJaxContext>", "&lt;/Math&gt;");
-    console.log("Temp: ", temp);
-    if (e.Is_MCQ) {
+    if (e.Type === "MCQ") {
       k = {
         questionText: temp,
         answerOptions: [
@@ -68,11 +66,17 @@ function convertQueryDataToQuestionList(data) {
         correctAnswer: e.Correct_answer,
         type: "MCQ",
       };
-    } else {
+    } else if (e.Type === "Cons") {
       k = {
         questionText: temp,
         answerOptions: e.Solution,
         type: "Cons",
+      };
+    } else if (e.Type === "Audio") {
+      k = {
+        fileName: e.audioName,
+        file: e.audio,
+        type: "Audio",
       };
     }
     questionList.push(k);
@@ -93,6 +97,7 @@ export function PostEdit() {
     assignNewValueForElementsCheck,
     setAssignNewValueForElementsCheck,
   ] = useState(false);
+
   useEffect(() => {
     axios
       .get(
@@ -136,8 +141,17 @@ export function PostEdit() {
     ]);
     window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
   };
+  const insertAudio = () => {
+    setQuestionList([
+      ...questionList,
+      { fileName: "", file: "", type: "Audio" },
+    ]);
+    window.scrollTo({
+      top: document.body.scrollHeight,
+      behavior: "smooth",
+    });
+  };
   const PostEditToolbar = () => (
-    //nút save của trang edit test
     <Toolbar>
       <Box sx={{ "& > button": { m: 1 } }}>
         <LoadingButton
@@ -156,7 +170,15 @@ export function PostEdit() {
       </Box>
     </Toolbar>
   );
-
+  function calculateIndexMinusNumOfAudio(i) {
+    let numOfAudio = 0;
+    for (let x = 0; x < i; x++) {
+      if (questionList[x].type === "Audio") {
+        numOfAudio += 1;
+      }
+    }
+    return i + 1 - numOfAudio;
+  }
   const scrolltoId = (target) => {
     let access = document.getElementById(target);
     if (access !== null) {
@@ -167,19 +189,22 @@ export function PostEdit() {
     let buttonGroupList = [];
     let buttonList = [];
     if (questionList.length < 4) {
-      for (let i = 1; i <= questionList.length; i++) {
-        buttonList.push(
-          <Button
-            xs={{ margin: 0, p: 0, maxWidth: 10, py: 0.25 }}
-            variant="outlined"
-            onClick={() => {
-              scrolltoId("question".concat(i));
-            }}
-            size="small"
-          >
-            {i}
-          </Button>
-        );
+      for (let i = 0; i < questionList.length; i++) {
+        if (questionList[i].type !== "Audio") {
+          let calculatedIndex = calculateIndexMinusNumOfAudio(i);
+          buttonList.push(
+            <Button
+              xs={{ margin: 0, p: 0, maxWidth: 10, py: 0.25 }}
+              variant="outlined"
+              onClick={() => {
+                scrolltoId("question".concat(calculatedIndex));
+              }}
+              size="small"
+            >
+              {calculatedIndex}
+            </Button>
+          );
+        }
       }
       buttonGroupList.push(
         <ButtonGroup variant="outlined" aria-label="outlined button group">
@@ -187,35 +212,41 @@ export function PostEdit() {
         </ButtonGroup>
       );
     } else {
-      for (let i = 1; i <= questionList.length; i++) {
-        if (i % 4 !== 0) {
-          buttonList.push(
-            <Button
-              onClick={() => {
-                scrolltoId("question".concat(i));
-              }}
-              size="small"
-            >
-              {i}
-            </Button>
-          );
-        } else {
-          buttonList.push(
-            <Button
-              onClick={() => {
-                scrolltoId("question".concat(i));
-              }}
-              size="small"
-            >
-              {i}
-            </Button>
-          );
-          buttonGroupList.push(
-            <ButtonGroup variant="outlined" aria-label="outlined button group">
-              {buttonList}
-            </ButtonGroup>
-          );
-          buttonList = [];
+      for (let i = 0; i < questionList.length; i++) {
+        if (questionList[i].type !== "Audio") {
+          let calculatedIndex = calculateIndexMinusNumOfAudio(i);
+          if (calculatedIndex % 4 !== 0) {
+            buttonList.push(
+              <Button
+                onClick={() => {
+                  scrolltoId("question".concat(calculatedIndex));
+                }}
+                size="small"
+              >
+                {calculatedIndex}
+              </Button>
+            );
+          } else {
+            buttonList.push(
+              <Button
+                onClick={() => {
+                  scrolltoId("question".concat(calculatedIndex));
+                }}
+                size="small"
+              >
+                {calculatedIndex}
+              </Button>
+            );
+            buttonGroupList.push(
+              <ButtonGroup
+                variant="outlined"
+                aria-label="outlined button group"
+              >
+                {buttonList}
+              </ButtonGroup>
+            );
+            buttonList = [];
+          }
         }
       }
       buttonGroupList.push(
@@ -298,7 +329,9 @@ export function PostEdit() {
           Answer_d: questionList[i].answerOptions[3].answerText,
           Correct_answer: questionList[i].correctAnswer,
           Solution: null,
-          Is_MCQ: true,
+          Type: "MCQ",
+          audioName: "",
+          audio: "",
           exam_id: params.id,
         };
         saveData.push(k);
@@ -312,7 +345,25 @@ export function PostEdit() {
           Answer_d: null,
           Correct_answer: null,
           Solution: questionList[i].answerOptions,
-          Is_MCQ: false,
+          Type: "Cons",
+          audioName: "",
+          audio: "",
+          exam_id: params.id,
+        };
+        saveData.push(k);
+      } else if (questionList[i].type === "Audio") {
+        let k = {
+          Ordinal: i + 1,
+          Question: "",
+          Answer_a: null,
+          Answer_b: null,
+          Answer_c: null,
+          Answer_d: null,
+          Correct_answer: null,
+          Solution: null,
+          Type: "Audio",
+          audioName: questionList[i].fileName,
+          audio: questionList[i].file,
           exam_id: params.id,
         };
         saveData.push(k);
@@ -328,7 +379,7 @@ export function PostEdit() {
         handleTextFieldB_MCQChange(i);
         handleTextFieldC_MCQChange(i);
         handleTextFieldD_MCQChange(i);
-      } else {
+      } else if (questionList[i].type === "Cons") {
         handleQuestionTextChange(i);
         handleTextField_ConsChange(i);
       }
@@ -365,7 +416,6 @@ export function PostEdit() {
       "`</MathJax></MathJaxContext>"
     );
     setQuestionList(newArr);
-    console.log("Question Text change: ", newArr[i]);
   };
   const handleTextFieldA_MCQChange = (i) => {
     let textFieldA_Element = document.getElementById("textAnswerA".concat(i));
@@ -471,7 +521,7 @@ export function PostEdit() {
               ? correctAnswer_Element.value
               : "";
         }
-      } else {
+      } else if (questionList[i].type === "Cons") {
         // questionText
         let questionTextElement = document.getElementById(
           "questionText".concat(i)
@@ -543,7 +593,7 @@ export function PostEdit() {
         if (correctAnswer_Element !== null) {
           correctAnswer_Element.value = questionList[i].correctAnswer;
         }
-      } else {
+      } else if (questionList[i].type === "Cons") {
         // questionText
         let questionTextElement = document.getElementById(
           "questionText".concat(i)
@@ -652,7 +702,27 @@ export function PostEdit() {
       </RichTextInputToolbar>
     );
   };
-
+  const toBase64 = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
+  const getFileName = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.fileName = file.name;
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.fileName);
+      reader.onerror = (error) => reject(error);
+    });
+  async function audioToBase64(e, i) {
+    let tempQuestionList = questionList;
+    tempQuestionList[i].file = await toBase64(e.target.files[0]);
+    tempQuestionList[i].fileName = await getFileName(e.target.files[0]);
+    setQuestionList([...tempQuestionList]);
+  }
   return (
     <Container sx={{ maxWidth: { xl: 1280 } }}>
       <Grid container justifyContent="space-between" spacing={2}>
@@ -674,6 +744,14 @@ export function PostEdit() {
             >
               <i className="bi bi-plus" /> Constructive Questions
             </Button>
+            <Button
+              variant="contained"
+              onClick={insertAudio}
+              className="InsertAudioFile"
+              mr={{ xs: 0, sm: "0.5em" }}
+            >
+              <i className="bi bi-plus" /> Audio
+            </Button>
           </Grid>
         </Grid>
         <Grid item xs={12} sm={8} md={9} lg={10} style={{ paddingTop: "48px" }}>
@@ -692,7 +770,7 @@ export function PostEdit() {
                   <div className="question-text">
                     {questionList.map((question, i) => {
                       if (question.type === "MCQ") {
-                        console.log("i: ", i);
+                        let calculatedIndex = calculateIndexMinusNumOfAudio(i);
                         return (
                           <div key={i}>
                             <div
@@ -700,9 +778,9 @@ export function PostEdit() {
                               style={{
                                 margin: "1em 0em",
                               }}
-                              id={"question".concat(i + 1)}
+                              id={"question".concat(calculatedIndex)}
                             >
-                              <span>Question {i + 1}</span>
+                              <span>Question {calculatedIndex}</span>
                               <Button
                                 variant="outlined"
                                 style={{
@@ -872,18 +950,18 @@ export function PostEdit() {
                             </RadioGroup>
                           </div>
                         );
-                      } else {
-                        console.log("i: ", i);
+                      } else if (question.type === "Cons") {
+                        let calculatedIndex = calculateIndexMinusNumOfAudio(i);
                         return (
                           <div key={i}>
                             <div
-                              id={"question".concat(i + 1)}
+                              id={"question".concat(calculatedIndex)}
                               className="question-count"
                               style={{
                                 marginTop: "2em",
                               }}
                             >
-                              <span>Question {i + 1}</span>
+                              <span>Question {calculatedIndex}</span>
                               <Button
                                 variant="outlined"
                                 style={{
@@ -921,6 +999,53 @@ export function PostEdit() {
                                 defaultValue={questionList[i].answerOptions}
                               />
                             </div>
+                          </div>
+                        );
+                      } else if (question.type === "Audio") {
+                        return (
+                          <div
+                            key={i}
+                            style={{
+                              marginTop: "1.5em",
+                              marginBottom: "1.5em",
+                              border: "2px solid blue",
+                              borderRadius: "5px",
+                              width: "fit-content",
+                              padding: "5px",
+                            }}
+                          >
+                            <span>Upload audio: </span>
+                            {/* {questionList[i].file !== "" ? (
+                              <audio src={questionList[i].file} controls />
+                            ) : (
+                              ""
+                            )} */}
+
+                            <Button
+                              color="secondary"
+                              variant="contained"
+                              component="label"
+                            >
+                              Choose file
+                              <input
+                                id="audioFile"
+                                type="file"
+                                name="audio"
+                                hidden
+                                multiple
+                                onChange={(event) => {
+                                  audioToBase64(event, i);
+                                }}
+                              />
+                            </Button>
+                            <span
+                              style={{
+                                marginLeft: "0.8em",
+                                color: "#fb8500",
+                              }}
+                            >
+                              {questionList[i].fileName}
+                            </span>
                           </div>
                         );
                       }

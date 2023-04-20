@@ -91,6 +91,11 @@ button.InsertConsButton {
   float: left;
   margin-left: 1.5em;
 }
+button.InsertAudioFile {
+  display: flex;
+  float: left;
+  margin-left: 1.5em;
+}
 .css-mhc70k-MuiGrid-root > .MuiGrid-item {
   padding-left: 0px;
 }
@@ -207,6 +212,9 @@ div.css-46bh2p-MuiCardContent-root {
 /* Responsive small mobile */
 @media only screen and (max-width: 400px) {
   button.InsertConsButton {
+    margin-left: 0px;
+  }
+  button.InsertAudioFile {
     margin-left: 0px;
   }
 }

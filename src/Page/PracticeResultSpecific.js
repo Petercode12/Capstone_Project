@@ -37,7 +37,7 @@ function convertQueryDataToQuestionList(data) {
   let questionList = []; // questionList bao gồm: questionText, answerOptions, correctAnswer đối với MCQ, type, câu trả lời và điểm số.
   for (let e of data) {
     let k = {};
-    if (e.Is_MCQ) {
+    if (e.Type === "MCQ") {
       k = {
         questionText: e.Question,
         answerOptions: [
@@ -51,7 +51,7 @@ function convertQueryDataToQuestionList(data) {
         type: "MCQ",
         mark: e.Mark,
       };
-    } else {
+    } else if (e.Type === "Cons"){
       k = {
         questionText: e.Question,
         answerOptions: e.Solution,

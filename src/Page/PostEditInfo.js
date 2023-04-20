@@ -113,16 +113,12 @@ export function PostEditInfo({ ...props }) {
           const note = document.querySelector("#clock");
           if (note) note.classList.add("Duration");
         }
-        console.log("Data of EditInfo: ", res.data);
-        console.log("Setduration: ", res.data["duration"] > 0);
       })
       .catch((err) => {
         console.log(err);
       });
   }, []);
   async function updateTestInfo(save_data) {
-    console.log("Data: ", save_data);
-    console.log("Data saved: ", save_data);
     await axios // post  lich sử làm bài và kết quả
       .patch("http://localhost:8000/all_exams/".concat(params.id), save_data)
       .then((res) => {
@@ -133,8 +129,6 @@ export function PostEditInfo({ ...props }) {
       });
   }
   const postSave = async function(data) {
-    console.log("User info: ", userInfo);
-
     if (data["image"]) data["image"] = await toBase64(data["image"].rawFile);
     else data["image"] = image;
 
@@ -260,7 +254,6 @@ export function PostEditInfo({ ...props }) {
                     defaultValue={i["duration"] > 0}
                     onChange={() => {
                       setIsSetDuration(!isSetDuration);
-                      console.log(isSetDuration);
                       if (isSetDuration === false) {
                         const note = document.querySelector("#clock");
                         note.classList.remove("Duration");
@@ -290,7 +283,6 @@ export function PostEditInfo({ ...props }) {
                       size="small"
                       onChange={(e) => {
                         var value = parseInt(e.target.value, "10");
-                        console.log(value, e.target.value.length);
                         if (value > max) {
                           value = max;
                         } else if (value < min) {
@@ -299,7 +291,6 @@ export function PostEditInfo({ ...props }) {
                           setTimeError(false);
                         }
                         setNum(value);
-                        console.log(e.target.value, typeof value);
                       }}
                       value={num}
                     />

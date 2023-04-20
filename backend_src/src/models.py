@@ -33,8 +33,9 @@ class QUESTIONS_AND_ANSWERS(models.Model):
     Answer_c = models.TextField(null=True)
     Answer_d = models.TextField(null=True)
     Solution = models.TextField(null=True)  # For constructive
-    Split_content = models.BooleanField(default=False)
-    Is_MCQ = models.BooleanField(default=True)
+    Type = models.TextField(default="")
+    audioName = models.TextField(null=False, default="")
+    audio = models.TextField(null=False, default="")
     exam = models.ForeignKey(EXAMS_COLLECTION, on_delete=models.CASCADE)
 
 
@@ -74,7 +75,7 @@ class TEST_RESULT_SPECIFIC(models.Model):
     id = models.AutoField(primary_key=True, null=False)
     Ordinal = models.IntegerField(null=True)
     Question = models.TextField(null=True)
-    Is_MCQ = models.BooleanField(default=True)
+    Type = models.TextField(default="")
     Answer_a = models.TextField(null=True)
     Answer_b = models.TextField(null=True)
     Answer_c = models.TextField(null=True)

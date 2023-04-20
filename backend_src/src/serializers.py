@@ -48,8 +48,9 @@ class questions_and_answers_serializer(serializers.ModelSerializer):
             "Answer_c",
             "Answer_d",
             "Solution",
-            "Split_content",
-            "Is_MCQ",
+            "Type",
+            "audioName",
+            "audio",
             "exam_id",
         )
 
@@ -75,7 +76,7 @@ class test_result_specific_serializer(serializers.ModelSerializer):
             "id",
             "Ordinal",
             "Question",
-            "Is_MCQ",
+            "Type",
             "Answer_a",
             "Answer_b",
             "Answer_c",

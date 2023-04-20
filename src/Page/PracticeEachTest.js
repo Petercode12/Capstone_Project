@@ -34,7 +34,7 @@ function convertQueryDataToQuestionList(data) {
   let questionList = []; // questionList bao gồm: questionText, answerOptions, correctAnswer đối với MCQ, type
   for (let e of data) {
     let k = {};
-    if (e.Is_MCQ) {
+    if (e.Type === "MCQ") {
       k = {
         questionText: e.Question,
         answerOptions: [
@@ -47,7 +47,7 @@ function convertQueryDataToQuestionList(data) {
         correctAnswer: e.Correct_answer,
         type: "MCQ",
       };
-    } else {
+    } else if (e.Type === "Cons") {
       k = {
         questionText: e.Question,
         answerOptions: e.Solution,
@@ -296,7 +296,7 @@ export function PracticeTest() {
         let k = {
           Ordinal: i + 1,
           Question: questionList[i].questionText,
-          Is_MCQ: true,
+          Type: "MCQ",
           Answer_a: questionList[i].answerOptions[0].answerText,
           Answer_b: questionList[i].answerOptions[1].answerText,
           Answer_c: questionList[i].answerOptions[2].answerText,
@@ -313,7 +313,7 @@ export function PracticeTest() {
         let k = {
           Ordinal: i + 1,
           Question: questionList[i].questionText,
-          Is_MCQ: false,
+          Type: "Cons",
           Answer_a: null,
           Answer_b: null,
           Answer_c: null,

@@ -330,15 +330,15 @@ export function PracticeResult() {
           </Typography>
           <div spacing={2} className="result-detail-box result-answers-list">
             {testSpecific.map((exam, i) => {
-              let isMCQ = exam["Is_MCQ"];
+              let type = exam["Type"];
               let userAnswer, correctAnswer;
 
-              if (isMCQ) {
+              if (type === "MCQ") {
                 if (exam["User_answer_MCQ"] === "")
                   userAnswer = "Not anwsered!";
                 else userAnswer = exam["User_answer_MCQ"];
                 correctAnswer = exam["Correct_answer"];
-              } else {
+              } else if (type === "Cons") {
                 if (exam["User_answer_CONS"] === "")
                   userAnswer = "Not anwsered!";
                 else userAnswer = exam["User_answer_CONS"];
@@ -374,32 +374,32 @@ export function PracticeResult() {
             })}
             {testSpecific.map((exam, i) => {
               let temp = document.querySelectorAll(".result-answers-item");
-              let isMCQ = exam["Is_MCQ"];
+              let type = exam["Type"];
               let userAnswer, correctAnswer;
 
-              if (isMCQ) {
+              if (type === "MCQ") {
                 if (exam["User_answer_MCQ"] === "")
                   userAnswer = "Not anwsered!";
                 else userAnswer = exam["User_answer_MCQ"];
                 correctAnswer = exam["Correct_answer"];
-              } else {
+              } else if (type === "Cons") {
                 if (exam["User_answer_CONS"] === "")
                   userAnswer = "Not anwsered!";
                 else userAnswer = exam["User_answer_CONS"];
                 correctAnswer = exam["Solution"];
               }
               if (temp != null && temp[i] != null) {
-                if (isMCQ && userAnswer === correctAnswer)
+                if (type === "MCQ" && userAnswer === correctAnswer)
                   temp[i].lastChild.className =
                     "text-correct fas fa-check fa-lg correct-icon";
                 else if (
-                  isMCQ &&
+                  type === "MCQ" &&
                   exam["User_answer_MCQ"] !== "" &&
                   userAnswer !== correctAnswer
                 )
                   temp[i].lastChild.className =
                     "text-wrong fas fa-times fa-lg wrong-icon";
-                else if (!isMCQ) {
+                else if (!type === "MCQ") {
                   temp[i].lastChild.className =
                     "text-constructive fas fa-pencil-alt fa-lg";
                 } else {
