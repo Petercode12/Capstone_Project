@@ -512,15 +512,15 @@ export function PostEdit() {
           newArr[i].answerOptions[3].answerText = textFieldD_Element.value;
         }
         // correctAnswer
-        let correctAnswer_Element = document.getElementById(
-          "correctAnswer".concat(i)
-        );
-        if (correctAnswer_Element !== null) {
-          newArr[i].correctAnswer =
-            correctAnswer_Element.value !== undefined
-              ? correctAnswer_Element.value
-              : "";
-        }
+        // let correctAnswer_Element = document.getElementById(
+        //   "correctAnswer".concat(i)
+        // );
+        // if (correctAnswer_Element !== null) {
+        //   newArr[i].correctAnswer =
+        //     correctAnswer_Element.value !== undefined
+        //       ? correctAnswer_Element.value
+        //       : "";
+        // }
       } else if (questionList[i].type === "Cons") {
         // questionText
         let questionTextElement = document.getElementById(
@@ -1046,6 +1046,19 @@ export function PostEdit() {
                             >
                               {questionList[i].fileName}
                             </span>
+                            <Button
+                              variant="outlined"
+                              style={{
+                                float: "right",
+                                marginLeft: "1em",
+                              }}
+                              startIcon={<DeleteIcon />}
+                              onClick={() => {
+                                removeQuestionAndAnswerFromQuestionList(i);
+                              }}
+                            >
+                              Delete
+                            </Button>
                           </div>
                         );
                       }

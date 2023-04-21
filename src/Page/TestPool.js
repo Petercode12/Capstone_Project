@@ -23,6 +23,9 @@ import SearchIcon from "@mui/icons-material/Search";
 import { useGetIdentity } from "react-admin";
 import "../Style/TestPoolStyle.css";
 import { ExpandMore } from "@mui/icons-material";
+import { styled } from "@mui/material/styles";
+import Divider from "@mui/material/Divider";
+import Chip from "@mui/material/Chip";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 15;
@@ -35,7 +38,13 @@ const MenuProps = {
   },
 };
 const tags = ["Math", "English", "Geography", "Physics", "Calculus", "IELTS"];
-
+const Root = styled("div")(({ theme }) => ({
+  width: "100%",
+  ...theme.typography.body2,
+  "& > :not(style) + :not(style)": {
+    marginTop: theme.spacing(2),
+  },
+}));
 export function TestPool() {
   const [originalExamList, setOriginalExamList] = useState([]);
   const [examList, setExamList] = useState([]);
@@ -196,84 +205,181 @@ export function TestPool() {
           </FormControl>
         </div>
       </Container>
+      <Root>
+        <Divider style={{ marginBottom: "1em" }}>
+          <Chip style={{ fontSize: "14px" }} label="MY TEST" />
+        </Divider>
+      </Root>
       <div spacing={2} className="GridContainer">
-        {examList.map((exam, i) => {
-          if (exam["description"] === "") {
-            exam["description"] = "No description";
-          }
-          if (exam["duration"] === 0) {
-            exam["duration"] = infinity;
-          }
-          return (
-            <div item key={i} className="GridPaper">
-              <Card
-                sx={{
-                  width: 340,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  marginBottom: "4px",
-                }}
-                className="NavigationAsidePaper"
-              >
-                <CardMedia
-                  component="img"
-                  alt="exam paper"
-                  height="140"
-                  image={exam["image"]}
-                />
-                <CardContent sx={{ padding: "0px 12px" }}>
-                  <Typography
-                    gutterBottom
-                    variant="h5"
-                    component="div"
-                    noWrap
-                    sx={{ margin: "4px 0px" }}
-                  >
-                    {exam["Name"]}
-                  </Typography>
-                  <Typography
-                    variant="body1"
-                    inline
-                    color="text.secondary"
-                    InputProps={{
-                      readOnly: true,
-                    }}
-                    noWrap
-                    sx={{
-                      marginBottom: "2px",
-                      marginLeft: "2px",
-                    }}
-                  >
-                    {exam["description"]}
-                  </Typography>
-                  <Typography variant="subtitle1" component="div">
-                    <div
-                      style={{
-                        transform: "translateY(1px)",
-                        display: "inline-block",
+        {examList
+          .filter((exam) => {
+            return exam.User_id === userInfo["id"];
+          })
+          .map((exam, i) => {
+            if (exam["description"] === "") {
+              exam["description"] = "No description";
+            }
+            if (exam["duration"] === 0) {
+              exam["duration"] = infinity;
+            }
+            return (
+              <div item key={i} className="GridPaper">
+                <Card
+                  sx={{
+                    width: 340,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    marginBottom: "4px",
+                  }}
+                  className="NavigationAsidePaper"
+                >
+                  <CardMedia
+                    component="img"
+                    alt="exam paper"
+                    height="140"
+                    image={exam["image"]}
+                  />
+                  <CardContent sx={{ padding: "0px 12px" }}>
+                    <Typography
+                      gutterBottom
+                      variant="h5"
+                      component="div"
+                      noWrap
+                      sx={{ margin: "4px 0px" }}
+                    >
+                      {exam["Name"]}
+                    </Typography>
+                    <Typography
+                      variant="body1"
+                      inline
+                      color="text.secondary"
+                      InputProps={{
+                        readOnly: true,
+                      }}
+                      noWrap
+                      sx={{
+                        marginBottom: "2px",
+                        marginLeft: "2px",
                       }}
                     >
-                      <i
-                        className="fa-regular fa-clock"
+                      {exam["description"]}
+                    </Typography>
+                    <Typography variant="subtitle1" component="div">
+                      <div
                         style={{
-                          fontSize: "20px",
-                          marginRight: ".4rem",
-                          marginTop: ".4rem",
+                          transform: "translateY(1px)",
+                          display: "inline-block",
                         }}
-                        sx={{ margin: "0px 4px" }}
-                      />
-                    </div>
-                    {exam["duration"]} min
-                  </Typography>
-                </CardContent>
-                <CardActions>
-                  <Button size="small">Edit</Button>
-                  <Button size="small">Practice</Button>
-                </CardActions>
-              </Card>
-            </div>
-          );
-        })}
+                      >
+                        <i
+                          className="fa-regular fa-clock"
+                          style={{
+                            fontSize: "20px",
+                            marginRight: ".4rem",
+                            marginTop: ".4rem",
+                          }}
+                          sx={{ margin: "0px 4px" }}
+                        />
+                      </div>
+                      {exam["duration"]} min
+                    </Typography>
+                  </CardContent>
+                  <CardActions>
+                    <Button size="small">Edit</Button>
+                    <Button size="small">Practice</Button>
+                  </CardActions>
+                </Card>
+              </div>
+            );
+          })}
+      </div>
+      <Root>
+        <Divider style={{ marginBottom: "1em", marginTop: "1em" }}>
+          <Chip style={{ fontSize: "14px" }} label="SHARED TEST" />
+        </Divider>
+      </Root>
+      <div spacing={2} className="GridContainer">
+        {examList
+          .filter((exam) => {
+            return exam.User_id !== userInfo["id"];
+          })
+          .map((exam, i) => {
+            if (exam["description"] === "") {
+              exam["description"] = "No description";
+            }
+            if (exam["duration"] === 0) {
+              exam["duration"] = infinity;
+            }
+            return (
+              <div item key={i} className="GridPaper">
+                <Card
+                  sx={{
+                    width: 340,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    marginBottom: "4px",
+                  }}
+                  className="NavigationAsidePaper"
+                >
+                  <CardMedia
+                    component="img"
+                    alt="exam paper"
+                    height="140"
+                    image={exam["image"]}
+                  />
+                  <CardContent sx={{ padding: "0px 12px" }}>
+                    <Typography
+                      gutterBottom
+                      variant="h5"
+                      component="div"
+                      noWrap
+                      sx={{ margin: "4px 0px" }}
+                    >
+                      {exam["Name"]}
+                    </Typography>
+                    <Typography
+                      variant="body1"
+                      inline
+                      color="text.secondary"
+                      InputProps={{
+                        readOnly: true,
+                      }}
+                      noWrap
+                      sx={{
+                        marginBottom: "2px",
+                        marginLeft: "2px",
+                      }}
+                    >
+                      {exam["description"]}
+                    </Typography>
+                    <Typography variant="subtitle1" component="div">
+                      <div
+                        style={{
+                          transform: "translateY(1px)",
+                          display: "inline-block",
+                        }}
+                      >
+                        <i
+                          className="fa-regular fa-clock"
+                          style={{
+                            fontSize: "20px",
+                            marginRight: ".4rem",
+                            marginTop: ".4rem",
+                          }}
+                          sx={{ margin: "0px 4px" }}
+                        />
+                      </div>
+                      {exam["duration"]} min
+                    </Typography>
+                  </CardContent>
+                  <CardActions>
+                    <Button size="small">Edit</Button>
+                    <Button size="small">Practice</Button>
+                  </CardActions>
+                </Card>
+              </div>
+            );
+          })}
       </div>
     </>
   );
