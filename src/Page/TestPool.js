@@ -55,6 +55,7 @@ export function TestPool() {
       .then((res) => {
         setOriginalExamList(res.data);
         setExamList(res.data);
+        console.log("Exam list: ", res.data);
       })
       .catch((err) => {
         console.log(err);
@@ -205,7 +206,7 @@ export function TestPool() {
             exam["duration"] = infinity;
           }
           return (
-            <div item key={i} className="GridPaper">
+            <div item="true" key={i} className="GridPaper">
               <Card
                 sx={{
                   width: 340,
@@ -233,7 +234,6 @@ export function TestPool() {
                   </Typography>
                   <Typography
                     variant="body1"
-                    inline
                     color="text.secondary"
                     InputProps={{
                       readOnly: true,

@@ -6,6 +6,7 @@ import {
   Resource,
   fetchUtils,
   defaultTheme,
+  useGetIdentity,
 } from "react-admin";
 import { UserList } from "./Page/Users";
 import { PostList, PostCreate } from "./Page/Posts";
@@ -23,6 +24,8 @@ import { Route } from "react-router";
 import { ShareForm } from "./Page/ShareForm";
 import { PracticeResult } from "./Page/PracticeResult";
 import { PraceticeResultSpecific } from "./Page/PracticeResultSpecific";
+import { MyCustomList } from "./Page/Posts";
+import { QueryClient, QueryClientProvider, useQuery } from "react-query";
 // A list of allowed origins that can access our backend API
 
 const httpClient = (url, options = {}) => {
@@ -57,41 +60,63 @@ const theme = {
   },
 };
 const dataProvider = jsonServerProvider("http://127.0.0.1:8000", httpClient);
+const queryClient = new QueryClient();
+function App() {
+  // const { data, isLoading, error } = useGetIdentity();
+  // console.log("data: ", data);
+  // let create_test_name = "all_exams";
+  // if (userInfo.id) {
+  //   create_test_name = "all_exams".concat(userInfo.id);
+  // }
+  const data = JSON.parse(localStorage.getItem("auth"));
+  const userInfo = {
+    id: data.id,
+    fullName: data.Username,
+    avatar: data.Avatar,
+  };
+  return (
+    <QueryClientProvider client={queryClient}>
+      <Admin
+        dashboard={TestPool}
+        dataProvider={dataProvider}
+        loginPage={MyLoginPage}
+        authProvider={authProvider}
+        theme={theme}
+        layout={MyLayout}
+      >
+        {() => {
+          console.log("all_exams/".concat(userInfo.id));
+        }}
+        <Resource
+          name={"all_exams/".concat(userInfo.id)}
+          options={{ label: "Create test" }}
+          list={PostList}
+          edit={PostEdit}
+          create={PostCreate}
+          icon={LibraryAddIcon}
+        />
 
-const App = () => (
-  <Admin
-    dashboard={TestPool}
-    dataProvider={dataProvider}
-    loginPage={MyLoginPage}
-    authProvider={authProvider}
-    theme={theme}
-    layout={MyLayout}
-  >
-    <Resource
-      name="all_exams"
-      options={{ label: "Test collection" }}
-      list={PostList}
-      edit={PostEdit}
-      create={PostCreate}
-      icon={LibraryAddIcon}
-    />
-
-    <Resource
-      name="practice_tests"
-      options={{ label: "Practice tests" }}
-      list={PracticeList}
-      edit={PracticeTest}
-      icon={ModeEditOutlineTwoToneIcon}
-    />
-    <CustomRoutes>
-      <Route path="/all_exams/share/:id" element={<ShareForm />} />
-      <Route path="/practice_tests/result/:id" element={<PracticeResult />} />
-      <Route
-        path="/practice_tests/result_specific/"
-        element={<PraceticeResultSpecific />}
-      />
-    </CustomRoutes>
-  </Admin>
-);
-
+        <Resource
+          name="practice_tests"
+          options={{ label: "Practice test" }}
+          list={PracticeList}
+          edit={PracticeTest}
+          icon={ModeEditOutlineTwoToneIcon}
+        />
+        <CustomRoutes>
+          {/* <Route path="/all_exams/:id" element={<PostList />} /> */}
+          <Route path="/all_exams/share/:id" element={<ShareForm />} />
+          <Route
+            path="/practice_tests/result/:id"
+            element={<PracticeResult />}
+          />
+          <Route
+            path="/practice_tests/result_specific/"
+            element={<PraceticeResultSpecific />}
+          />
+        </CustomRoutes>
+      </Admin>
+    </QueryClientProvider>
+  );
+}
 export default App;

@@ -29,7 +29,7 @@ export const authProvider = {
   },
   getIdentity: () => {
     try {
-      console.log("auth: ", localStorage.getItem("auth"));
+      // console.log("auth: ", localStorage.getItem("auth"));
       const data = JSON.parse(localStorage.getItem("auth"));
       const userInfo = {
         id: data.id,

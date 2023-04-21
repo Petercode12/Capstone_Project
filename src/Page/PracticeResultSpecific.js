@@ -20,14 +20,13 @@ import {
   Error404,
 } from "react-admin";
 import { RichTextInput, RichTextInputToolbar } from "ra-input-rich-text";
-import SaveIcon from "@mui/icons-material/Save";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import Paper from "@mui/material/Paper";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import axios from "axios";
 import Countdown from "react-countdown";
-import { useMediaQuery, useTheme, Container, Grid } from "@mui/material";
+import { Container, Grid } from "@mui/material";
 import "../Style/PracticeResultSpecific.css";
 import "../Style/PracticeStyle.css";
 import { NotFound } from "./NotFound";

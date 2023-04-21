@@ -16,9 +16,9 @@ test_result_pk = 1
 
 # Create your views here.
 @csrf_exempt
-def query_all_exams_api(request):
+def query_all_exams_api(request, user_id):
     if request.method == "GET":
-        exams = EXAMS_COLLECTION.objects.all().order_by(
+        exams = EXAMS_COLLECTION.objects.filter(User_id=user_id).order_by(
             "id"
         )  # Phuoc moi them vo .order_by("id")
         start = int(request.GET["_start"])
@@ -41,7 +41,12 @@ def query_all_exams_api(request):
         return JsonResponse(
             status=200, headers=headers, data=exams_serializer.data, safe=False
         )
-
+@csrf_exempt
+def query_all_exams_created_by_userid(request, user_id):
+    if request.method == "GET":
+        exams = EXAMS_COLLECTION.objects.filter(User_id=user_id)
+        exams_serializer = exams_collection_serializer(exams, many=True)
+        return JsonResponse(exams_serializer.data, safe=False)
 
 @csrf_exempt
 def query_all_practice_tests(request):
@@ -86,7 +91,7 @@ def query_exams_by_userid(request, user_id):
 
 
 @csrf_exempt
-def query_exam_by_id(request, event_id):
+def query_exam_by_id(request, user_id, event_id):
     if request.method == "GET":
         exam = EXAMS_COLLECTION.objects.get(id=event_id)
         exam_serializer = exams_collection_serializer2(exam)

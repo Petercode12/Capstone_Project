@@ -92,6 +92,12 @@ export function PostEditInfo({ ...props }) {
   const params = useParams();
   const redirect = useRedirect();
   const { data: userInfo, isLoading, err } = useGetIdentity();
+  let test_info_url = "http://localhost:8000/all_exams/";
+  if (userInfo)
+    test_info_url = "http://localhost:8000/all_exams/".concat(
+      userInfo.id + "/" + params.id
+    );
+  console.log("User info: ", userInfo, test_info_url);
   const [num, setNum] = useState(1);
   const min = 1;
   const max = 999;
@@ -99,7 +105,7 @@ export function PostEditInfo({ ...props }) {
   const [isSetDuration, setIsSetDuration] = useState(false);
   useEffect(() => {
     axios
-      .get("http://localhost:8000/all_exams/".concat(params.id))
+      .get(test_info_url)
       .then((res) => {
         setData([res.data]);
         setIsSetDuration(res.data["duration"] > 0);
@@ -124,7 +130,12 @@ export function PostEditInfo({ ...props }) {
     console.log("Data: ", save_data);
     console.log("Data saved: ", save_data);
     await axios // post  lich sử làm bài và kết quả
-      .patch("http://localhost:8000/all_exams/".concat(params.id), save_data)
+      .patch(
+        "http://localhost:8000/all_exams/".concat(
+          userInfo.id + "/" + params.id
+        ),
+        save_data
+      )
       .then((res) => {
         console.log("Data: ", res.data);
       })

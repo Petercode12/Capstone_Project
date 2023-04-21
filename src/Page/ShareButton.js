@@ -6,7 +6,7 @@ import { Link } from "@mui/material";
 
 export function ShareButton() {
   const recordId = useGetRecordId();
-  console.log("Record: ", recordId);
+  // console.log("Record: ", recordId);
   return (
     <Button
       startIcon={<ShareIcon />}
