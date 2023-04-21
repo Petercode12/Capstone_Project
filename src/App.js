@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useState } from "react";
 import { render } from "react-dom";
 import {
   Admin,
@@ -62,18 +63,7 @@ const theme = {
 const dataProvider = jsonServerProvider("http://127.0.0.1:8000", httpClient);
 const queryClient = new QueryClient();
 function App() {
-  // const { data, isLoading, error } = useGetIdentity();
-  // console.log("data: ", data);
-  // let create_test_name = "all_exams";
-  // if (userInfo.id) {
-  //   create_test_name = "all_exams".concat(userInfo.id);
-  // }
-  const data = JSON.parse(localStorage.getItem("auth"));
-  const userInfo = {
-    id: data.id,
-    fullName: data.Username,
-    avatar: data.Avatar,
-  };
+  const [userID, setUserID] = useState();
   return (
     <QueryClientProvider client={queryClient}>
       <Admin
@@ -85,10 +75,11 @@ function App() {
         layout={MyLayout}
       >
         {() => {
-          console.log("all_exams/".concat(userInfo.id));
+          let data = JSON.parse(localStorage.getItem("auth"));
+          setUserID(data.id);
         }}
         <Resource
-          name={"all_exams/".concat(userInfo.id)}
+          name={"all_exams/".concat(userID)}
           options={{ label: "Create test" }}
           list={PostList}
           edit={PostEdit}
@@ -104,7 +95,6 @@ function App() {
           icon={ModeEditOutlineTwoToneIcon}
         />
         <CustomRoutes>
-          {/* <Route path="/all_exams/:id" element={<PostList />} /> */}
           <Route path="/all_exams/share/:id" element={<ShareForm />} />
           <Route
             path="/practice_tests/result/:id"

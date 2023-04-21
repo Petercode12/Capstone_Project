@@ -91,8 +91,8 @@ const MyLayout = ({ children, dashboard, title, classes, ...props }) => {
   const theme = useTheme();
   const isLargeEnough = useMediaQuery(theme.breakpoints.up("sm"));
   const location = useLocation();
-  const data = JSON.parse(localStorage.getItem("auth"));
-  const userInfo = {
+  let data = JSON.parse(localStorage.getItem("auth"));
+  let userInfo = {
     id: data.id,
     fullName: data.Username,
     avatar: data.Avatar,
@@ -146,6 +146,10 @@ const MyLayout = ({ children, dashboard, title, classes, ...props }) => {
 
                   // variant="h6"
                 >
+                  {() => {
+                    // setUserInfo({});
+                    console.log("all_exams/".concat(userInfo.id));
+                  }}
                   <Tab
                     label={"Dashboard"}
                     component={Link}
@@ -187,7 +191,7 @@ const MyLayout = ({ children, dashboard, title, classes, ...props }) => {
 
         <ContentWithSidebar>
           <Sidebar className="MobileAppBar">
-            <Menu hasDashboard={true} />
+            <Menu hasDashboard={true} sx={{ marginTop: "48px" }} />
           </Sidebar>
           <Content>{children}</Content>
         </ContentWithSidebar>
