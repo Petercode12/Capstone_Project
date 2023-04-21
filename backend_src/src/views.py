@@ -117,7 +117,6 @@ def insert_new_exam(request):
         image = data["image"]
         duration = data["duration"]
         tags = data["tags"]
-        print("Tags: ", tags)
         description = data["description"]
         exam = EXAMS_COLLECTION(
             Name=Name,
@@ -147,7 +146,6 @@ def insert_questions_and_answers(request, exam_id):
         delete_questions_and_answers.delete()
         dataList = json.loads(request.body)
         questions_and_answers = None
-        print("DataList: ", dataList)
         for data in dataList:  # dataList là array of dict
             Ordinal = data["Ordinal"]
             Question = data["Question"]
