@@ -30,7 +30,8 @@ import { useMediaQuery, useTheme, Container, Grid } from "@mui/material";
 import "../Style/PracticeStyle.css";
 import { wait } from "@testing-library/user-event/dist/utils";
 import { MathJaxContext, MathJax } from "better-react-mathjax";
-
+import { BubbleMenu, EditorContent, useEditor } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
 function convertQueryDataToQuestionList(data) {
   let questionList = []; // questionList bao gồm: questionText, answerOptions, correctAnswer đối với MCQ, type
   for (let e of data) {
@@ -64,7 +65,6 @@ function convertQueryDataToQuestionList(data) {
 export function PracticeTest() {
   //edit create test
   const [questionList, setQuestionList] = useState([]); // list các câu hỏi bao gồm biến và đáp án
-  const loopOneTime = [{ questionText: "123" }, { questionText: "456" }];
   const [create, { error }] = useCreate();
   const notify = useNotify();
   const params = useParams();
