@@ -97,7 +97,7 @@ export function PostEditInfo({ ...props }) {
     test_info_url = "http://localhost:8000/all_exams/".concat(
       userInfo.id + "/" + params.id
     );
-  console.log("User info: ", userInfo, test_info_url);
+  // console.log("User info: ", userInfo, test_info_url);
   const [num, setNum] = useState(1);
   const min = 1;
   const max = 999;
@@ -119,15 +119,13 @@ export function PostEditInfo({ ...props }) {
           const note = document.querySelector("#clock");
           if (note) note.classList.add("Duration");
         }
-        console.log("Data of EditInfo: ", res.data);
-        console.log("Setduration: ", res.data["duration"] > 0);
+        // console.log("Data of EditInfo: ", res.data);
       })
       .catch((err) => {
         console.log(err);
       });
   }, []);
   async function updateTestInfo(save_data) {
-    console.log("Data: ", save_data);
     console.log("Data saved: ", save_data);
     await axios // post  lich sử làm bài và kết quả
       .patch(
@@ -137,7 +135,7 @@ export function PostEditInfo({ ...props }) {
         save_data
       )
       .then((res) => {
-        console.log("Data: ", res.data);
+        console.log("Data saved: ", res.data);
       })
       .catch((err) => {
         console.log(err);
@@ -159,6 +157,7 @@ export function PostEditInfo({ ...props }) {
     } else {
       notify("Save successfully!", { type: "success" });
       setTimeout(() => {
+        props.handleCloseDialogEditInfo(null);
         // redirect("/all_exams");
       }, 100);
     }
@@ -197,7 +196,7 @@ export function PostEditInfo({ ...props }) {
                 <ImageInput
                   source="image"
                   label="Choose a profile picture:"
-                  labelSingle
+                  // labelSingle
                   accept="image/*"
                   required
                   placeholder={
@@ -271,7 +270,6 @@ export function PostEditInfo({ ...props }) {
                     defaultValue={i["duration"] > 0}
                     onChange={() => {
                       setIsSetDuration(!isSetDuration);
-                      console.log(isSetDuration);
                       if (isSetDuration === false) {
                         const note = document.querySelector("#clock");
                         note.classList.remove("Duration");

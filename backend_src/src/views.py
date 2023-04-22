@@ -113,6 +113,7 @@ def query_exam_by_id(request, user_id, event_id):
         test_detail.Last_Modified_Date = str(date.today())
         test_detail.duration = data["duration"]
         test_detail.description = data["description"]
+        test_detail.image = data["image"]
         test_detail.save()
         test_result_ser = exams_collection_serializer2(test_detail)
         return JsonResponse(test_result_ser.data, safe=False)
