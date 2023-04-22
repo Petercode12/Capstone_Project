@@ -188,16 +188,16 @@ export function PracticeTest() {
   // Renderer callback with condition
   const renderer = ({ hours, minutes, seconds, completed }) => {
     for (let i = 0; i < questionList.length; i++) {
+      var div_question = document.querySelector(".question-".concat(i + 1));
       var bien = "questionText-label";
       if (
         document.getElementById(bien) !== null &&
         document.getElementById(bien).style.width !== null
       )
         document.getElementById(bien).style.width = "100%";
-      var div_question = document.querySelector(".question-".concat(i + 1));
 
-      let temp = stringToHTML(`${questionList[i].questionText}`);
       if (div_question != null) {
+        let temp = stringToHTML(`${questionList[i].questionText}`);
         div_question.parentNode.replaceChild(temp, div_question);
       }
     }
@@ -441,13 +441,13 @@ export function PracticeTest() {
     let dom = document.createElement("div");
     dom.style.cssText = "line-break: anywhere;";
     dom.innerHTML = str;
-    console.log("dom: ", dom, typeof dom, str);
-    console.log("dom html: ", dom.firstChild.innerHTML);
+    // console.log("dom: ", dom, typeof dom, str);
+    // console.log("dom html: ", dom.firstChild.innerHTML);
     return dom;
   };
 
   return (
-    <Container Container sx={{ maxWidth: { xl: 1280 } }}>
+    <Container sx={{ maxWidth: { xl: 1280 } }}>
       <Grid container justifyContent="space-between" spacing={2}>
         <Grid item xs={12} sm={8} md={9} lg={10} style={{ paddingTop: "48px" }}>
           <Edit
@@ -463,13 +463,6 @@ export function PracticeTest() {
                 <div className="question-section">
                   <div className="question-text">
                     {questionList.map((question, i) => {
-                      var xml =
-                        '<myElements type="AA" coID="A923"><myHouse>01</myHouse> <myCars>02</myCars><myWifeAndDog>03</myWifeAndDog></myElements>';
-                      var parser = new DOMParser();
-                      var xml1 =
-                        "<div><MathJaxContext config={config}><MathJax>`a^2+b^2`</MathJax></MathJaxContext><h1>okok</h1></div>";
-                      var xmlDoc = parser.parseFromString(xml, "text/xml");
-                      var xmlDoc1 = parser.parseFromString(xml1, "text/xml");
                       if (question.type === "MCQ") {
                         return (
                           <div
@@ -520,7 +513,7 @@ export function PracticeTest() {
                                   label=""
                                 />
                                 <Box
-                                  component="form"
+                                  // component="form"
                                   sx={{
                                     marginLeft: "-4px",
                                     marginRight: "-4px",
@@ -555,7 +548,7 @@ export function PracticeTest() {
                                   label=""
                                 />
                                 <Box
-                                  component="form"
+                                  // component="form"
                                   sx={{
                                     marginLeft: "-4px",
                                     marginRight: "-4px",
@@ -590,7 +583,7 @@ export function PracticeTest() {
                                   label=""
                                 />
                                 <Box
-                                  component="form"
+                                  // component="form"
                                   sx={{
                                     marginLeft: "-4px",
                                     marginRight: "-4px",
@@ -625,7 +618,7 @@ export function PracticeTest() {
                                   label=""
                                 />
                                 <Box
-                                  component="form"
+                                  // component="form"
                                   sx={{
                                     marginLeft: "-4px",
                                     marginRight: "-4px",

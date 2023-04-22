@@ -219,8 +219,8 @@ export function PostEditInfo({ ...props }) {
                           <div className="RaFileInput-removeButton">
                             <Button
                               className="RaFileInput-removeButton"
-                              sizeSmall
-                              textSizeSmall
+                              // sizeSmall
+                              // textSizeSmall
                               color="error"
                               aria-label="Delete"
                               title="Delete"

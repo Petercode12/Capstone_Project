@@ -98,7 +98,7 @@ export const PraceticeResultSpecific = () => {
   console.log("ID test: ", id, "\nExam id: ", exam_id);
   params1.append("name", "John");
   params1.append("age", "32");
-  console.log("Param: ", params1.toString());
+  // console.log("Param: ", params1.toString());
   const [time, setTime] = useState(0);
   const params = useParams();
   const { data: userInfo, isLoading, error1 } = useGetIdentity();
@@ -249,10 +249,8 @@ export const PraceticeResultSpecific = () => {
     let dom = document.createElement("div");
     dom.style.cssText = "line-break: anywhere;";
     dom.innerHTML = str;
-    // let xml = new DOMParser().parseFromString(str, "text/xml");
-    // console.log("xml: ", xml, typeof xml);
-    console.log("dom: ", dom, typeof dom, str);
-    console.log("dom html: ", dom.firstChild.innerHTML);
+    // console.log("dom: ", dom, typeof dom, str);
+    // console.log("dom html: ", dom.firstChild.innerHTML);
     return dom;
   };
   // Renderer callback with condition
@@ -343,7 +341,7 @@ export const PraceticeResultSpecific = () => {
     return <NotFound />;
   }
   return (
-    <Container Container sx={{ maxWidth: { xl: 1280 } }}>
+    <Container sx={{ maxWidth: { xl: 1280 } }}>
       <Grid container justifyContent="space-between" spacing={2}>
         <Grid item xs={12} sm={8} md={9} lg={10} style={{ paddingTop: "48px" }}>
           <div style={{ marginTop: "14px" }}>
@@ -424,7 +422,7 @@ export const PraceticeResultSpecific = () => {
                                   label=""
                                 />
                                 <Box
-                                  component="form"
+                                  // component="form"
                                   sx={{
                                     marginLeft: "-4px",
                                     marginRight: "-4px",
@@ -468,7 +466,7 @@ export const PraceticeResultSpecific = () => {
                                   label=""
                                 />
                                 <Box
-                                  component="form"
+                                  // component="form"
                                   sx={{
                                     marginLeft: "-4px",
                                     marginRight: "-4px",
@@ -512,7 +510,7 @@ export const PraceticeResultSpecific = () => {
                                   label=""
                                 />
                                 <Box
-                                  component="form"
+                                  // component="form"
                                   sx={{
                                     marginLeft: "-4px",
                                     marginRight: "-4px",
@@ -556,7 +554,7 @@ export const PraceticeResultSpecific = () => {
                                   label=""
                                 />
                                 <Box
-                                  component="form"
+                                  // component="form"
                                   sx={{
                                     marginLeft: "-4px",
                                     marginRight: "-4px",
@@ -657,12 +655,11 @@ export const PraceticeResultSpecific = () => {
         <Grid item xs={0} sm={4} md={3} lg={2} style={{ paddingTop: "64px" }}>
           <Aside />
         </Grid>
-        <Grid item xs="12">
+        <Grid item xs={12}>
           <LoadingButton
             color="primary"
             onClick={() => redirect("/practice_tests/result/".concat(id))}
             loading={false}
-            loadingPosition="start"
             variant="contained"
             className="SaveButton"
             sx={{ marginBottom: "12px", marginTop: "8px" }}

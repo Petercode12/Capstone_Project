@@ -147,7 +147,6 @@ const MyLayout = ({ children, dashboard, title, classes, ...props }) => {
                   // variant="h6"
                 >
                   {() => {
-                    // setUserInfo({});
                     console.log("all_exams/".concat(userInfo.id));
                   }}
                   <Tab

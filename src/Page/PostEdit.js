@@ -365,7 +365,7 @@ export function PostEdit() {
       "`</MathJax></MathJaxContext>"
     );
     setQuestionList(newArr);
-    console.log("Question Text change: ", newArr[i]);
+    // console.log("Question Text change: ", newArr[i]);
   };
   const handleTextFieldA_MCQChange = (i) => {
     let textFieldA_Element = document.getElementById("textAnswerA".concat(i));
@@ -565,11 +565,10 @@ export function PostEdit() {
     assignNewValueForElements();
     setAssignNewValueForElementsCheck(false);
   }
-  console.log("Questionlist: ", questionList);
   const MyEditorOptions = {
     ...DefaultEditorOptions,
-    // extensions: [...DefaultEditorOptions.extensions, HorizontalRule],
-    // extensions: [...DefaultEditorOptions.extensions],
+    extensions: [...DefaultEditorOptions.extensions, HorizontalRule],
+    extensions: [...DefaultEditorOptions.extensions],
   };
 
   const handleClickOpenDialog = (idx) => {
@@ -692,7 +691,6 @@ export function PostEdit() {
                   <div className="question-text">
                     {questionList.map((question, i) => {
                       if (question.type === "MCQ") {
-                        console.log("i: ", i);
                         return (
                           <div key={i}>
                             <div
@@ -873,7 +871,6 @@ export function PostEdit() {
                           </div>
                         );
                       } else {
-                        console.log("i: ", i);
                         return (
                           <div key={i}>
                             <div
