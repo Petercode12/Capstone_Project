@@ -20,19 +20,19 @@ import {
   Error404,
 } from "react-admin";
 import { RichTextInput, RichTextInputToolbar } from "ra-input-rich-text";
-import SaveIcon from "@mui/icons-material/Save";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import Paper from "@mui/material/Paper";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import axios from "axios";
 import Countdown from "react-countdown";
-import { useMediaQuery, useTheme, Container, Grid } from "@mui/material";
+import { Container, Grid } from "@mui/material";
 import "../Style/PracticeResultSpecific.css";
 import "../Style/PracticeStyle.css";
 import { NotFound } from "./NotFound";
 import { eventWrapper, wait } from "@testing-library/user-event/dist/utils";
 import { useLocation, useNavigate } from "react-router-dom";
+import { MathJaxContext, MathJax } from "better-react-mathjax";
 function convertQueryDataToQuestionList(data) {
   let questionList = []; // questionList bao gồm: questionText, answerOptions, correctAnswer đối với MCQ, type, câu trả lời và điểm số.
   for (let e of data) {
@@ -98,11 +98,14 @@ export const PraceticeResultSpecific = () => {
   console.log("ID test: ", id, "\nExam id: ", exam_id);
   params1.append("name", "John");
   params1.append("age", "32");
-  console.log("Param: ", params1.toString());
+  // console.log("Param: ", params1.toString());
   const [time, setTime] = useState(0);
   const params = useParams();
   const { data: userInfo, isLoading, error1 } = useGetIdentity();
   const redirect = useRedirect();
+  const config = {
+    loader: { load: ["input/asciimath"] },
+  };
   let navigate = useNavigate();
   let text_blue =
     '{ "& label.Mui-focused" : { "color":"#3cb46e" },' +
@@ -178,6 +181,7 @@ export const PraceticeResultSpecific = () => {
       access.scrollIntoView({ behavior: "smooth" }, true);
     }
   };
+
   const addNavigationMenu = () => {
     let buttonGroupList = [];
     let buttonList = [];
@@ -241,6 +245,14 @@ export const PraceticeResultSpecific = () => {
     }
     return buttonGroupList;
   };
+  let stringToHTML = (str) => {
+    let dom = document.createElement("div");
+    dom.style.cssText = "line-break: anywhere;";
+    dom.innerHTML = str;
+    // console.log("dom: ", dom, typeof dom, str);
+    // console.log("dom html: ", dom.firstChild.innerHTML);
+    return dom;
+  };
   // Renderer callback with condition
   const renderer = ({ hours, minutes, seconds, completed }) => {
     for (let i = 0; i < questionList.length; i++) {
@@ -250,8 +262,12 @@ export const PraceticeResultSpecific = () => {
         document.getElementById(bien).style.width !== null
       )
         document.getElementById(bien).style.width = "100%";
+      var div_question = document.querySelector(".question-".concat(i + 1));
+      let temp = stringToHTML(`${questionList[i].questionText}`);
+      if (div_question != null) {
+        div_question.parentNode.replaceChild(temp, div_question);
+      }
     }
-    // console.log("Bị render lại!!!", duration);
 
     return (
       <span style={{ color: "black" }}>
@@ -325,7 +341,7 @@ export const PraceticeResultSpecific = () => {
     return <NotFound />;
   }
   return (
-    <Container Container sx={{ maxWidth: { xl: 1280 } }}>
+    <Container sx={{ maxWidth: { xl: 1280 } }}>
       <Grid container justifyContent="space-between" spacing={2}>
         <Grid item xs={12} sm={8} md={9} lg={10} style={{ paddingTop: "48px" }}>
           <div style={{ marginTop: "14px" }}>
@@ -369,29 +385,16 @@ export const PraceticeResultSpecific = () => {
                                 <span className="text-wrong fas fa-times fa-lg wrong-icon " />
                               )}
                             </div>
-                            <div
-                              style={{
-                                width: "100%",
-                                marginTop: "-20px",
-                              }}
-                            >
-                              <RichTextInput
-                                id={"questionText"} //.concat(i)
-                                source=""
-                                defaultValue={questionList[i].questionText}
-                                style={{
-                                  width: "100% !important",
-                                  display: "none",
-                                }}
-                                className="RichTextContent"
-                                toolbar={
-                                  <RichTextInputToolbar
-                                    size="small"
-                                    className="RichTextToolbar"
-                                  />
-                                }
-                              />
-                            </div>
+                            <MathJaxContext config={config}>
+                              <MathJax>
+                                <div
+                                  style={{
+                                    width: "100%",
+                                  }}
+                                  className={"question-".concat(i + 1)}
+                                />
+                              </MathJax>
+                            </MathJaxContext>
                             <RadioGroup
                               row
                               disabled
@@ -419,7 +422,7 @@ export const PraceticeResultSpecific = () => {
                                   label=""
                                 />
                                 <Box
-                                  component="form"
+                                  // component="form"
                                   sx={{
                                     marginLeft: "-4px",
                                     marginRight: "-4px",
@@ -463,7 +466,7 @@ export const PraceticeResultSpecific = () => {
                                   label=""
                                 />
                                 <Box
-                                  component="form"
+                                  // component="form"
                                   sx={{
                                     marginLeft: "-4px",
                                     marginRight: "-4px",
@@ -507,7 +510,7 @@ export const PraceticeResultSpecific = () => {
                                   label=""
                                 />
                                 <Box
-                                  component="form"
+                                  // component="form"
                                   sx={{
                                     marginLeft: "-4px",
                                     marginRight: "-4px",
@@ -551,7 +554,7 @@ export const PraceticeResultSpecific = () => {
                                   label=""
                                 />
                                 <Box
-                                  component="form"
+                                  // component="form"
                                   sx={{
                                     marginLeft: "-4px",
                                     marginRight: "-4px",
@@ -604,29 +607,16 @@ export const PraceticeResultSpecific = () => {
                               </span>
                               <span className="text-constructive fas fa-pencil-alt fa-lg" />
                             </div>
-                            <div
-                              style={{
-                                width: "100%",
-                                marginTop: "-20px",
-                              }}
-                            >
-                              <RichTextInput
-                                id={"questionText"}
-                                style={{
-                                  width: "100% !important",
-                                  display: "none",
-                                }}
-                                source=""
-                                defaultValue={questionList[i].questionText}
-                                className="RichTextContent"
-                                toolbar={
-                                  <RichTextInputToolbar
-                                    size="small"
-                                    className="RichTextToolbar"
-                                  />
-                                }
-                              />
-                            </div>
+                            <MathJaxContext config={config}>
+                              <MathJax>
+                                <div
+                                  style={{
+                                    width: "100%",
+                                  }}
+                                  className={"question-".concat(i + 1)}
+                                />
+                              </MathJax>
+                            </MathJaxContext>
                             <div className="question-answers">
                               <TextField
                                 id={"textAnswerCons".concat(i)}
@@ -665,12 +655,11 @@ export const PraceticeResultSpecific = () => {
         <Grid item xs={0} sm={4} md={3} lg={2} style={{ paddingTop: "64px" }}>
           <Aside />
         </Grid>
-        <Grid item xs="12">
+        <Grid item xs={12}>
           <LoadingButton
             color="primary"
             onClick={() => redirect("/practice_tests/result/".concat(id))}
             loading={false}
-            loadingPosition="start"
             variant="contained"
             className="SaveButton"
             sx={{ marginBottom: "12px", marginTop: "8px" }}

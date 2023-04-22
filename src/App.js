@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useState } from "react";
 import { render } from "react-dom";
 import {
   Admin,
@@ -6,6 +7,7 @@ import {
   Resource,
   fetchUtils,
   defaultTheme,
+  useGetIdentity,
 } from "react-admin";
 import { UserList } from "./Page/Users";
 import { PostList, PostCreate } from "./Page/Posts";
@@ -23,6 +25,8 @@ import { Route } from "react-router";
 import { ShareForm } from "./Page/ShareForm";
 import { PracticeResult } from "./Page/PracticeResult";
 import { PraceticeResultSpecific } from "./Page/PracticeResultSpecific";
+import { MyCustomList } from "./Page/Posts";
+import { QueryClient, QueryClientProvider, useQuery } from "react-query";
 // A list of allowed origins that can access our backend API
 
 const httpClient = (url, options = {}) => {
@@ -57,41 +61,52 @@ const theme = {
   },
 };
 const dataProvider = jsonServerProvider("http://127.0.0.1:8000", httpClient);
+const queryClient = new QueryClient();
+function App() {
+  const [userID, setUserID] = useState();
+  return (
+    <QueryClientProvider client={queryClient}>
+      <Admin
+        dashboard={TestPool}
+        dataProvider={dataProvider}
+        loginPage={MyLoginPage}
+        authProvider={authProvider}
+        theme={theme}
+        layout={MyLayout}
+      >
+        {() => {
+          let data = JSON.parse(localStorage.getItem("auth"));
+          setUserID(data.id);
+        }}
+        <Resource
+          name={"all_exams/".concat(userID)}
+          options={{ label: "Create test" }}
+          list={PostList}
+          edit={PostEdit}
+          create={PostCreate}
+          icon={LibraryAddIcon}
+        />
 
-const App = () => (
-  <Admin
-    dashboard={TestPool}
-    dataProvider={dataProvider}
-    loginPage={MyLoginPage}
-    authProvider={authProvider}
-    theme={theme}
-    layout={MyLayout}
-  >
-    <Resource
-      name="all_exams"
-      options={{ label: "Test collection" }}
-      list={PostList}
-      edit={PostEdit}
-      create={PostCreate}
-      icon={LibraryAddIcon}
-    />
-
-    <Resource
-      name="practice_tests"
-      options={{ label: "Practice tests" }}
-      list={PracticeList}
-      edit={PracticeTest}
-      icon={ModeEditOutlineTwoToneIcon}
-    />
-    <CustomRoutes>
-      <Route path="/all_exams/share/:id" element={<ShareForm />} />
-      <Route path="/practice_tests/result/:id" element={<PracticeResult />} />
-      <Route
-        path="/practice_tests/result_specific/"
-        element={<PraceticeResultSpecific />}
-      />
-    </CustomRoutes>
-  </Admin>
-);
-
+        <Resource
+          name="practice_tests"
+          options={{ label: "Practice test" }}
+          list={PracticeList}
+          edit={PracticeTest}
+          icon={ModeEditOutlineTwoToneIcon}
+        />
+        <CustomRoutes>
+          <Route path="/all_exams/share/:id" element={<ShareForm />} />
+          <Route
+            path="/practice_tests/result/:id"
+            element={<PracticeResult />}
+          />
+          <Route
+            path="/practice_tests/result_specific/"
+            element={<PraceticeResultSpecific />}
+          />
+        </CustomRoutes>
+      </Admin>
+    </QueryClientProvider>
+  );
+}
 export default App;

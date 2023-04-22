@@ -615,11 +615,10 @@ export function PostEdit() {
     assignNewValueForElements();
     setAssignNewValueForElementsCheck(false);
   }
-  console.log("Questionlist: ", questionList);
   const MyEditorOptions = {
     ...DefaultEditorOptions,
-    // extensions: [...DefaultEditorOptions.extensions, HorizontalRule],
-    // extensions: [...DefaultEditorOptions.extensions],
+    extensions: [...DefaultEditorOptions.extensions, HorizontalRule],
+    extensions: [...DefaultEditorOptions.extensions],
   };
 
   const handleClickOpenDialog = (idx) => {

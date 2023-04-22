@@ -64,6 +64,7 @@ export function TestPool() {
       .then((res) => {
         setOriginalExamList(res.data);
         setExamList(res.data);
+        console.log("Exam list: ", res.data);
       })
       .catch((err) => {
         console.log(err);

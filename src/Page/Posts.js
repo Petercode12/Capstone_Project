@@ -23,6 +23,10 @@ import {
   AutocompleteArrayInput,
   Toolbar,
   SaveButton,
+  required,
+  ListContextProvider,
+  useGetList,
+  useList,
 } from "react-admin";
 import {
   Box,
@@ -36,41 +40,25 @@ import {
   InputLabel,
   FormHelperText,
 } from "@mui/material";
+import { useState, useEffect } from "react";
 import { ShareButton } from "./ShareButton";
-const theme = createTheme({
-  components: {
-    // Name of the component
-    RaImageInput: {
-      styleOverrides: {
-        // Name of the slot
-        root: {
-          // Some CSS
-          fontSize: "1rem",
-        },
-      },
-    },
-  },
-});
+import { useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
 
-export const PostList = () => (
-  <List xs={{ maxWidth: 1280 }} sx={{ margin: "0 auto" }}>
-    <Datagrid
-      initialState={{
-        sorting: {
-          sortModel: [{ field: "id", sort: "asc" }],
-        },
-      }}
-    >
-      <NumberField source="id" />
-      <TextField source="Name" />
-      <DateField source="Created_Date" showDate locales="fr-FR" />
-      <DateField source="Last_Modified_Date" locales="fr-FR" />
-      <NumberField source="User_id" />
-      <EditButton />
-      <ShareButton />
-    </Datagrid>
-  </List>
-);
+export function PostList() {
+  return (
+    <List xs={{ maxWidth: 1280 }} sx={{ margin: "0 auto" }} emptyWhileLoading>
+      <Datagrid optimized>
+        <NumberField source="id" />
+        <TextField source="Name" />
+        <DateField source="Created_Date" showDate locales="fr-FR" />
+        <DateField source="Last_Modified_Date" locales="fr-FR" />
+        <EditButton />
+        <ShareButton />
+      </Datagrid>
+    </List>
+  );
+}
 
 const toBase64 = (file) =>
   new Promise((resolve, reject) => {
@@ -89,7 +77,7 @@ export const PostCreate = () => {
   const redirect = useRedirect();
   const [create, { error }] = useCreate();
   const { data: userInfo, isLoading, err } = useGetIdentity();
-  const [num, setNum] = React.useState(0);
+  const [num, setNum] = React.useState(1);
   const min = 1;
   const max = 999;
   const [timeError, setTimeError] = React.useState();
@@ -108,7 +96,7 @@ export const PostCreate = () => {
     } else {
       notify("Save successfully!", { type: "success" });
       setTimeout(() => {
-        redirect("/all_exams");
+        redirect("/all_exams/".concat(userInfo.id));
       }, 100);
     }
   };
@@ -200,6 +188,7 @@ export const PostCreate = () => {
               </FormControl>
             </Container>
             <AutocompleteArrayInput
+              validate={required()}
               source="tags"
               label="Tag"
               choices={[
@@ -209,6 +198,7 @@ export const PostCreate = () => {
                 { id: "3", name: "Physics" },
                 { id: "4", name: "Calculus" },
                 { id: "5", name: "IELTS" },
+                { id: "6", name: "Others" },
               ]}
               fullWidth
               options={{ fullWidth: true }}

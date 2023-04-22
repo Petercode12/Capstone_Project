@@ -26,6 +26,7 @@ import {
   Logout,
   LoadingIndicator,
   AppBar,
+  useGetIdentity,
 } from "react-admin";
 import logo from "./Images/logo.jpg";
 import { Link, matchPath, useLocation } from "react-router-dom";
@@ -90,10 +91,15 @@ const MyLayout = ({ children, dashboard, title, classes, ...props }) => {
   const theme = useTheme();
   const isLargeEnough = useMediaQuery(theme.breakpoints.up("sm"));
   const location = useLocation();
-
+  let data = JSON.parse(localStorage.getItem("auth"));
+  let userInfo = {
+    id: data.id,
+    fullName: data.Username,
+    avatar: data.Avatar,
+  };
   let currentPath = "/";
   if (!!matchPath("/all_exams/*", location.pathname)) {
-    currentPath = "/all_exams";
+    currentPath = "/all_exams/".concat(userInfo.id);
   } else if (!!matchPath("/practice_tests/*", location.pathname)) {
     currentPath = "/practice_tests";
   }
@@ -140,6 +146,9 @@ const MyLayout = ({ children, dashboard, title, classes, ...props }) => {
 
                   // variant="h6"
                 >
+                  {() => {
+                    console.log("all_exams/".concat(userInfo.id));
+                  }}
                   <Tab
                     label={"Dashboard"}
                     component={Link}
@@ -150,8 +159,8 @@ const MyLayout = ({ children, dashboard, title, classes, ...props }) => {
                   <Tab
                     label={"Create test"}
                     component={Link}
-                    to="/all_exams"
-                    value="/all_exams"
+                    to={"/all_exams/".concat(userInfo.id)}
+                    value={"/all_exams/".concat(userInfo.id)}
                     className={classes.label}
                   />
                   <Tab
@@ -181,11 +190,9 @@ const MyLayout = ({ children, dashboard, title, classes, ...props }) => {
 
         <ContentWithSidebar>
           <Sidebar className="MobileAppBar">
-            <Menu hasDashboard={dashboard} />
+            <Menu hasDashboard={true} sx={{ marginTop: "48px" }} />
           </Sidebar>
-          {/* <Container sx={{ maxWidth: 1200 }}> */}
           <Content>{children}</Content>
-          {/* </Container> */}
         </ContentWithSidebar>
       </AppFrame>
     </Root>

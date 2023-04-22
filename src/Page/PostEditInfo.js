@@ -92,18 +92,24 @@ export function PostEditInfo({ ...props }) {
   const params = useParams();
   const redirect = useRedirect();
   const { data: userInfo, isLoading, err } = useGetIdentity();
-  const [num, setNum] = useState();
+  let test_info_url = "http://localhost:8000/all_exams/";
+  if (userInfo)
+    test_info_url = "http://localhost:8000/all_exams/".concat(
+      userInfo.id + "/" + params.id
+    );
+  // console.log("User info: ", userInfo, test_info_url);
+  const [num, setNum] = useState(1);
   const min = 1;
   const max = 999;
   const [timeError, setTimeError] = useState();
   const [isSetDuration, setIsSetDuration] = useState(false);
   useEffect(() => {
     axios
-      .get("http://localhost:8000/all_exams/".concat(params.id))
+      .get(test_info_url)
       .then((res) => {
         setData([res.data]);
-        setNum(res.data["duration"]);
         setIsSetDuration(res.data["duration"] > 0);
+        if (res.data["duration"] !== 0) setNum(res.data["duration"]);
         setImage(res.data["image"]);
         if (res.data["duration"] > 0) {
           const note = document.querySelector("#clock");
@@ -119,10 +125,16 @@ export function PostEditInfo({ ...props }) {
       });
   }, []);
   async function updateTestInfo(save_data) {
+    console.log("Data saved: ", save_data);
     await axios // post  lich sử làm bài và kết quả
-      .patch("http://localhost:8000/all_exams/".concat(params.id), save_data)
+      .patch(
+        "http://localhost:8000/all_exams/".concat(
+          userInfo.id + "/" + params.id
+        ),
+        save_data
+      )
       .then((res) => {
-        console.log("Data: ", res.data);
+        console.log("Data saved: ", res.data);
       })
       .catch((err) => {
         console.log(err);
@@ -142,6 +154,7 @@ export function PostEditInfo({ ...props }) {
     } else {
       notify("Save successfully!", { type: "success" });
       setTimeout(() => {
+        props.handleCloseDialogEditInfo(null);
         // redirect("/all_exams");
       }, 100);
     }
@@ -180,7 +193,7 @@ export function PostEditInfo({ ...props }) {
                 <ImageInput
                   source="image"
                   label="Choose a profile picture:"
-                  labelSingle
+                  // labelSingle
                   accept="image/*"
                   required
                   placeholder={
@@ -203,8 +216,8 @@ export function PostEditInfo({ ...props }) {
                           <div className="RaFileInput-removeButton">
                             <Button
                               className="RaFileInput-removeButton"
-                              sizeSmall
-                              textSizeSmall
+                              // sizeSmall
+                              // textSizeSmall
                               color="error"
                               aria-label="Delete"
                               title="Delete"

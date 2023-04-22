@@ -29,6 +29,7 @@ import Countdown from "react-countdown";
 import { useMediaQuery, useTheme, Container, Grid } from "@mui/material";
 import "../Style/PracticeStyle.css";
 import { wait } from "@testing-library/user-event/dist/utils";
+import { MathJaxContext, MathJax } from "better-react-mathjax";
 
 function convertQueryDataToQuestionList(data) {
   let questionList = []; // questionList bao gồm: questionText, answerOptions, correctAnswer đối với MCQ, type
@@ -63,6 +64,7 @@ function convertQueryDataToQuestionList(data) {
 export function PracticeTest() {
   //edit create test
   const [questionList, setQuestionList] = useState([]); // list các câu hỏi bao gồm biến và đáp án
+  const loopOneTime = [{ questionText: "123" }, { questionText: "456" }];
   const [create, { error }] = useCreate();
   const notify = useNotify();
   const params = useParams();
@@ -70,6 +72,10 @@ export function PracticeTest() {
   const { data: userInfo, isLoading, error1 } = useGetIdentity();
   const [countdown, setCountdown] = useState();
   const redirect = useRedirect();
+
+  const config = {
+    loader: { load: ["input/asciimath"] },
+  };
   var today = new Date();
   const start_time =
     today.getHours() +
@@ -77,7 +83,6 @@ export function PracticeTest() {
     today.getMinutes() +
     ":" +
     today.getSeconds().toFixed(2);
-  console.log("Start Time: ", start_time);
   useEffect(() => {
     // get the data from the api
     axios
@@ -87,14 +92,10 @@ export function PracticeTest() {
         )
       )
       .then((res) => {
+        console.log("Question List: ", res.data["q_and_a"]);
+        // xử lý string
         setQuestionList(convertQueryDataToQuestionList(res.data["q_and_a"]));
         setDuration(res.data["duration"]);
-
-        console.log(
-          "Set duration: ",
-          res.data["duration"],
-          typeof res.data["duration"]
-        );
         setCountdown(Date.now() + res.data["duration"] * 60 * 1000);
       })
       .catch((err) => {
@@ -104,10 +105,8 @@ export function PracticeTest() {
 
   const PostEditToolbar = () => (
     //nút save của trang edit test
-    <Toolbar>
-      <Box sx={{ "& > button": { m: 0 } }}>
-        <LoadingButton />
-      </Box>
+    <Toolbar style={{ display: "none" }}>
+      <Box sx={{ "& > button": { m: 0 } }}>{/* <LoadingButton /> */}</Box>
     </Toolbar>
   );
 
@@ -187,12 +186,18 @@ export function PracticeTest() {
   // Renderer callback with condition
   const renderer = ({ hours, minutes, seconds, completed }) => {
     for (let i = 0; i < questionList.length; i++) {
+      var div_question = document.querySelector(".question-".concat(i + 1));
       var bien = "questionText-label";
       if (
         document.getElementById(bien) !== null &&
         document.getElementById(bien).style.width !== null
       )
         document.getElementById(bien).style.width = "100%";
+
+      if (div_question != null) {
+        let temp = stringToHTML(`${questionList[i].questionText}`);
+        div_question.parentNode.replaceChild(temp, div_question);
+      }
     }
     // console.log("Bị render lại!!!", duration);
     if (duration > 0) {
@@ -276,6 +281,7 @@ export function PracticeTest() {
       </Paper>
     </Box>
   );
+
   const test_result_specific_Gen = async (id) => {
     // tạo array dict data của bài làm
     let saveData = []; // array of dict
@@ -429,8 +435,17 @@ export function PracticeTest() {
     newArr[i].userAnswer = textFieldElement.value;
     setQuestionList(newArr);
   };
+  let stringToHTML = (str) => {
+    let dom = document.createElement("div");
+    dom.style.cssText = "line-break: anywhere;";
+    dom.innerHTML = str;
+    // console.log("dom: ", dom, typeof dom, str);
+    // console.log("dom html: ", dom.firstChild.innerHTML);
+    return dom;
+  };
+
   return (
-    <Container Container sx={{ maxWidth: { xl: 1280 } }}>
+    <Container sx={{ maxWidth: { xl: 1280 } }}>
       <Grid container justifyContent="space-between" spacing={2}>
         <Grid item xs={12} sm={8} md={9} lg={10} style={{ paddingTop: "48px" }}>
           <Edit
@@ -464,29 +479,16 @@ export function PracticeTest() {
                             >
                               <span>Question {i + 1}</span>
                             </div>
-                            <div
-                              style={{
-                                width: "100%",
-                                marginTop: "-20px",
-                              }}
-                            >
-                              <RichTextInput
-                                id={"questionText"} //.concat(i)
-                                source=""
-                                defaultValue={questionList[i].questionText}
-                                style={{
-                                  width: "100% !important",
-                                  display: "none",
-                                }}
-                                className="RichTextContent"
-                                toolbar={
-                                  <RichTextInputToolbar
-                                    size="small"
-                                    className="RichTextToolbar"
-                                  />
-                                }
-                              />
-                            </div>
+                            <MathJaxContext config={config}>
+                              <MathJax>
+                                <div
+                                  style={{
+                                    width: "100%",
+                                  }}
+                                  className={"question-".concat(i + 1)}
+                                />
+                              </MathJax>
+                            </MathJaxContext>
                             <RadioGroup
                               row
                               aria-labelledby="demo-row-radio-buttons-group-label"
@@ -509,7 +511,7 @@ export function PracticeTest() {
                                   label=""
                                 />
                                 <Box
-                                  component="form"
+                                  // component="form"
                                   sx={{
                                     marginLeft: "-4px",
                                     marginRight: "-4px",
@@ -544,7 +546,7 @@ export function PracticeTest() {
                                   label=""
                                 />
                                 <Box
-                                  component="form"
+                                  // component="form"
                                   sx={{
                                     marginLeft: "-4px",
                                     marginRight: "-4px",
@@ -579,7 +581,7 @@ export function PracticeTest() {
                                   label=""
                                 />
                                 <Box
-                                  component="form"
+                                  // component="form"
                                   sx={{
                                     marginLeft: "-4px",
                                     marginRight: "-4px",
@@ -614,7 +616,7 @@ export function PracticeTest() {
                                   label=""
                                 />
                                 <Box
-                                  component="form"
+                                  // component="form"
                                   sx={{
                                     marginLeft: "-4px",
                                     marginRight: "-4px",
@@ -646,28 +648,23 @@ export function PracticeTest() {
                             <div
                               id={"question".concat(i + 1)}
                               className="question-count"
-                              style={{ marginTop: "1em" }}
+                              style={{
+                                marginTop: "1em",
+                              }}
                             >
                               <span>Question {i + 1}</span>
                             </div>
-                            <div style={{ width: "100%", marginTop: "-20px" }}>
-                              <RichTextInput
-                                id={"questionText"}
-                                style={{
-                                  width: "100% !important",
-                                  display: "none",
-                                }}
-                                source=""
-                                defaultValue={questionList[i].questionText}
-                                className="RichTextContent"
-                                toolbar={
-                                  <RichTextInputToolbar
-                                    size="small"
-                                    className="RichTextToolbar"
-                                  />
-                                }
-                              />
-                            </div>
+                            <MathJaxContext config={config}>
+                              <MathJax>
+                                <div
+                                  style={{
+                                    width: "100%",
+                                  }}
+                                  className={"question-".concat(i + 1)}
+                                />
+                              </MathJax>
+                            </MathJaxContext>
+
                             <div>
                               <TextField
                                 id={"textAnswerCons".concat(i)}
@@ -675,7 +672,9 @@ export function PracticeTest() {
                                 multiline
                                 rows={5}
                                 variant="filled"
-                                style={{ width: "100%" }}
+                                style={{
+                                  width: "100%",
+                                }}
                                 defaultValue={""}
                               />
                             </div>
