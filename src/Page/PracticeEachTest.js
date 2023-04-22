@@ -105,10 +105,8 @@ export function PracticeTest() {
 
   const PostEditToolbar = () => (
     //nút save của trang edit test
-    <Toolbar>
-      <Box sx={{ "& > button": { m: 0 } }}>
-        <LoadingButton />
-      </Box>
+    <Toolbar style={{ display: "none" }}>
+      <Box sx={{ "& > button": { m: 0 } }}>{/* <LoadingButton /> */}</Box>
     </Toolbar>
   );
 
