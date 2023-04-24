@@ -407,7 +407,12 @@ def authentication(request):
         else:
             return HttpResponse(status=400)
 
-
+@csrf_exempt
+def query_total_test_result(request):
+    if request.method == "GET":
+        exam_tags = EXAM_TAGS.objects.all()
+        tags_serializer = exam_tags_serializer(exam_tags, many=True)
+        return JsonResponse(tags_serializer.data, safe=False)
 # @csrf_exempt
 # def test_api(request):
 #     if request.method == "GET":

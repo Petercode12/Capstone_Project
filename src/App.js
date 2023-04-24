@@ -26,6 +26,8 @@ import { ShareForm } from "./Page/ShareForm";
 import { PracticeResult } from "./Page/PracticeResult";
 import { PraceticeResultSpecific } from "./Page/PracticeResultSpecific";
 import { MyCustomList } from "./Page/Posts";
+import { MyAccount } from "./Page/MyAccount";
+import { EditPersonalInfo } from "./Page/EditPersonalInfo";
 import { QueryClient, QueryClientProvider, useQuery } from "react-query";
 // A list of allowed origins that can access our backend API
 
@@ -104,6 +106,8 @@ function App() {
             path="/practice_tests/result_specific/"
             element={<PraceticeResultSpecific />}
           />
+          <Route path="/my_account/tests/" element={<MyAccount />} />
+          <Route path="/my_account/settings/" element={<EditPersonalInfo />} />
         </CustomRoutes>
       </Admin>
     </QueryClientProvider>

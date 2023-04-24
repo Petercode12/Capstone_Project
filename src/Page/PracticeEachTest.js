@@ -32,6 +32,9 @@ import { wait } from "@testing-library/user-event/dist/utils";
 import { MathJaxContext, MathJax } from "better-react-mathjax";
 import { BubbleMenu, EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
+import TextSelector from "text-selection-react";
+import HighlightPop from "react-highlight-pop";
+
 function convertQueryDataToQuestionList(data) {
   let questionList = []; // questionList bao gồm: questionText, answerOptions, correctAnswer đối với MCQ, type
   for (let e of data) {
@@ -72,6 +75,15 @@ export function PracticeTest() {
   const { data: userInfo, isLoading, error1 } = useGetIdentity();
   const [countdown, setCountdown] = useState();
   const redirect = useRedirect();
+  const editor = useEditor({
+    extensions: [StarterKit],
+    editable: true,
+    content: `
+      <p>
+        Hey, try to select some text here. There will popup a menu for selecting some inline styles. Remember: you have full control about content and styling of this menu.
+      </p>
+    `,
+  });
 
   const config = {
     loader: { load: ["input/asciimath"] },
@@ -409,12 +421,6 @@ export function PracticeTest() {
     }
   };
   const handleMCQChange = () => {
-    // let textFieldElement = document.getElementById("textAnswerMCQ".concat(i));
-    // console.log(
-    //   "Element by classname: ",
-    //   textFieldElement,
-    //   textFieldElement.value
-    // );
     let valueFieldElement = document.querySelectorAll(".Mui-checked");
     let newArr = [...questionList];
     for (let e of valueFieldElement) {
@@ -439,11 +445,9 @@ export function PracticeTest() {
     let dom = document.createElement("div");
     dom.style.cssText = "line-break: anywhere;";
     dom.innerHTML = str;
-    // console.log("dom: ", dom, typeof dom, str);
-    // console.log("dom html: ", dom.firstChild.innerHTML);
     return dom;
   };
-
+  // const HighlightPop = require("react-highlight-pop");
   return (
     <Container sx={{ maxWidth: { xl: 1280 } }}>
       <Grid container justifyContent="space-between" spacing={2}>
@@ -460,6 +464,48 @@ export function PracticeTest() {
               <div className="multipleChoice">
                 <div className="question-section">
                   <div className="question-text">
+                    {/* <TextSelector
+                      events={[
+                        {
+                          text: "Submit",
+                          handler: this.handler,
+                        },
+                      ]}
+                      color={"yellow"}
+                      colorText={true}
+                    /> */}
+                    <div
+                      class="highlight-control"
+                      style={{
+                        top: "100px",
+                        position: "fixed",
+                        left: "35px",
+                        display: "block",
+                      }}
+                      data-uid="5e66b2aa-4d7b-4f5a-b0de-da35acb292ef"
+                    >
+                      <div>
+                        <span class="fas fa-trash highlight-icon highlight-remove" />
+                        <span
+                          class="fas fa-pencil highlight-icon highlight-note"
+                          style={{}}
+                        />
+                        <span class="highlight-icon highlight-color blue" />
+                        <span class="highlight-icon highlight-color pink" />
+                        <span class="highlight-icon highlight-color green" />
+                        <span class="highlight-icon highlight-color yellow" />
+                        <span class="highlight-icon highlight-color underred" />
+                        <span class="highlight-icon highlight-color crossed">
+                          abc
+                        </span>
+                      </div>
+                      <div class="highlight-editor" style={{ display: "none" }}>
+                        <textarea rows="3" />
+                        <div>
+                          <span class="far fa-check highlight-icon highlight-save" />
+                        </div>
+                      </div>
+                    </div>
                     {questionList.map((question, i) => {
                       if (question.type === "MCQ") {
                         return (

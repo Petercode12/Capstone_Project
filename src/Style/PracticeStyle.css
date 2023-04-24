@@ -61,6 +61,7 @@
   position: relative;
   display: flex;
   align-items: center;
+  width: 100%;
 }
 .multipleChoice button:hover {
   background-color: #555e7d;
@@ -153,6 +154,60 @@ div.css-46bh2p-MuiCardContent-root {
   background-color: #fff;
   border-color: rgb(0, 0, 0, 23%);
   pointer-events: none;
+}
+/* Highlight css */
+.highlight-control {
+  display: none;
+  padding: 5px;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  font-size: 13px;
+  z-index: 999;
+  min-width: 100px;
+  max-width: 190px;
+  white-space: normal !important;
+}
+.highlight-icon {
+  padding: 6px 4px;
+  cursor: pointer;
+}
+.highlight-color {
+  width: 15px;
+  height: 15px;
+  display: inline-block !important;
+  border-radius: 2px;
+  margin-right: 5px;
+}
+.highlight-color.blue {
+  background-color: #abf7ff;
+}
+.highlight-color.pink {
+  background-color: #ffd1d9;
+}
+.highlight-color.green {
+  background-color: #ceffce;
+}
+.highlight-color.yellow {
+  background-color: #ff0;
+}
+.highlight-color.underred {
+  background-color: rgba(0, 0, 0, 0.01);
+  border-bottom: 2px solid red;
+}
+.highlight-color.crossed {
+  background-color: rgba(0, 0, 0, 0.01);
+  text-decoration: line-through;
+  text-decoration-color: #000;
+  position: relative;
+  width: 30px;
+}
+.highlight-color {
+  width: 15px;
+  height: 15px;
+  display: inline-block !important;
+  border-radius: 2px;
+  margin-right: 5px;
 }
 /* Responsive tablet */
 @media only screen and (max-width: 1200px) {
