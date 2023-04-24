@@ -27,6 +27,7 @@ import { PracticeResult } from "./Page/PracticeResult";
 import { PraceticeResultSpecific } from "./Page/PracticeResultSpecific";
 import { MyCustomList } from "./Page/Posts";
 import { QueryClient, QueryClientProvider, useQuery } from "react-query";
+import { PersonalInfo } from "./Page/PersonalInfo";
 // A list of allowed origins that can access our backend API
 
 const httpClient = (url, options = {}) => {
@@ -104,6 +105,7 @@ function App() {
             path="/practice_tests/result_specific/"
             element={<PraceticeResultSpecific />}
           />
+          <Route path="/personalInfo" element={<PersonalInfo />} />
         </CustomRoutes>
       </Admin>
     </QueryClientProvider>

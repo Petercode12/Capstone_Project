@@ -11,10 +11,15 @@ import {
   AppBar as AppBar1,
   Box,
   Container,
+  ListItemIcon,
+  ListItemText,
+  MenuItem,
 } from "@mui/material";
 import PropTypes from "prop-types";
+import Avatar from "@mui/material/Avatar";
+import SettingsIcon from "@mui/icons-material/Settings";
 import { withStyles } from "@material-ui/core/styles";
-import BackIcon from "@material-ui/icons/ArrowBack";
+import PermIdentityIcon from "@mui/icons-material/PermIdentity";
 import "./Style/MyLayout.css";
 import {
   Menu,
@@ -27,6 +32,7 @@ import {
   LoadingIndicator,
   AppBar,
   useGetIdentity,
+  useUserMenu,
 } from "react-admin";
 import logo from "./Images/logo.jpg";
 import { Link, matchPath, useLocation } from "react-router-dom";
@@ -85,6 +91,18 @@ const Content = styled("div")(({ theme }) => ({
   paddingRight: 10,
   marginTop: "48px",
 }));
+
+const ProfileMenu = () => {
+  const { onClose } = useUserMenu();
+  return (
+    <MenuItem component={Link} to="/personalInfo" onClick={onClose}>
+      <ListItemIcon>
+        <PermIdentityIcon fontSize="small" />
+      </ListItemIcon>
+      <ListItemText>Profile</ListItemText>
+    </MenuItem>
+  );
+};
 
 const MyLayout = ({ children, dashboard, title, classes, ...props }) => {
   const [open] = useSidebarState();
@@ -181,6 +199,7 @@ const MyLayout = ({ children, dashboard, title, classes, ...props }) => {
                   }}
                 />
                 <UserMenu {...props} className={classes.logo1}>
+                  <ProfileMenu />
                   <Logout />
                 </UserMenu>
               </Box>
