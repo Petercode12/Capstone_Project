@@ -29,6 +29,7 @@ import { MyCustomList } from "./Page/Posts";
 import { MyAccount } from "./Page/MyAccount";
 import { EditPersonalInfo } from "./Page/EditPersonalInfo";
 import { QueryClient, QueryClientProvider, useQuery } from "react-query";
+import { PersonalInfo } from "./Page/PersonalInfo";
 // A list of allowed origins that can access our backend API
 
 const httpClient = (url, options = {}) => {
