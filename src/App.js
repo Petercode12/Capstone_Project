@@ -28,6 +28,7 @@ import { PraceticeResultSpecific } from "./Page/PracticeResultSpecific";
 import { MyCustomList } from "./Page/Posts";
 import { MyAccount } from "./Page/MyAccount";
 import { EditPersonalInfo } from "./Page/EditPersonalInfo";
+import { Dashboard } from "./Page/Dashboard";
 import { QueryClient, QueryClientProvider, useQuery } from "react-query";
 // A list of allowed origins that can access our backend API
 
@@ -69,7 +70,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <Admin
-        dashboard={TestPool}
+        dashboard={Dashboard}
         dataProvider={dataProvider}
         loginPage={MyLoginPage}
         authProvider={authProvider}

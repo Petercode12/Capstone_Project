@@ -380,7 +380,7 @@ export function TestPool() {
                     </Typography>
                   </CardContent>
                   <CardActions>
-                    <Button size="small">Edit</Button>
+                    {/* <Button size="small">Edit</Button> */}
                     <Button size="small">Practice</Button>
                   </CardActions>
                 </Card>

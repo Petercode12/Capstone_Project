@@ -451,7 +451,14 @@ export function PracticeTest() {
   return (
     <Container sx={{ maxWidth: { xl: 1280 } }}>
       <Grid container justifyContent="space-between" spacing={2}>
-        <Grid item xs={12} sm={8} md={9} lg={10} style={{ paddingTop: "48px" }}>
+        <Grid
+          item
+          xs={12}
+          sm={8}
+          md={9}
+          lg={10}
+          style={{ paddingTop: "48px" }}
+        >
           <Edit
             title="Practice Exam"
             style={{ display: "block" }}
@@ -475,34 +482,40 @@ export function PracticeTest() {
                       colorText={true}
                     /> */}
                     <div
-                      class="highlight-control"
+                      className="highlight-control"
                       style={{
                         top: "100px",
                         position: "fixed",
                         left: "35px",
-                        display: "block",
+                        display: "none",
                       }}
                       data-uid="5e66b2aa-4d7b-4f5a-b0de-da35acb292ef"
                     >
                       <div>
-                        <span class="fas fa-trash highlight-icon highlight-remove" />
+                        <span className="fas fa-trash highlight-icon highlight-remove" />
                         <span
-                          class="fas fa-pencil highlight-icon highlight-note"
+                          className="fas fa-pencil highlight-icon highlight-note"
                           style={{}}
                         />
-                        <span class="highlight-icon highlight-color blue" />
-                        <span class="highlight-icon highlight-color pink" />
-                        <span class="highlight-icon highlight-color green" />
-                        <span class="highlight-icon highlight-color yellow" />
-                        <span class="highlight-icon highlight-color underred" />
-                        <span class="highlight-icon highlight-color crossed">
+                        <span className="highlight-icon highlight-color blue" />
+                        <span className="highlight-icon highlight-color pink" />
+                        <span className="highlight-icon highlight-color green" />
+                        <span className="highlight-icon highlight-color yellow" />
+                        <span className="highlight-icon highlight-color underred" />
+                        <span className="highlight-icon highlight-color crossed">
                           abc
                         </span>
                       </div>
-                      <div class="highlight-editor" style={{ display: "none" }}>
+                      <div
+                       
+                       
+                      
+                        className="highlight-editor"
+                        style={{ display: "none" }}
+                      >
                         <textarea rows="3" />
                         <div>
-                          <span class="far fa-check highlight-icon highlight-save" />
+                          <span className="far fa-check highlight-icon highlight-save" />
                         </div>
                       </div>
                     </div>
@@ -557,7 +570,6 @@ export function PracticeTest() {
                                   label=""
                                 />
                                 <Box
-                                  // component="form"
                                   sx={{
                                     marginLeft: "-4px",
                                     marginRight: "-4px",
@@ -592,7 +604,6 @@ export function PracticeTest() {
                                   label=""
                                 />
                                 <Box
-                                  // component="form"
                                   sx={{
                                     marginLeft: "-4px",
                                     marginRight: "-4px",
@@ -627,7 +638,6 @@ export function PracticeTest() {
                                   label=""
                                 />
                                 <Box
-                                  // component="form"
                                   sx={{
                                     marginLeft: "-4px",
                                     marginRight: "-4px",
@@ -662,7 +672,6 @@ export function PracticeTest() {
                                   label=""
                                 />
                                 <Box
-                                  // component="form"
                                   sx={{
                                     marginLeft: "-4px",
                                     marginRight: "-4px",

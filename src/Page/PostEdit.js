@@ -81,6 +81,7 @@ function convertQueryDataToQuestionList(data) {
     }
     questionList.push(k);
   }
+  console.log("Question List: ", questionList);
   return questionList;
 }
 
@@ -106,6 +107,7 @@ export function PostEdit() {
         )
       )
       .then((res) => {
+        console.log("Data: ", res.data["q_and_a"]);
         setQuestionList(convertQueryDataToQuestionList(res.data["q_and_a"]));
       })
       .catch((err) => {
@@ -617,8 +619,7 @@ export function PostEdit() {
   }
   const MyEditorOptions = {
     ...DefaultEditorOptions,
-    extensions: [...DefaultEditorOptions.extensions, HorizontalRule],
-    extensions: [...DefaultEditorOptions.extensions],
+    // extensions: [...DefaultEditorOptions.extensions, HorizontalRule],
   };
 
   const handleClickOpenDialog = (idx) => {
