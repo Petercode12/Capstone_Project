@@ -54,7 +54,6 @@ const toBase64 = (file) =>
     reader.onerror = (error) => reject(error);
   });
 export const MyAccount = () => {
-  console.log("Banner: ", toBase64(userBanner));
   const { data: userInfo, isLoading, error1 } = useGetIdentity();
   return (
     <Container
@@ -71,8 +70,14 @@ export const MyAccount = () => {
           <div class="profile-cover-img-wrapper">
             <img
               class="profile-cover-img"
-              src={userBanner}
-              alt="trinhmanhhung03-cover"
+              src={
+                userInfo
+                  ? userInfo.banner !== ""
+                    ? userInfo.banner
+                    : userBanner
+                  : userBanner
+              }
+              alt={userInfo ? userInfo.fullName.concat("-cover") : "user-cover"}
             />
           </div>
         </div>
@@ -81,7 +86,7 @@ export const MyAccount = () => {
             <img
               class="avatar-img"
               src={userInfo ? userInfo.avatar : userIcon}
-              alt="trinhmanhhung03"
+              alt={userInfo ? userInfo.fullName : "user"}
             />
             <a class="avatar-button text-dark" href="#/my_account/settings/">
               <i class="avatar-icon fa fa-pencil" />
@@ -90,7 +95,11 @@ export const MyAccount = () => {
 
           <h1
             class="h3 profile-header-title"
-            id="trinhmanhhung03-trang-công-khai"
+            id={
+              userInfo
+                ? userInfo.fullName.concat("-public-page")
+                : "user-public-page"
+            }
           >
             {userInfo ? userInfo.fullName : "Guest"}{" "}
           </h1>

@@ -35,6 +35,7 @@ export const authProvider = {
         id: data.id,
         fullName: data.Username,
         avatar: data.Avatar,
+        banner: data.Banner,
         email: data.Email,
       };
       return Promise.resolve(userInfo);

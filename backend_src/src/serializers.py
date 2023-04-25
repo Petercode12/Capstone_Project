@@ -93,7 +93,7 @@ class test_result_specific_serializer(serializers.ModelSerializer):
 class user_serializer(serializers.ModelSerializer):
     class Meta:
         model = USER
-        fields = ("id", "Username", "Password", "Email", "Created_Date", "Avatar")
+        fields = ("id", "Username", "Password", "Email", "Created_Date", "Avatar", "Banner")
 
 
 class shared_users_serializer(serializers.ModelSerializer):

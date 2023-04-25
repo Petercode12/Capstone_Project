@@ -9,7 +9,7 @@ class USER(models.Model):
     Password = models.CharField(max_length=200, blank=False)
     Email = models.EmailField(max_length=200, unique=True, blank=True)
     Avatar = models.TextField(default=None)
-    Banner = models.TextField(default=None)
+    Banner = models.TextField(default="")
     Created_Date = models.DateField()
 
 

@@ -49,11 +49,13 @@ import "../Style/EditPersonalInfo.css";
 import axios from "axios";
 import userBanner from "../Images/user_banner.png";
 import userIcon from "../Images/user_icon.png";
+
 export const EditPersonalInfo = () => {
   const [userInfo, setUserInfo] = useState(
     JSON.parse(localStorage.getItem("auth"))
   );
   const [image, setImage] = useState("");
+  const [imageBanner, setImageBanner] = useState("");
   const [mode, setMode] = useState(0);
   const [create, { error }] = useCreate();
   const notify = useNotify();
@@ -62,6 +64,8 @@ export const EditPersonalInfo = () => {
     console.log("User info: ", userInfo);
     if (userInfo) {
       setImage(userInfo.Avatar);
+      if (userInfo.Banner !== "") setImageBanner(userInfo.Banner);
+      else setImageBanner(userBanner);
     }
   }, []);
   const toBase64 = (file) =>
@@ -145,6 +149,9 @@ export const EditPersonalInfo = () => {
       if (data["image"])
         save_data["image"] = await toBase64(data["image"].rawFile);
       else save_data["image"] = image;
+      if (data["imageBanner"])
+        save_data["imageBanner"] = await toBase64(data["imageBanner"].rawFile);
+      else save_data["imageBanner"] = "";
       save_data["password"] = userInfo.Password;
       console.log("Data saved: ", save_data);
     } else if (mode === 1) {
@@ -343,6 +350,69 @@ export const EditPersonalInfo = () => {
                   }
                 }}
               </FormDataConsumer>
+              <ImageInput
+                source="imageBanner"
+                label="Banner Image:"
+                accept="image/*"
+                required
+                placeholder={
+                  <p>Drop a picture to upload, or click to select one </p>
+                }
+                sx={{
+                  "& .RaLabeled-label": {
+                    fontSize: "1rem",
+                  },
+                }}
+              >
+                <ImageField source="src" title="title" />
+              </ImageInput>
+              <FormDataConsumer>
+                {({ formData, dispatch, ...rest }) => {
+                  console.log("Image banner: ", imageBanner);
+                  if (!formData.imageBanner && imageBanner !== "") {
+                    return (
+                      <div className="previews">
+                        <div className="RaFileInput-removeButton">
+                          <Button
+                            className="RaFileInput-removeButton1"
+                            color="error"
+                            aria-label="Delete banner"
+                            title="Delete"
+                            tabIndex={0}
+                            onClick={() => {
+                              // ẩn đi cái hình lun
+                              const node = document.querySelector(
+                                ".RaFileInput-removeButton1"
+                              );
+                              node.style.display = "none";
+                              console.log("Node: ", node);
+                              setImageBanner(""); // xóa ảnh banner
+                            }}
+                          >
+                            <svg
+                              className="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium RaFileInputPreview-removeIcon css-i4bv87-MuiSvgIcon-root"
+                              focusable="false"
+                              aria-hidden="true"
+                              viewBox="0 0 24 24"
+                              data-testid="RemoveCircleIcon"
+                            >
+                              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z" />
+                            </svg>
+                          </Button>
+                          <img
+                            source="image"
+                            src={userBanner}
+                            //userBanner
+                            //imageBanner
+                            alt="thumbnail"
+                            className="RaImageField-image"
+                          />
+                        </div>
+                      </div>
+                    );
+                  }
+                }}
+              </FormDataConsumer>
             </div>
             <div style={{ width: "100%" }} className="ChangePassword">
               <PasswordInput
@@ -350,21 +420,21 @@ export const EditPersonalInfo = () => {
                 source="password"
                 fullWidth={true}
                 validate={required()}
-                inputProps={{ autocomplete: "off" }}
+                inputProps={{ autoComplete: "off" }}
               />
               <PasswordInput
                 label="New password"
                 source="newPassword"
                 fullWidth={true}
                 validate={required()}
-                inputProps={{ autocomplete: "new-password" }}
+                inputProps={{ autoComplete: "new-password" }}
               />
               <PasswordInput
                 label="Confirm new password"
                 source="confirmPassword"
                 fullWidth={true}
                 validate={required()}
-                inputProps={{ autocomplete: "new-password" }}
+                inputProps={{ autoComplete: "new-password" }}
               />
             </div>
           </SimpleForm>

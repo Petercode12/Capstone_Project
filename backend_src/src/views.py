@@ -414,7 +414,8 @@ def authentication(request):
         )
         if(data["mode"] == 0):
             user.Username=data["fullName"]
-            user.Avatar=data["image"]    
+            user.Avatar=data["image"]
+            user.Banner = data["imageBanner"] 
         elif(data["mode"] == 1): 
             user.Password = data["newPassword"]
         user.save()
