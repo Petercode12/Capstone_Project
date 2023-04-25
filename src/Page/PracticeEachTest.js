@@ -272,7 +272,13 @@ export function PracticeTest() {
       }}
     >
       <Stack spacing={2}>
-        <Paper className="NavigationAsidePaper">
+        <Paper
+          style={{
+            maxHeight: "23.916rem",
+            overflow: "auto",
+          }}
+          className="NavigationAsidePaper"
+        >
           <div
             style={{
               textAlign: "center",
@@ -342,7 +348,7 @@ export function PracticeTest() {
         </Paper>
         <Paper
           style={{
-            marginTop: "1.5em",
+            marginTop: "1em",
             wordBreak: "break-all",
             maxHeight: "15rem",
             overflow: "auto",
