@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
@@ -7,6 +7,8 @@ import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import LoadingButton from "@mui/lab/LoadingButton";
 import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import EditNoteIcon from "@mui/icons-material/EditNote";
 import {
   SimpleForm,
   SaveButton,
@@ -34,6 +36,11 @@ import { BubbleMenu, EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import TextSelector from "text-selection-react";
 import HighlightPop from "react-highlight-pop";
+import Form from "./notepads/Form.js";
+import TodoList from "./notepads/TodoList.js";
+import Stack from "@mui/material/Stack";
+import "../Style/NotePad.css";
+import Textarea from "react-expanding-textarea";
 
 function convertQueryDataToQuestionList(data) {
   let questionList = []; // questionList bao gồm: questionText, answerOptions, correctAnswer đối với MCQ, type
@@ -74,19 +81,16 @@ export function PracticeTest() {
   const [duration, setDuration] = useState();
   const { data: userInfo, isLoading, error1 } = useGetIdentity();
   const [countdown, setCountdown] = useState();
+  // Notepad states
+  const [todos, setTodos] = useState([]);
+  // Notepad states
+  const [noteDisplay, setNoteDisplay] = useState("block");
   const redirect = useRedirect();
-  const editor = useEditor({
-    extensions: [StarterKit],
-    editable: true,
-    content: `
-      <p>
-        Hey, try to select some text here. There will popup a menu for selecting some inline styles. Remember: you have full control about content and styling of this menu.
-      </p>
-    `,
-  });
 
   const config = {
-    loader: { load: ["input/asciimath"] },
+    loader: {
+      load: ["input/asciimath"],
+    },
   };
   var today = new Date();
   const start_time =
@@ -114,18 +118,33 @@ export function PracticeTest() {
         console.log(err);
       });
   }, []);
-
   const PostEditToolbar = () => (
-    //nút save của trang edit test
-    <Toolbar style={{ display: "none" }}>
-      <Box sx={{ "& > button": { m: 0 } }}>{/* <LoadingButton /> */}</Box>
+    <Toolbar
+      style={{
+        display: "none",
+      }}
+    >
+      <Box
+        sx={{
+          "& > button": {
+            m: 0,
+          },
+        }}
+      >
+        {/* <LoadingButton /> */}
+      </Box>
     </Toolbar>
   );
 
   const scrolltoId = (target) => {
     let access = document.getElementById(target);
     if (access !== null) {
-      access.scrollIntoView({ behavior: "smooth" }, true);
+      access.scrollIntoView(
+        {
+          behavior: "smooth",
+        },
+        true
+      );
     }
   };
   const addNavigationMenu = () => {
@@ -135,7 +154,12 @@ export function PracticeTest() {
       for (let i = 1; i <= questionList.length; i++) {
         buttonList.push(
           <Button
-            xs={{ margin: 0, p: 0, minWidth: 30, py: 0.25 }}
+            xs={{
+              margin: 0,
+              p: 0,
+              minWidth: 30,
+              py: 0.25,
+            }}
             variant="outlined"
             onClick={() => {
               scrolltoId("question".concat(i));
@@ -193,7 +217,15 @@ export function PracticeTest() {
   };
   const Completionist = () => {
     // chấm bài
-    return <span style={{ color: "red" }}>Time is up!</span>;
+    return (
+      <span
+        style={{
+          color: "red",
+        }}
+      >
+        Time is up!
+      </span>
+    );
   };
   // Renderer callback with condition
   const renderer = ({ hours, minutes, seconds, completed }) => {
@@ -211,7 +243,6 @@ export function PracticeTest() {
         div_question.parentNode.replaceChild(temp, div_question);
       }
     }
-    // console.log("Bị render lại!!!", duration);
     if (duration > 0) {
       if (completed) {
         // Render a completed state
@@ -219,7 +250,11 @@ export function PracticeTest() {
       } else {
         // Render a countdown
         return (
-          <span style={{ color: "black" }}>
+          <span
+            style={{
+              color: "black",
+            }}
+          >
             {hours}:{minutes}:{seconds}
           </span>
         );
@@ -236,66 +271,91 @@ export function PracticeTest() {
         justifyContent: "center",
       }}
     >
-      <Paper className="NavigationAsidePaper">
-        <div
-          style={{
-            textAlign: "center",
-            fontWeight: "bold",
-            padding: "8px 0px",
-            minWidth: "170px",
-          }}
-        >
-          Question List
-        </div>
-        <div style={{ paddingBottom: "8px" }}>
+      <Stack spacing={2}>
+        <Paper className="NavigationAsidePaper">
           <div
-            style={{ transform: "translateY(5px)", display: "inline-block" }}
+            style={{
+              textAlign: "center",
+              fontWeight: "bold",
+              padding: "8px 0px",
+              minWidth: "170px",
+            }}
           >
-            <AccessTimeIcon
-              fontSize="medium"
-              color="primary"
-              sx={{ margin: "0px 4px" }}
-            />
+            Question List
           </div>
-          <div style={{ paddingTop: "-15px", display: "inline-block" }}>
-            <Countdown
-              // date={Date.now() + duration * 60 * 1000}
-              date={countdown}
-              renderer={renderer}
-            />
+          <div
+            style={{
+              paddingBottom: "8px",
+            }}
+          >
+            <div
+              style={{
+                transform: "translateY(5px)",
+                display: "inline-block",
+              }}
+            >
+              <AccessTimeIcon
+                fontSize="medium"
+                color="primary"
+                sx={{
+                  margin: "0px 4px",
+                }}
+              />
+            </div>
+            <div
+              style={{
+                paddingTop: "-15px",
+                display: "inline-block",
+              }}
+            >
+              <Countdown date={countdown} renderer={renderer} />
+            </div>
           </div>
-        </div>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            "& > *": {
-              m: 1,
-            },
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              "& > *": {
+                m: 1,
+              },
+            }}
+          >
+            {addNavigationMenu()}
+          </Box>
+          <LoadingButton
+            color="primary"
+            onClick={() => {
+              test_result_Save();
+            }}
+            loading={false}
+            loadingPosition="start"
+            variant="contained"
+            className="SaveButton"
+            sx={{
+              marginBottom: "12px",
+              marginTop: "8px",
+            }}
+          >
+            Submit
+          </LoadingButton>
+        </Paper>
+        <Paper
+          style={{
+            marginTop: "1.5em",
+            wordBreak: "break-all",
+            maxHeight: "15rem",
+            overflow: "auto",
           }}
         >
-          {addNavigationMenu()}
-        </Box>
-        <LoadingButton
-          color="primary"
-          onClick={() => {
-            test_result_Save();
-          }}
-          loading={false}
-          loadingPosition="start"
-          variant="contained"
-          className="SaveButton"
-          sx={{ marginBottom: "12px", marginTop: "8px" }}
-        >
-          Submit
-        </LoadingButton>
-      </Paper>
+          <Form todos={todos} setTodos={setTodos} />
+          <TodoList setTodos={setTodos} todos={todos} />
+        </Paper>
+      </Stack>
     </Box>
   );
 
   const test_result_specific_Gen = async (id) => {
-    // tạo array dict data của bài làm
     let saveData = []; // array of dict
     let nums_right_question = 0;
     for (let i = 0; i < questionList.length; i++) {
@@ -413,9 +473,13 @@ export function PracticeTest() {
     console.log("Điểm bài làm: ", score); // update điểm bài làm
     await updateTestMark(score, id);
     if (error) {
-      notify("Cannot save!", { type: "error" });
+      notify("Cannot save!", {
+        type: "error",
+      });
     } else {
-      notify("Save successfully!", { type: "success" });
+      notify("Save successfully!", {
+        type: "success",
+      });
       wait(1000);
       redirect("/practice_tests/result/".concat(id));
     }
@@ -447,14 +511,38 @@ export function PracticeTest() {
     dom.innerHTML = str;
     return dom;
   };
+  const displayNote = () => {
+    if (noteDisplay === "block") {
+      setNoteDisplay("None");
+    } else {
+      setNoteDisplay("block");
+    }
+  };
   // const HighlightPop = require("react-highlight-pop");
   return (
-    <Container sx={{ maxWidth: { xl: 1280 } }}>
+    <Container
+      sx={{
+        maxWidth: {
+          xl: 1280,
+        },
+      }}
+    >
       <Grid container justifyContent="space-between" spacing={2}>
-        <Grid item xs={12} sm={8} md={9} lg={10} style={{ paddingTop: "48px" }}>
+        <Grid
+          item
+          xs={12}
+          sm={8}
+          md={9}
+          lg={10}
+          style={{
+            paddingTop: "48px",
+          }}
+        >
           <Edit
             title="Practice Exam"
-            style={{ display: "block" }}
+            style={{
+              display: "block",
+            }}
             className="NavigationAsidePaper"
           >
             <SimpleForm
@@ -474,7 +562,7 @@ export function PracticeTest() {
                       color={"yellow"}
                       colorText={true}
                     /> */}
-                    <div
+                    {/* <div
                       class="highlight-control"
                       style={{
                         top: "100px",
@@ -499,13 +587,18 @@ export function PracticeTest() {
                           abc
                         </span>
                       </div>
-                      <div class="highlight-editor" style={{ display: "none" }}>
+                      <div
+                        class="highlight-editor"
+                        style={{
+                          display: "none",
+                        }}
+                      >
                         <textarea rows="3" />
                         <div>
                           <span class="far fa-check highlight-icon highlight-save" />
                         </div>
                       </div>
-                    </div>
+                    </div> */}
                     {questionList.map((question, i) => {
                       if (question.type === "MCQ") {
                         return (
@@ -525,6 +618,27 @@ export function PracticeTest() {
                             >
                               <span>Question {i + 1}</span>
                             </div>
+                            <IconButton
+                              color="primary"
+                              style={{ padding: "2px" }}
+                              onClick={() => {
+                                displayNote();
+                              }}
+                            >
+                              <EditNoteIcon />
+                            </IconButton>
+                            <TextField
+                              id="textAreaNote"
+                              label="Note here"
+                              className="noteTextField"
+                              placeholder="Start typing ..."
+                              multiline
+                              variant="standard"
+                              style={{
+                                marginTop: "2px",
+                                display: noteDisplay,
+                              }}
+                            />
                             <MathJaxContext config={config}>
                               <MathJax>
                                 <div
@@ -700,6 +814,27 @@ export function PracticeTest() {
                             >
                               <span>Question {i + 1}</span>
                             </div>
+                            <IconButton
+                              color="primary"
+                              style={{ padding: "2px" }}
+                              onClick={() => {
+                                displayNote();
+                              }}
+                            >
+                              <EditNoteIcon />
+                            </IconButton>
+                            <TextField
+                              id="textAreaNote"
+                              label="Note here"
+                              className="noteTextField"
+                              placeholder="Start typing ..."
+                              multiline
+                              variant="standard"
+                              style={{
+                                marginTop: "2px",
+                                display: noteDisplay,
+                              }}
+                            />
                             <MathJaxContext config={config}>
                               <MathJax>
                                 <div
@@ -734,7 +869,16 @@ export function PracticeTest() {
             </SimpleForm>
           </Edit>
         </Grid>
-        <Grid item xs={0} sm={4} md={3} lg={2} style={{ paddingTop: "64px" }}>
+        <Grid
+          item
+          xs={0}
+          sm={4}
+          md={3}
+          lg={2}
+          style={{
+            paddingTop: "64px",
+          }}
+        >
           <Aside />
         </Grid>
       </Grid>

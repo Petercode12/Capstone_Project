@@ -48,6 +48,7 @@
     "react-bootstrap": "^2.5.0",
     "react-countdown": "^2.3.5",
     "react-dom": "^18.2.0",
+    "react-expanding-textarea": "^2.3.6",
     "react-highlight-pop": "^1.0.2",
     "react-is": "^18.2.0",
     "react-mathjax": "^1.0.1",
