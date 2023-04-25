@@ -9,6 +9,7 @@ import {
   Container,
   InputAdornment,
   TextField,
+  Grid,
 } from "@mui/material";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import InputLabel from "@mui/material/InputLabel";
@@ -22,7 +23,6 @@ import axios from "axios";
 import SearchIcon from "@mui/icons-material/Search";
 import { useGetIdentity } from "react-admin";
 import "../Style/TestPoolStyle.css";
-import { ExpandMore } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
 import Divider from "@mui/material/Divider";
 import Chip from "@mui/material/Chip";
@@ -37,7 +37,15 @@ const MenuProps = {
     },
   },
 };
-const tags = ["Math", "English", "Geography", "Physics", "Calculus", "IELTS"];
+const tags = [
+  "Math",
+  "English",
+  "Geography",
+  "Physics",
+  "Calculus",
+  "IELTS",
+  "Others",
+];
 const Root = styled("div")(({ theme }) => ({
   width: "100%",
   ...theme.typography.body2,
@@ -158,53 +166,57 @@ export function TestPool() {
           alignItems: "center",
         }}
       >
-        <TextField
-          id="search"
-          type="search"
-          label="Search"
-          onChange={handleSearchChange}
-          sx={{ width: "100%", maxWidth: "1000px" }}
-          style={{ backgroundColor: "#fff" }}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <SearchIcon />
-              </InputAdornment>
-            ),
-          }}
-        />
-        <div>
-          <FormControl sx={{ m: 1, width: 300, bottom: "-3px" }}>
-            <InputLabel
-              id="demo-multiple-checkbox-label"
-              style={{
-                top: "-12px",
-                // transform: "translate(12px, 20px) scale(1)",
+        <Grid container justifyContent="space-between" spacing={2}>
+          <Grid item xs={12} sm={8}>
+            <TextField
+              id="search"
+              type="search"
+              label="Search"
+              onChange={handleSearchChange}
+              sx={{ width: "100%", maxWidth: "1000px" }}
+              style={{ backgroundColor: "#fff" }}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <SearchIcon />
+                  </InputAdornment>
+                ),
               }}
-              className="labelTagFilter"
-            >
-              Tag
-            </InputLabel>
-            <Select
-              labelId="demo-multiple-checkbox-label"
-              id="demo-multiple-checkbox"
-              multiple
-              value={tagName}
-              onChange={handleTagFilterChange}
-              input={<OutlinedInput label="Tag" />}
-              renderValue={(selected) => selected.join(", ")}
-              MenuProps={MenuProps}
-              style={{ verticalAlign: "middle", height: "48px" }}
-            >
-              {tags.map((name) => (
-                <MenuItem key={name} value={name}>
-                  <Checkbox checked={tagName.indexOf(name) > -1} />
-                  <ListItemText primary={name} />
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </div>
+            />
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <FormControl sx={{ width: "100%" }}>
+              <InputLabel
+                id="demo-multiple-checkbox-label"
+                style={{
+                  top: "-12px",
+                  // transform: "translate(12px, 20px) scale(1)",
+                }}
+                className="labelTagFilter"
+              >
+                Tag
+              </InputLabel>
+              <Select
+                labelId="demo-multiple-checkbox-label"
+                id="demo-multiple-checkbox"
+                multiple
+                value={tagName}
+                onChange={handleTagFilterChange}
+                input={<OutlinedInput label="Tag" />}
+                renderValue={(selected) => selected.join(", ")}
+                MenuProps={MenuProps}
+                style={{ verticalAlign: "middle", height: "48px" }}
+              >
+                {tags.map((name) => (
+                  <MenuItem key={name} value={name}>
+                    <Checkbox checked={tagName.indexOf(name) > -1} />
+                    <ListItemText primary={name} />
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+        </Grid>
       </Container>
       <Root>
         <Divider style={{ marginBottom: "1em" }}>
@@ -224,7 +236,7 @@ export function TestPool() {
               exam["duration"] = infinity;
             }
             return (
-              <div item key={i} className="GridPaper">
+              <div item="true" key={i} className="GridPaper">
                 <Card
                   sx={{
                     width: 340,
@@ -252,11 +264,8 @@ export function TestPool() {
                     </Typography>
                     <Typography
                       variant="body1"
-                      inline
+                      inline="true"
                       color="text.secondary"
-                      InputProps={{
-                        readOnly: true,
-                      }}
                       noWrap
                       sx={{
                         marginBottom: "2px",
@@ -312,7 +321,7 @@ export function TestPool() {
               exam["duration"] = infinity;
             }
             return (
-              <div item key={i} className="GridPaper">
+              <div item="true" key={i} className="GridPaper">
                 <Card
                   sx={{
                     width: 340,
@@ -340,11 +349,8 @@ export function TestPool() {
                     </Typography>
                     <Typography
                       variant="body1"
-                      inline
+                      inline="true"
                       color="text.secondary"
-                      InputProps={{
-                        readOnly: true,
-                      }}
                       noWrap
                       sx={{
                         marginBottom: "2px",

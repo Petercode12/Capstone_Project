@@ -7,8 +7,9 @@ class USER(models.Model):
     id = models.AutoField(primary_key=True, null=False)
     Username = models.CharField(max_length=200, blank=False)
     Password = models.CharField(max_length=200, blank=False)
-    Email = models.EmailField(max_length=200, blank=True)
+    Email = models.EmailField(max_length=200, unique=True, blank=True)
     Avatar = models.TextField(default=None)
+    Banner = models.TextField(default=None)
     Created_Date = models.DateField()
 
 

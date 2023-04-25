@@ -46,7 +46,15 @@ import "../Style/MyAccount.css";
 import axios from "axios";
 import userBanner from "../Images/user_banner.png";
 import userIcon from "../Images/user_icon.png";
+const toBase64 = (file) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
 export const MyAccount = () => {
+  console.log("Banner: ", toBase64(userBanner));
   const { data: userInfo, isLoading, error1 } = useGetIdentity();
   return (
     <Container
