@@ -13,3 +13,6 @@
 .MuiStack-root {
   width: 100% !important;
 }
+.ChangePassword {
+  display: none;
+}

@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useLogin, useNotify } from "react-admin";
 import axios from "axios";
 import "../Style/MyLoginPage.css";
+import { Typography } from "@mui/material";
 export function MyLoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -10,11 +11,18 @@ export function MyLoginPage() {
   const [avatar, setAvatar] = useState("");
   const login = useLogin();
   const notify = useNotify();
-
+  const [error, setError] = useState("");
+  const UPPERCASE_REGEX = new RegExp(/.*[A-Z]/);
+  const LOWERCASE_REGEX = new RegExp(/.*[a-z]/);
+  const NUMBER_REGEX = new RegExp(/.*\d/);
+  const LENGTH_REGEX = new RegExp(/.{8,}$/);
+  const SPECIAL_CHARS_REGEX = new RegExp(
+    /.*[-’/`~!#*$@_%+=.,^&(){}[\]|;:”<>?\\]/
+  );
   const handleSubmitSignIn = (e) => {
     e.preventDefault();
-    login({ username, password }).catch(() =>
-      notify("Invalid username or password", { type: "error" })
+    login({ email, password }).catch(() =>
+      notify("Invalid email or password", { type: "error" })
     );
   };
   const handleSubmitSignUp = (e) => {
@@ -58,7 +66,21 @@ export function MyLoginPage() {
   async function handleAvatar(e) {
     setAvatar(await toBase64(e.target.files[0]));
   }
-
+  const validatePassword = (password) => {
+    let errMsg = "";
+    if (!UPPERCASE_REGEX.test(password)) {
+      errMsg = "At least one Uppercase!";
+    } else if (!LOWERCASE_REGEX.test(password)) {
+      errMsg = "At least one Lowercase!";
+    } else if (!NUMBER_REGEX.test(password)) {
+      errMsg = "At least one digit!";
+    } else if (!SPECIAL_CHARS_REGEX.test(password)) {
+      errMsg = "At least one Special Characters!";
+    } else if (!LENGTH_REGEX.test(password)) {
+      errMsg = "At least minumum 8 characters!";
+    }
+    setError(errMsg);
+  };
   return (
     <div className="loginForm">
       <div className="container" id="container">
@@ -95,8 +117,20 @@ export function MyLoginPage() {
               className="loginForminput"
               type="password"
               placeholder="Password"
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                validatePassword(e.target.value);
+              }}
             />
+            <Typography
+              alignLeft
+              noWrap
+              variant="subtitle2"
+              color="red"
+              sx={{ textAlign: "left !important" }}
+            >
+              {error}
+            </Typography>
             <span style={{ margin: "8px 0px 18px 0px" }}>
               <label
                 htmlFor="avatar"
@@ -140,7 +174,7 @@ export function MyLoginPage() {
               type="email"
               className="loginForminput"
               placeholder="Email"
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={(e) => setEmail(e.target.value)}
             />
             <input
               type="password"

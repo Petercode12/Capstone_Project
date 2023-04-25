@@ -1,8 +1,8 @@
 import axios from "axios";
 export const authProvider = {
-  login: ({ username, password }) => {
+  login: ({ email, password }) => {
     return axios
-      .post("http://localhost:8000/auth/", { username, password })
+      .post("http://localhost:8000/auth/", { email, password })
       .then((res) => {
         console.log("Res: ", res.data);
         if (res.status < 200 || res.status >= 300) {
@@ -35,6 +35,7 @@ export const authProvider = {
         id: data.id,
         fullName: data.Username,
         avatar: data.Avatar,
+        email: data.Email,
       };
       return Promise.resolve(userInfo);
     } catch (error) {

@@ -398,14 +398,28 @@ def query_exam_tags(request):
 def authentication(request):
     if request.method == "POST":
         data = json.loads(request.body)
-        users = USER.objects.filter(
-            Username=data["username"], Password=data["password"]
+        users = USER.objects.get(
+            Email=data["email"], Password=data["password"]
         )
-        if users.exists():
-            us_serializer = user_serializer(users.values()[0], many=False)
+        print("Email: ", data["email"], " Password: ", data["password"]);
+        if users:
+            us_serializer = user_serializer(users)
             return JsonResponse(status=200, data=us_serializer.data)
         else:
             return HttpResponse(status=400)
+    if request.method == "PATCH":
+        data = json.loads(request.body)
+        user = USER.objects.get(
+            Email=data["Email"], Password=data["password"]
+        )
+        if(data["mode"] == 0):
+            user.Username=data["fullName"]
+            user.Avatar=data["image"]    
+        elif(data["mode"] == 1): 
+            user.Password = data["newPassword"]
+        user.save()
+        user_ser = user_serializer(user)
+        return JsonResponse(status = 200, data=user_ser.data, safe=False)
 
 @csrf_exempt
 def query_total_test_result(request):

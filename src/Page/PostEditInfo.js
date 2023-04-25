@@ -216,8 +216,6 @@ export function PostEditInfo({ ...props }) {
                           <div className="RaFileInput-removeButton">
                             <Button
                               className="RaFileInput-removeButton"
-                              // sizeSmall
-                              // textSizeSmall
                               color="error"
                               aria-label="Delete"
                               title="Delete"
@@ -229,7 +227,7 @@ export function PostEditInfo({ ...props }) {
                                 );
                                 node.style.display = "none";
                                 console.log("Node: ", node);
-                                setImage(""); // xóa ảnh thumbnail trư
+                                setImage(""); // xóa ảnh thumbnail
                               }}
                             >
                               <svg

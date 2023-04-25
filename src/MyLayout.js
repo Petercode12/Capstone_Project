@@ -95,7 +95,12 @@ const Content = styled("div")(({ theme }) => ({
 const ProfileMenu = () => {
   const { onClose } = useUserMenu();
   return (
-    <MenuItem component={Link} to="/my_account/tests/" onClick={onClose}>
+    <MenuItem
+      component={Link}
+      to="/my_account/tests/"
+      onClick={onClose}
+      sx={{ minWidth: "130px" }}
+    >
       <ListItemIcon>
         <PermIdentityIcon fontSize="small" />
       </ListItemIcon>
