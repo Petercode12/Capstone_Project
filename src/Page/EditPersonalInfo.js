@@ -57,6 +57,7 @@ export const EditPersonalInfo = () => {
   const [mode, setMode] = useState(0);
   const [create, { error }] = useCreate();
   const notify = useNotify();
+  let navigate = useNavigate();
   useEffect(() => {
     console.log("User info: ", userInfo);
     if (userInfo) {
@@ -71,8 +72,12 @@ export const EditPersonalInfo = () => {
       reader.onerror = (error) => reject(error);
     });
   const PostEditToolbar = (props) => (
-    <Toolbar {...props}>
+    <Toolbar {...props} sx={{}}>
       <SaveButton alwaysEnable />
+      <span style={{ flex: 1 }} />
+      <Button variant="outlined" onClick={() => navigate(-1)}>
+        Cancle
+      </Button>
     </Toolbar>
   );
   const PasswordValidate = (values) => {
