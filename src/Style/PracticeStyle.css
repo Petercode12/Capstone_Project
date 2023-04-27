@@ -189,11 +189,10 @@ div.css-46bh2p-MuiCardContent-root {
   background-color: #ceffce;
 }
 .highlight-color.yellow {
-  background-color: #ff0;
+  background-color: #ffff7b;
 }
-.highlight-color.underred {
-  background-color: rgba(0, 0, 0, 0.01);
-  border-bottom: 2px solid red;
+.highlight-color.red {
+  background-color: #FF3333;
 }
 .highlight-color.crossed {
   background-color: rgba(0, 0, 0, 0.01);

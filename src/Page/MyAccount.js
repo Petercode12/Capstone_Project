@@ -45,7 +45,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import "../Style/MyAccount.css";
 import axios from "axios";
 import userBanner from "../Images/user_banner.png";
-import userIcon from "../Images/user_icon.png";
+import userIcon from "../Images/user_icon5.png";
+// import userIcon from "../Images/user_icon1.png";
 const toBase64 = (file) =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -65,11 +66,11 @@ export const MyAccount = () => {
         marginTop: "30px",
       }}
     >
-      <div class="sm-container">
-        <div class="profile-cover">
-          <div class="profile-cover-img-wrapper">
+      <div className="sm-container">
+        <div className="profile-cover">
+          <div className="profile-cover-img-wrapper">
             <img
-              class="profile-cover-img"
+              className="profile-cover-img"
               src={
                 userInfo
                   ? userInfo.banner !== ""
@@ -81,20 +82,26 @@ export const MyAccount = () => {
             />
           </div>
         </div>
-        <div class="mx-md-auto mb-3 text-center">
-          <div class="profile-cover-avatar">
+        <div className="mx-md-auto mb-3 text-center">
+          <div className="profile-cover-avatar">
             <img
-              class="avatar-img"
-              src={userInfo ? userInfo.avatar : userIcon}
+              className="avatar-img"
+              src={
+                userInfo
+                  ? userInfo.avatar !== ""
+                    ? userInfo.avatar
+                    : userIcon
+                  : userIcon
+              }
               alt={userInfo ? userInfo.fullName : "user"}
             />
-            <a class="avatar-button text-dark" href="#/my_account/settings/">
-              <i class="avatar-icon fa fa-pencil" />
+            <a className="avatar-button text-dark" href="#/my_account/settings/">
+              <i className="avatar-icon fa fa-pencil" />
             </a>
           </div>
 
           <h1
-            class="h3 profile-header-title"
+            className="h3 profile-header-title"
             id={
               userInfo
                 ? userInfo.fullName.concat("-public-page")
@@ -104,13 +111,13 @@ export const MyAccount = () => {
             {userInfo ? userInfo.fullName : "Guest"}{" "}
           </h1>
 
-          <div class="profile-header-content">
+          <div className="profile-header-content">
             <p />
           </div>
         </div>
-        <ul class="nav nav-tabs mb-4">
-          <li class="nav-item">
-            <a class="nav-link active" href="#/my_account/tests/">
+        <ul className="nav nav-tabs mb-4">
+          <li className="nav-item">
+            <a className="nav-link active" href="#/my_account/tests/">
               Exam results
             </a>
           </li>

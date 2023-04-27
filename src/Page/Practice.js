@@ -90,12 +90,19 @@ export function PracticeList() {
         setExamTagList(temp);
         let searchBarElementValue = document.getElementById("search").value;
         if (indexTagName.length === 0) {
-          const filteredExamList = originalExamList.filter((e) => {
-            return e.Name.toLowerCase().includes(
-              searchBarElementValue.toLowerCase()
-            );
-          });
-          setExamList(filteredExamList);
+          if (searchBarElementValue !== "") {
+            const filteredExamList = originalExamList.filter((e) => {
+              return e.Name.toLowerCase().includes(
+                searchBarElementValue.toLowerCase()
+              );
+            });
+            setExamList(filteredExamList);
+          }
+          else {
+            if (originalExamList.length !== 0) {
+              setExamList(originalExamList);
+            }
+          }
         } else {
           let tempExamList = [];
           for (let e of temp) {

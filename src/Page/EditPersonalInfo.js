@@ -44,7 +44,7 @@ import {
   IconButton,
 } from "@mui/material";
 import { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "../Style/EditPersonalInfo.css";
 import axios from "axios";
 import userBanner from "../Images/user_banner.png";
@@ -64,8 +64,7 @@ export const EditPersonalInfo = () => {
     console.log("User info: ", userInfo);
     if (userInfo) {
       setImage(userInfo.Avatar);
-      if (userInfo.Banner !== "") setImageBanner(userInfo.Banner);
-      else setImageBanner(userBanner);
+      setImageBanner(userInfo.Banner);
     }
   }, []);
   const toBase64 = (file) =>
@@ -79,8 +78,13 @@ export const EditPersonalInfo = () => {
     <Toolbar {...props} sx={{}}>
       <SaveButton alwaysEnable />
       <span style={{ flex: 1 }} />
-      <Button variant="outlined" onClick={() => navigate(-1)}>
-        Cancle
+      <Button
+        variant="outlined"
+        onClick={() => {
+          navigate(-1);
+        }}
+      >
+        Cancel
       </Button>
     </Toolbar>
   );
@@ -159,12 +163,13 @@ export const EditPersonalInfo = () => {
     }
     await axios // post  lich sử làm bài và kết quả
       .patch(
-        window.location.protocol +
-          "//" +
-          window.location.hostname +
-          ":" +
-          window.location.port +
-          "/auth/",
+        "http://localhost:8000/auth/",
+        // window.location.protocol +
+        //   "//" +
+        //   window.location.hostname +
+        //   ":" +
+        //   window.location.port +
+        //   "/auth/",
         save_data
       )
       .then((res) => {
@@ -174,6 +179,11 @@ export const EditPersonalInfo = () => {
         }
         setUserInfo(res.data);
         console.log("Data saved: ", res.data);
+        
+        navigate(-1);
+        setTimeout(function(){
+            window.location.reload();
+        }, 500);
         return Promise.resolve();
       })
       .catch((err) => {
@@ -203,7 +213,7 @@ export const EditPersonalInfo = () => {
           <SimpleForm
             className="simpleForm"
             onSubmit={postSave}
-            warnWhenUnsavedChanges
+            // warnWhenUnsavedChanges
             toolbar={<PostEditToolbar />}
             sx={{ display: "flex" }}
             validate={PasswordValidate}
@@ -292,7 +302,7 @@ export const EditPersonalInfo = () => {
               />
               <ImageInput
                 source="image"
-                label="Personal Image:"
+                label="Avatar:"
                 accept="image/*"
                 required
                 placeholder={
@@ -386,7 +396,7 @@ export const EditPersonalInfo = () => {
                               );
                               node.style.display = "none";
                               console.log("Node: ", node);
-                              setImageBanner(""); // xóa ảnh banner
+                              setImageBanner (""); // xóa ảnh banner
                             }}
                           >
                             <svg
@@ -401,9 +411,7 @@ export const EditPersonalInfo = () => {
                           </Button>
                           <img
                             source="image"
-                            src={userBanner}
-                            //userBanner
-                            //imageBanner
+                            src={imageBanner}
                             alt="thumbnail"
                             className="RaImageField-image"
                           />

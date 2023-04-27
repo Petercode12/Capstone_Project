@@ -38,6 +38,7 @@ export function MyLoginPage() {
       })
       .catch((err) => {
         console.log(err);
+        
       });
   };
 

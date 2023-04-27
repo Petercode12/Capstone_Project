@@ -50,7 +50,7 @@ const styles = {
   logo: {
     width: "auto",
     height: "48px",
-    marginRight: "1em",
+    // marginRight: "1em",
   },
   logo1: {
     display: "flex",

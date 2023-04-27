@@ -15,17 +15,21 @@ import {
   Typography,
   Container,
   Box,
-  Grid,
-  createTheme,
   TextField as TextField1,
-
+  Button,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import "../Style/ShareForm.css";
 const PostCreateToolbar = () => {
   const notify = useNotify();
+  let navigate = useNavigate();
   return (
     <Toolbar className="PaperBox-saveButton">
-      <SaveButton label="Save" />
+      <SaveButton alwaysEnable />
+      <span style={{ flex: 1 }} />
+      <Button variant="outlined" onClick={() => navigate(-1)}>
+        Cancel
+      </Button>
     </Toolbar>
   );
 };

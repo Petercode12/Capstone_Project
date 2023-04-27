@@ -43,7 +43,7 @@
 }
 .avatar-img {
   display: block;
-  max-width: 100%;
+  max-width: 120%;
   width: 100%;
   height: auto;
   -o-object-fit: cover;
@@ -167,4 +167,7 @@ a {
   color: #35509a;
   border-bottom-color: #35509a;
   background-color: transparent;
+}
+.MyLayout-label-5 {
+  font-size: 17;
 }
