@@ -29,7 +29,7 @@ import { MyCustomList } from "./Page/Posts";
 import { MyAccount } from "./Page/MyAccount";
 import { EditPersonalInfo } from "./Page/EditPersonalInfo";
 import { QueryClient, QueryClientProvider, useQuery } from "react-query";
-import { PersonalInfo } from "./Page/PersonalInfo";
+import { Test } from "./Page/Test";
 // A list of allowed origins that can access our backend API
 
 const httpClient = (url, options = {}) => {
@@ -65,6 +65,7 @@ const theme = {
 };
 const dataProvider = jsonServerProvider("http://127.0.0.1:8000", httpClient);
 const queryClient = new QueryClient();
+
 function App() {
   const [userID, setUserID] = useState();
   return (
@@ -109,6 +110,7 @@ function App() {
           />
           <Route path="/my_account/tests/" element={<MyAccount />} />
           <Route path="/my_account/settings/" element={<EditPersonalInfo />} />
+          <Route path="/test" element={<Test />} />
         </CustomRoutes>
       </Admin>
     </QueryClientProvider>

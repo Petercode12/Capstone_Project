@@ -64,7 +64,6 @@ export function TestPool() {
       .then((res) => {
         setOriginalExamList(res.data);
         setExamList(res.data);
-        console.log("Exam list: ", res.data);
       })
       .catch((err) => {
         console.log(err);
@@ -82,12 +81,18 @@ export function TestPool() {
         setExamTagList(temp);
         let searchBarElementValue = document.getElementById("search").value;
         if (indexTagName.length === 0) {
-          const filteredExamList = originalExamList.filter((e) => {
-            return e.Name.toLowerCase().includes(
-              searchBarElementValue.toLowerCase()
-            );
-          });
-          setExamList(filteredExamList);
+          if (searchBarElementValue !== "") {
+            const filteredExamList = originalExamList.filter((e) => {
+              return e.Name.toLowerCase().includes(
+                searchBarElementValue.toLowerCase()
+              );
+            });
+            setExamList(filteredExamList);
+          } else {
+            if (originalExamList.length !== 0) {
+              setExamList(originalExamList);
+            }
+          }
         } else {
           let tempExamList = [];
           for (let e of temp) {
@@ -147,6 +152,7 @@ export function TestPool() {
     }
     setIndexTagName(indexTagList);
   };
+  console.log("Exam list: ", examList);
   return (
     <>
       <Container

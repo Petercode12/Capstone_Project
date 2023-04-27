@@ -14,8 +14,6 @@ import IconButton from "@mui/material/IconButton";
 import FunctionsIcon from "@mui/icons-material/Functions";
 import SettingsIcon from "@mui/icons-material/Settings";
 import Remove from "@mui/icons-material/Remove";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
 import { MathFormulaDialog } from "./MathFormulaDialog";
 import { PostEditInfo } from "./PostEditInfo";
 import {
@@ -42,7 +40,35 @@ import Paper from "@mui/material/Paper";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import axios from "axios";
 import { useMediaQuery, useTheme, Container, Grid } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
+import insertTextAtCursor from "insert-text-at-cursor";
 
+function getBlankAnswersFromQuestion(temp) {
+  const regex = /<blank id="[0-9]+">/g;
+  const regex2 = /<\/blank>/g;
+  const found = [...temp.matchAll(regex)];
+  const found2 = [...temp.matchAll(regex2)];
+  let list = [];
+  for (let i = 0; i < found.length; i++) {
+    list.push({
+      answerText: temp.substring(
+        found[i].index + found[i][0].length,
+        found2[i].index
+      ),
+    });
+  }
+  return list;
+}
+function changeBlankAnswersToEllipsis(temp) {
+  let list = getBlankAnswersFromQuestion(temp);
+  for (let i = 0; i < list.length; i++) {
+    temp = temp.replace(
+      `<blank id="${i}">${list[i].answerText}</blank>`,
+      `&lt;blank id="${i}"&gt;...&lt;/blank&gt;`
+    );
+  }
+  return temp;
+}
 function convertQueryDataToQuestionList(data) {
   let questionList = [];
   for (let e of data) {
@@ -72,6 +98,12 @@ function convertQueryDataToQuestionList(data) {
         answerOptions: e.Solution,
         type: "Cons",
       };
+    } else if (e.Type === "FIB") {
+      k = {
+        questionText: changeBlankAnswersToEllipsis(temp),
+        answerOptions: getBlankAnswersFromQuestion(temp),
+        type: "FIB",
+      };
     } else if (e.Type === "Audio") {
       k = {
         fileName: e.audioName,
@@ -82,6 +114,17 @@ function convertQueryDataToQuestionList(data) {
     questionList.push(k);
   }
   return questionList;
+}
+function assignBlankAnswersToBlanks(question) {
+  let tempAnswerOptions = question.answerOptions;
+  for (let i = 0; i < tempAnswerOptions.length; i++) {
+    let regex = `&lt;blank id="${i}"&gt;...&lt;/blank&gt;`;
+    question.questionText = question.questionText.replace(
+      regex,
+      `<blank id="${i}">${tempAnswerOptions[i].answerText}</blank>`
+    );
+  }
+  return question.questionText;
 }
 
 export function PostEdit() {
@@ -140,6 +183,20 @@ export function PostEdit() {
       },
     ]);
     window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+  };
+  const insertQA_FIB = () => {
+    setQuestionList([
+      ...questionList,
+      {
+        questionText: "",
+        answerOptions: [],
+        type: "FIB",
+      },
+    ]);
+    window.scrollTo({
+      top: document.body.scrollHeight,
+      behavior: "smooth",
+    });
   };
   const insertAudio = () => {
     setQuestionList([
@@ -351,6 +408,22 @@ export function PostEdit() {
           exam_id: params.id,
         };
         saveData.push(k);
+      } else if (questionList[i].type === "FIB") {
+        let k = {
+          Ordinal: i + 1,
+          Question: assignBlankAnswersToBlanks(questionList[i]),
+          Answer_a: null,
+          Answer_b: null,
+          Answer_c: null,
+          Answer_d: null,
+          Correct_answer: null,
+          Solution: null,
+          Type: "FIB",
+          audioName: "",
+          audio: "",
+          exam_id: params.id,
+        };
+        saveData.push(k);
       } else if (questionList[i].type === "Audio") {
         let k = {
           Ordinal: i + 1,
@@ -382,6 +455,9 @@ export function PostEdit() {
       } else if (questionList[i].type === "Cons") {
         handleQuestionTextChange(i);
         handleTextField_ConsChange(i);
+      } else if (questionList[i].type === "FIB") {
+        handleQuestionTextChange(i);
+        handleBlankAnswerChange(i);
       }
     }
     const data = saveDataGen();
@@ -445,6 +521,20 @@ export function PostEdit() {
     let textFieldElement = document.getElementById("textAnswerCons".concat(i));
     let newArr = [...questionList];
     newArr[i].answerOptions = textFieldElement.value;
+    setQuestionList(newArr);
+  };
+  const handleBlankAnswerChange = (i) => {
+    let newArr = [...questionList];
+    let tempAnswerOptions = questionList[i].answerOptions;
+    for (let idx = 0; idx < tempAnswerOptions.length; idx++) {
+      let blankAnswer_Element = document.getElementById(
+        "blankAnswer"
+          .concat(idx)
+          .concat("in")
+          .concat(i)
+      );
+      newArr[i].answerOptions[idx].answerText = blankAnswer_Element.value;
+    }
     setQuestionList(newArr);
   };
 
@@ -511,16 +601,6 @@ export function PostEdit() {
         if (textFieldD_Element !== null) {
           newArr[i].answerOptions[3].answerText = textFieldD_Element.value;
         }
-        // correctAnswer
-        // let correctAnswer_Element = document.getElementById(
-        //   "correctAnswer".concat(i)
-        // );
-        // if (correctAnswer_Element !== null) {
-        //   newArr[i].correctAnswer =
-        //     correctAnswer_Element.value !== undefined
-        //       ? correctAnswer_Element.value
-        //       : "";
-        // }
       } else if (questionList[i].type === "Cons") {
         // questionText
         let questionTextElement = document.getElementById(
@@ -535,6 +615,26 @@ export function PostEdit() {
         );
         if (textFieldElement !== null) {
           newArr[i].answerOptions = textFieldElement.value;
+        }
+      } else if (questionList[i].type === "FIB") {
+        // questionText
+        let questionTextElement = document.getElementById(
+          "questionText".concat(i)
+        );
+        if (questionTextElement !== null) {
+          newArr[i].questionText = questionTextElement.innerHTML;
+        }
+        // blank answers
+        for (let idx = 0; idx < questionList[i].answerOptions.length; idx++) {
+          let blankAnswer_Element = document.getElementById(
+            "blankAnswer"
+              .concat(idx)
+              .concat("in")
+              .concat(i)
+          );
+          if (blankAnswer_Element !== null) {
+            newArr[i].answerOptions[idx].answerText = blankAnswer_Element.value;
+          }
         }
       }
     }
@@ -607,6 +707,27 @@ export function PostEdit() {
         );
         if (textFieldElement !== null) {
           textFieldElement.value = questionList[i].answerOptions;
+        }
+      } else if (questionList[i].type === "FIB") {
+        // questionText
+        let questionTextElement = document.getElementById(
+          "questionText".concat(i)
+        );
+        if (questionTextElement !== null) {
+          questionTextElement.innerHTML = questionList[i].questionText;
+        }
+        // blank answers
+        for (let idx = 0; idx < questionList[i].answerOptions.length; idx++) {
+          let blankAnswer_Element = document.getElementById(
+            "blankAnswer"
+              .concat(idx)
+              .concat("in")
+              .concat(i)
+          );
+          if (blankAnswer_Element !== null) {
+            blankAnswer_Element.value =
+              questionList[i].answerOptions[idx].answerText;
+          }
         }
       }
     }
@@ -722,6 +843,17 @@ export function PostEdit() {
     tempQuestionList[i].fileName = await getFileName(e.target.files[0]);
     setQuestionList([...tempQuestionList]);
   }
+  const handleAddBlank = (i) => {
+    let tempQuestionList = questionList;
+    tempQuestionList[i].answerOptions.push({ answerText: "" });
+    const el = document.getElementById("questionText".concat(i));
+    insertTextAtCursor(
+      el,
+      `<blank id="${tempQuestionList[i].answerOptions.length - 1}">...</blank>`
+    );
+    setQuestionList([...tempQuestionList]);
+  };
+  console.log("Question list: ", questionList);
   return (
     <Container sx={{ maxWidth: { xl: 1280 } }}>
       <Grid container justifyContent="space-between" spacing={2}>
@@ -742,6 +874,14 @@ export function PostEdit() {
               mr={{ xs: 0, sm: "0.5em" }}
             >
               <i className="bi bi-plus" /> Constructive Questions
+            </Button>
+            <Button
+              variant="contained"
+              onClick={insertQA_FIB}
+              className="InsertFIBButton"
+              mr={{ xs: 0, sm: "0.5em" }}
+            >
+              <i className="bi bi-plus" /> Fill in Blank Questions
             </Button>
             <Button
               variant="contained"
@@ -998,6 +1138,82 @@ export function PostEdit() {
                                 defaultValue={questionList[i].answerOptions}
                               />
                             </div>
+                          </div>
+                        );
+                      } else if (question.type === "FIB") {
+                        let calculatedIndex = calculateIndexMinusNumOfAudio(i);
+                        return (
+                          <div key={i}>
+                            <div
+                              id={"question".concat(calculatedIndex)}
+                              className="question-count"
+                              style={{
+                                marginTop: "2em",
+                              }}
+                            >
+                              <span>Question {calculatedIndex}</span>
+                              <Button
+                                variant="outlined"
+                                style={{
+                                  float: "right",
+                                }}
+                                startIcon={<DeleteIcon />}
+                                onClick={() => {
+                                  removeQuestionAndAnswerFromQuestionList(i);
+                                }}
+                              >
+                                Delete
+                              </Button>
+                            </div>
+                            <RichTextInput
+                              id={"questionText".concat(i)}
+                              key={i}
+                              source=""
+                              editorOptions={MyEditorOptions}
+                              toolbar={
+                                <MyRichTextInputToolbar size="medium" idx={i} />
+                              }
+                              defaultValue={questionList[i].questionText}
+                              className="RichTextContentEdit"
+                            />
+                            <IconButton
+                              aria-label="addAnswer"
+                              color="primary"
+                              onClick={() => handleAddBlank(i)}
+                            >
+                              <AddIcon />
+                            </IconButton>
+                            {question.answerOptions.map((answer, idx) => {
+                              return (
+                                <div>
+                                  <span
+                                    className="number"
+                                    style={{
+                                      marginTop: "20px",
+                                      marginRight: "1em",
+                                      marginLeft: "10px",
+                                    }}
+                                  >
+                                    {idx + 1}
+                                  </span>
+                                  <TextField
+                                    id={"blankAnswer"
+                                      .concat(idx)
+                                      .concat("in")
+                                      .concat(i)}
+                                    label="Answer"
+                                    variant="outlined"
+                                    style={{
+                                      position: "relative",
+                                      marginTop: "1em",
+                                    }}
+                                    defaultValue={
+                                      question.answerOptions[idx].answerText
+                                    }
+                                  />
+                                </div>
+                              );
+                            })}
                           </div>
                         );
                       } else if (question.type === "Audio") {

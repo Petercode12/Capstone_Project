@@ -91,6 +91,11 @@ button.InsertConsButton {
   float: left;
   margin-left: 1.5em;
 }
+button.InsertFIBButton {
+  display: flex;
+  float: left;
+  margin-left: 1.5em;
+}
 button.InsertAudioFile {
   display: flex;
   float: left;
@@ -186,6 +191,20 @@ div.css-46bh2p-MuiCardContent-root {
 .css-10fi992-MuiButtonBase-root-MuiButton-root:hover {
   background-color: rgba(0, 0, 0, 0.04) !important ;
 }
+
+.number {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: #ffb703;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: "Montserrat", Helvetica, Arial, sans-serif;
+  text-align: center;
+  line-height: 30px;
+  color: #fff;
+}
 /* Responsive tablet */
 @media only screen and (max-width: 1200px) {
   .NavigationAside {
@@ -212,6 +231,9 @@ div.css-46bh2p-MuiCardContent-root {
 /* Responsive small mobile */
 @media only screen and (max-width: 400px) {
   button.InsertConsButton {
+    margin-left: 0px;
+  }
+  button.InsertFIBButton {
     margin-left: 0px;
   }
   button.InsertAudioFile {
