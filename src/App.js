@@ -15,7 +15,6 @@ import { PostEdit } from "./Page/PostEdit";
 import { PracticeList } from "./Page/Practice";
 import { PracticeTest } from "./Page/PracticeEachTest";
 import { authProvider } from "./Page/authProvider";
-import { TestPool } from "./Page/TestPool";
 import MyLayout from "./MyLayout";
 import LibraryAddIcon from "@mui/icons-material/LibraryAdd";
 import ModeEditOutlineTwoToneIcon from "@mui/icons-material/ModeEditOutlineTwoTone";
@@ -74,8 +73,8 @@ function App() {
       <Admin
         dashboard={Dashboard}
         dataProvider={dataProvider}
-        // loginPage={MyLoginPage}
-        loginPage={HomePage}
+        loginPage={MyLoginPage}
+        // loginPage={HomePage}
         authProvider={authProvider}
         theme={theme}
         layout={MyLayout}
@@ -112,7 +111,7 @@ function App() {
           />
           <Route path="/my_account/tests/" element={<MyAccount />} />
           <Route path="/my_account/settings/" element={<EditPersonalInfo />} />
-          <Route path="/test" element={<HomePage />} />
+          {/* <Route path="/homepage" element={<HomePage />} /> */}
         </CustomRoutes>
       </Admin>
     </QueryClientProvider>
