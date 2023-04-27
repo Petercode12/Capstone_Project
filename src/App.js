@@ -15,7 +15,6 @@ import { PostEdit } from "./Page/PostEdit";
 import { PracticeList } from "./Page/Practice";
 import { PracticeTest } from "./Page/PracticeEachTest";
 import { authProvider } from "./Page/authProvider";
-import { TestPool } from "./Page/TestPool";
 import MyLayout from "./MyLayout";
 import LibraryAddIcon from "@mui/icons-material/LibraryAdd";
 import ModeEditOutlineTwoToneIcon from "@mui/icons-material/ModeEditOutlineTwoTone";

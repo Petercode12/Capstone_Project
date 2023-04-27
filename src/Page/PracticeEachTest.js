@@ -570,7 +570,12 @@ export function PracticeTest() {
                             </div>
                           </div>
                         </div>
-                        <HighlightApp id={1} questionText={'<p><mark data-color="#b71c1c" style="background-color: #b71c1c">abc</mark>defgh Tôi <mark data-color="#e65100" style="background-color: #e65100">là ai a</mark>i <strong>là tôi</strong></p><blockquote><p><strong>abc</strong>xyz<s>fgh</s></p></blockquote><p><MathJaxContext config={config}><MathJax>`(a.4^2+b)/2 \sum13`</MathJax></MathJaxContext></p>'}/>
+                        <highlightapp
+                          id={1}
+                          questionText={
+                            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In vitae magna lacus. Sed rhoncus tortor eget venenatis faucibus. Vivamus quis nunc vel eros volutpat auctor. Suspendisse sit amet lorem tristique lectus hendrerit aliquet. Aliquam erat volutpat. Vivamus malesuada, neque at consectetur semper, nibh urna ullamcorper metus, in dapibus arcu massa feugiat erat. Nullam hendrerit malesuada dictum. Nullam mattis orci diam, eu accumsan est maximus quis. Cras mauris nibh, bibendum in pharetra vitae, porttitor at ante. Duis pharetra elit ante, ut feugiat nibh imperdiet eget. Aenean at leo consectetur, sodales sem sit amet, consectetur massa. Ut blandit erat et turpis vestibulum euismod. Cras vitae molestie libero, vel gravida risus. Curabitur dapibus risus eu justo maximus, efficitur blandit leo porta. Donec dignissim felis ac turpis pharetra lobortis. Sed quis vehicula nulla."
+                          }
+                        />
                         {questionList.map((question, i) => {
                           if (question.type === "MCQ") {
                             return (
@@ -591,26 +596,26 @@ export function PracticeTest() {
                                   <span>Question {i + 1}</span>
                                 </div>
                                 <IconButton
-                              color="primary"
-                              style={{ padding: "2px" }}
-                              onClick={() => {
-                                displayNote();
-                              }}
-                            >
-                              <EditNoteIcon />
-                            </IconButton>
-                            <TextField
-                              id="textAreaNote"
-                              label="Note here"
-                              className="noteTextField"
-                              placeholder="Start typing ..."
-                              multiline
-                              variant="standard"
-                              style={{
-                                marginTop: "2px",
-                                display: noteDisplay,
-                              }}
-                            />
+                                  color="primary"
+                                  style={{ padding: "2px" }}
+                                  onClick={() => {
+                                    displayNote();
+                                  }}
+                                >
+                                  <EditNoteIcon />
+                                </IconButton>
+                                <TextField
+                                  id="textAreaNote"
+                                  label="Note here"
+                                  className="noteTextField"
+                                  placeholder="Start typing ..."
+                                  multiline
+                                  variant="standard"
+                                  style={{
+                                    marginTop: "2px",
+                                    display: noteDisplay,
+                                  }}
+                                />
                                 <MathJaxContext config={config}>
                                   <MathJax>
                                     <div
@@ -783,26 +788,26 @@ export function PracticeTest() {
                                   <span>Question {i + 1}</span>
                                 </div>
                                 <IconButton
-                              color="primary"
-                              style={{ padding: "2px" }}
-                              onClick={() => {
-                                displayNote();
-                              }}
-                            >
-                              <EditNoteIcon />
-                            </IconButton>
-                            <TextField
-                              id="textAreaNote"
-                              label="Note here"
-                              className="noteTextField"
-                              placeholder="Start typing ..."
-                              multiline
-                              variant="standard"
-                              style={{
-                                marginTop: "2px",
-                                display: noteDisplay,
-                              }}
-                            />
+                                  color="primary"
+                                  style={{ padding: "2px" }}
+                                  onClick={() => {
+                                    displayNote();
+                                  }}
+                                >
+                                  <EditNoteIcon />
+                                </IconButton>
+                                <TextField
+                                  id="textAreaNote"
+                                  label="Note here"
+                                  className="noteTextField"
+                                  placeholder="Start typing ..."
+                                  multiline
+                                  variant="standard"
+                                  style={{
+                                    marginTop: "2px",
+                                    display: noteDisplay,
+                                  }}
+                                />
                                 <MathJaxContext config={config}>
                                   <MathJax>
                                     <div
