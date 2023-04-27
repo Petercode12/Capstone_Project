@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useLogin, useNotify } from "react-admin";
 import axios from "axios";
 import "../Style/MyLoginPage.css";
-import { Typography } from "@mui/material";
+import { Typography, Container } from "@mui/material";
 export function MyLoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -38,7 +38,6 @@ export function MyLoginPage() {
       })
       .catch((err) => {
         console.log(err);
-        
       });
   };
 
@@ -83,145 +82,150 @@ export function MyLoginPage() {
     setError(errMsg);
   };
   return (
-    <div className="loginForm">
-      <div className="container" id="container">
-        <div className="form-container sign-up-container">
-          <form className="loginFormform" action="#">
-            <h1 className="loginFormh1">Create Account</h1>
-            <div className="social-container">
-              <a href="#" className="social loginForma">
-                <i className="fab fa-facebook-f" />
-              </a>
-              <a href="#" className="social loginForma">
-                <i className="fab fa-google-plus-g" />
-              </a>
-              <a href="#" className="social loginForma">
-                <i className="fab fa-linkedin-in" />
-              </a>
-            </div>
-            <span className="loginFormspan">
-              or use your email for registration
-            </span>
-            <input
-              className="loginForminput"
-              type="text"
-              placeholder="Name"
-              onChange={(e) => setUsername(e.target.value)}
-            />
-            <input
-              className="loginForminput"
-              type="email"
-              placeholder="Email"
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <input
-              className="loginForminput"
-              type="password"
-              placeholder="Password"
-              onChange={(e) => {
-                setPassword(e.target.value);
-                validatePassword(e.target.value);
-              }}
-            />
-            <Typography
-              alignLeft
-              noWrap
-              variant="subtitle2"
-              color="red"
-              sx={{ textAlign: "left !important" }}
-            >
-              {error}
-            </Typography>
-            <span style={{ margin: "8px 0px 18px 0px" }}>
-              <label
-                htmlFor="avatar"
-                style={{
-                  float: "left",
-                  marginBottom: "4px",
-                  fontSize: "15px",
-                }}
-              >
-                Choose a profile picture:
-              </label>
+    <Container
+      xs={{ maxWidth: 1200 }}
+      sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+    >
+      <div className="loginForm">
+        <div className="container" id="container">
+          <div className="form-container sign-up-container">
+            <form className="loginFormform" action="#">
+              <h1 className="loginFormh1">Create Account</h1>
+              <div className="social-container">
+                <a href="#" className="social loginForma">
+                  <i className="fab fa-facebook-f" />
+                </a>
+                <a href="#" className="social loginForma">
+                  <i className="fab fa-google-plus-g" />
+                </a>
+                <a href="#" className="social loginForma">
+                  <i className="fab fa-linkedin-in" />
+                </a>
+              </div>
+              <span className="loginFormspan">
+                or use your email for registration
+              </span>
               <input
-                type="file"
-                id="avatar"
-                name="avatar"
-                accept="image/png, image/jpeg"
-                onChange={handleAvatar}
+                className="loginForminput"
+                type="text"
+                placeholder="Name"
+                onChange={(e) => setUsername(e.target.value)}
               />
-            </span>
-            <button className="loginFormbutton" onClick={handleSubmitSignUp}>
-              Sign Up
-            </button>
-          </form>
-        </div>
-        <div className="form-container sign-in-container">
-          <form className="loginFormform" action="#">
-            <h1 className="loginFormh1">Sign in</h1>
-            <div className="social-container">
-              <a href="#" className="social loginForma">
-                <i className="fab fa-facebook-f" />
-              </a>
-              <a href="#" className="social loginForma">
-                <i className="fab fa-google-plus-g" />
-              </a>
-              <a href="#" className="social loginForma">
-                <i className="fab fa-linkedin-in" />
-              </a>
-            </div>
-            <span className="loginFormspan">or use your account</span>
-            <input
-              type="email"
-              className="loginForminput"
-              placeholder="Email"
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <input
-              type="password"
-              className="loginForminput"
-              placeholder="Password"
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <a href="#" className="loginForma">
-              Forgot your password?
-            </a>
-            <button className="loginFormbutton" onClick={handleSubmitSignIn}>
-              Sign In
-            </button>
-          </form>
-        </div>
-        <div className="overlay-container">
-          <div className="overlay">
-            <div className="overlay-panel overlay-left">
-              <h1 className="loginFormh1">Welcome Back!</h1>
-              <p className="loginFormp">
-                To keep connected with us please login with your personal info
-              </p>
-              <button
-                className="ghost loginFormbutton"
-                id="signIn"
-                onClick={handleSignIn}
+              <input
+                className="loginForminput"
+                type="email"
+                placeholder="Email"
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <input
+                className="loginForminput"
+                type="password"
+                placeholder="Password"
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  validatePassword(e.target.value);
+                }}
+              />
+              <Typography
+                alignLeft
+                noWrap
+                variant="subtitle2"
+                color="red"
+                sx={{ textAlign: "left !important" }}
               >
-                Sign In
-              </button>
-            </div>
-            <div className="overlay-panel overlay-right">
-              <h1 className="loginFormh1">Hello, Friend!</h1>
-              <p className="loginFormp">
-                Enter your personal details and start journey with us
-              </p>
-              <button
-                className="ghost loginFormbutton"
-                id="signUp"
-                onClick={handleSignUp}
-              >
+                {error}
+              </Typography>
+              <span style={{ margin: "8px 0px 18px 0px" }}>
+                <label
+                  htmlFor="avatar"
+                  style={{
+                    float: "left",
+                    marginBottom: "4px",
+                    fontSize: "15px",
+                  }}
+                >
+                  Choose a profile picture:
+                </label>
+                <input
+                  type="file"
+                  id="avatar"
+                  name="avatar"
+                  accept="image/png, image/jpeg"
+                  onChange={handleAvatar}
+                />
+              </span>
+              <button className="loginFormbutton" onClick={handleSubmitSignUp}>
                 Sign Up
               </button>
+            </form>
+          </div>
+          <div className="form-container sign-in-container">
+            <form className="loginFormform" action="#">
+              <h1 className="loginFormh1">Sign in</h1>
+              <div className="social-container">
+                <a href="#" className="social loginForma">
+                  <i className="fab fa-facebook-f" />
+                </a>
+                <a href="#" className="social loginForma">
+                  <i className="fab fa-google-plus-g" />
+                </a>
+                <a href="#" className="social loginForma">
+                  <i className="fab fa-linkedin-in" />
+                </a>
+              </div>
+              <span className="loginFormspan">or use your account</span>
+              <input
+                type="email"
+                className="loginForminput"
+                placeholder="Email"
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <input
+                type="password"
+                className="loginForminput"
+                placeholder="Password"
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <a href="#" className="loginForma">
+                Forgot your password?
+              </a>
+              <button className="loginFormbutton" onClick={handleSubmitSignIn}>
+                Sign In
+              </button>
+            </form>
+          </div>
+          <div className="overlay-container">
+            <div className="overlay">
+              <div className="overlay-panel overlay-left">
+                <h1 className="loginFormh1">Welcome Back!</h1>
+                <p className="loginFormp">
+                  To keep connected with us please login with your personal info
+                </p>
+                <button
+                  className="ghost loginFormbutton"
+                  id="signIn"
+                  onClick={handleSignIn}
+                >
+                  Sign In
+                </button>
+              </div>
+              <div className="overlay-panel overlay-right">
+                <h1 className="loginFormh1">Hello, Friend!</h1>
+                <p className="loginFormp">
+                  Enter your personal details and start journey with us
+                </p>
+                <button
+                  className="ghost loginFormbutton"
+                  id="signUp"
+                  onClick={handleSignUp}
+                >
+                  Sign Up
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </Container>
   );
 }
