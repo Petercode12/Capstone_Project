@@ -208,6 +208,13 @@ div.css-46bh2p-MuiCardContent-root {
   border-radius: 2px;
   margin-right: 5px;
 }
+
+/* Note pad */
+@import url("https://fonts.googleapis.com/css2?family=Space+Mono&display=swap");
+#textAreaNote {
+  font-family: "Space Mono", monospace !important;
+}
+
 /* Responsive tablet */
 @media only screen and (max-width: 1200px) {
   .NavigationAside {
