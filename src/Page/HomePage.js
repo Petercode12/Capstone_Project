@@ -4,8 +4,8 @@ import { SimpleForm } from "react-admin";
 import { RichTextInput } from "ra-input-rich-text";
 import IconButton from "@mui/material/IconButton";
 import AddIcon from "@mui/icons-material/Add";
-import "../Style/Test.css";
-export const Test = () => {
+import "../Style/HomePage.css";
+export const HomePage = () => {
   return (
     <>
       <div className="content-container">
