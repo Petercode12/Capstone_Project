@@ -155,7 +155,7 @@ export const EditPersonalInfo = () => {
       else save_data["image"] = image;
       if (data["imageBanner"])
         save_data["imageBanner"] = await toBase64(data["imageBanner"].rawFile);
-      else save_data["imageBanner"] = "";
+      else save_data["imageBanner"] = imageBanner;
       save_data["password"] = userInfo.Password;
       console.log("Data saved: ", save_data);
     } else if (mode === 1) {
@@ -179,11 +179,11 @@ export const EditPersonalInfo = () => {
         }
         setUserInfo(res.data);
         console.log("Data saved: ", res.data);
-        
+
         navigate(-1);
-        setTimeout(function(){
-            window.location.reload();
-        }, 500);
+        // setTimeout(function() {
+        //   window.location.reload();
+        // }, 200);
         return Promise.resolve();
       })
       .catch((err) => {
@@ -396,7 +396,7 @@ export const EditPersonalInfo = () => {
                               );
                               node.style.display = "none";
                               console.log("Node: ", node);
-                              setImageBanner (""); // xóa ảnh banner
+                              setImageBanner(""); // xóa ảnh banner
                             }}
                           >
                             <svg

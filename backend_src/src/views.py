@@ -423,11 +423,23 @@ def authentication(request):
         return JsonResponse(status = 200, data=user_ser.data, safe=False)
 
 @csrf_exempt
-def query_total_test_result(request):
+def query_total_test_result(request, user_id):
     if request.method == "GET":
-        exam_tags = EXAM_TAGS.objects.all()
-        tags_serializer = exam_tags_serializer(exam_tags, many=True)
-        return JsonResponse(tags_serializer.data, safe=False)
+        print("user_id: ", user_id)
+        test_results = TEST_RESULT.objects.filter(user_id=user_id).order_by(
+            "exam_id", "Date"
+        )
+        name=[]
+        for test in test_results:
+            # print(test.exam_id, EXAMS_COLLECTION.objects.get(id=test.exam_id).Name)
+            # test.exam_id.add(Name= EXAMS_COLLECTION.objects.get(id=test.exam_id).Name)
+            name += [EXAMS_COLLECTION.objects.get(id=test.exam_id).Name]
+        print(name)    
+        test_results_ser = test_result_serializer(test_results, many=True)
+        for i in range(0, len(test_results_ser.data)):
+            test_results_ser.data[i]['Name'] = name[i]
+            # print(test_results_ser.data[i]['Start_time'])
+        return JsonResponse(test_results_ser.data, safe=False)
 # @csrf_exempt
 # def test_api(request):
 #     if request.method == "GET":

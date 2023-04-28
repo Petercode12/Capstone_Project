@@ -87,15 +87,6 @@ form div.textAnswer1 {
 }
 
 /* BUTTON */
-button.InsertMCQButton {
-  display: flex;
-  float: left;
-}
-button.InsertConsButton {
-  display: flex;
-  float: left;
-  margin-left: 1.5em;
-}
 .css-mhc70k-MuiGrid-root > .MuiGrid-item {
   padding-left: 0px;
 }

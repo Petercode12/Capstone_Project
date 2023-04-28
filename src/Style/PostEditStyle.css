@@ -83,23 +83,20 @@ form div.textAnswer {
 
 /* BUTTON */
 button.InsertMCQButton {
-  display: flex;
-  float: left;
+  padding: 6px 8px 6px 4px;
+  display: block;
 }
 button.InsertConsButton {
-  display: flex;
-  float: left;
-  margin-left: 1.5em;
+  display: block;
+  padding: 6px 8px 6px 4px;
 }
 button.InsertFIBButton {
-  display: flex;
-  float: left;
-  margin-left: 1.5em;
+  display: block;
+  padding: 6px 8px 6px 4px;
 }
 button.InsertAudioFile {
-  display: flex;
-  float: left;
-  margin-left: 1.5em;
+  display: block;
+  padding: 6px 8px 6px 4px;
 }
 .css-mhc70k-MuiGrid-root > .MuiGrid-item {
   padding-left: 0px;
@@ -113,21 +110,21 @@ button.InsertAudioFile {
     0px 0px 0px 1px rgb(0 0 0 / 10%) !important;
 }
 .InsertButton {
-  box-sizing: border-box;
+  display: flex;
   background-color: rgb(255, 255, 255);
   border-color: #000;
   border-radius: 4px;
   box-shadow: 0px 2px 1px -1px rgb(0 0 0 / 20%),
     0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%),
     0px 0px 0px 1px rgb(0 0 0 / 10%);
-  /* box-shadow: 0 1px 5px #ddd; */
   padding: 8px;
   position: fixed;
   transition-duration: 0.3s;
   z-index: 100 !important;
-  justify-content: space-around;
-  margin: 0 auto;
+  justify-content: space-between;
+  column-gap: 16px;
   transform: translateZ(0);
+  flex-flow: wrap;
 }
 .RichTextContentEdit {
   background-color: #fff;

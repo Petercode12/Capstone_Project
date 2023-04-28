@@ -82,7 +82,7 @@ const headCells = [
     id: "date",
     numeric: true,
     disablePadding: false,
-    label: "Date",
+    label: "Last modified date",
     minWidth: 180,
     maxWidth: 180,
   },
@@ -230,7 +230,7 @@ function EnhancedTableHead(props) {
     </TableHead>
   );
 }
-export const MyAccount = () => {
+export const MyAccountTestCreated = () => {
   const [userInfo, setUserInfo] = useState(
     JSON.parse(localStorage.getItem("auth"))
   );
@@ -341,10 +341,10 @@ export const MyAccount = () => {
         </div>
         <ul className="nav nav-tabs mb-4">
           <li className="nav-item">
-            <a className="nav-link active" href="#/my_account/tests/">
+            <a className="nav-link " href="#/my_account/tests/">
               Exam results
             </a>
-            <a className="nav-link" href="#/my_account/tests/created/">
+            <a className="nav-link active" href="#/my_account/tests/created/">
               Exam created management
             </a>
           </li>

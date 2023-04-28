@@ -859,14 +859,14 @@ export function PostEdit() {
     <Container sx={{ maxWidth: { xl: 1280 } }}>
       <Grid container justifyContent="space-between" spacing={2}>
         <Grid item xs={12}>
-          <Grid className="InsertButton">
+          <div className="InsertButton">
             <Button
               variant="contained"
               onClick={insertQA_MCQ}
               className="InsertMCQButton"
               mr={{ xs: 0, sm: "0.5em" }}
             >
-              <i className="bi bi-plus" /> MCQ
+              <i className="bi bi-plus" /> Multiple Choice
             </Button>
             <Button
               variant="contained"
@@ -874,7 +874,7 @@ export function PostEdit() {
               className="InsertConsButton"
               mr={{ xs: 0, sm: "0.5em" }}
             >
-              <i className="bi bi-plus" /> Constructive Questions
+              <i className="bi bi-plus" /> Constructive
             </Button>
             <Button
               variant="contained"
@@ -882,7 +882,7 @@ export function PostEdit() {
               className="InsertFIBButton"
               mr={{ xs: 0, sm: "0.5em" }}
             >
-              <i className="bi bi-plus" /> Fill in Blank Questions
+              <i className="bi bi-plus" /> Fill in Blank
             </Button>
             <Button
               variant="contained"
@@ -892,7 +892,7 @@ export function PostEdit() {
             >
               <i className="bi bi-plus" /> Audio
             </Button>
-          </Grid>
+          </div>
         </Grid>
         <Grid item xs={12} sm={8} md={9} lg={10} style={{ paddingTop: "48px" }}>
           <Edit

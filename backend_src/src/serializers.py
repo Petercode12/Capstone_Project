@@ -68,7 +68,6 @@ class test_result_serializer(serializers.ModelSerializer):
             "user_id",
         )
 
-
 class test_result_specific_serializer(serializers.ModelSerializer):
     class Meta:
         model = TEST_RESULT_SPECIFIC

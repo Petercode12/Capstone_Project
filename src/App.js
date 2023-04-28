@@ -26,6 +26,7 @@ import { PracticeResult } from "./Page/PracticeResult";
 import { PraceticeResultSpecific } from "./Page/PracticeResultSpecific";
 import { MyCustomList } from "./Page/Posts";
 import { MyAccount } from "./Page/MyAccount";
+import { MyAccountTestCreated } from "./Page/MyAccountTestCreated";
 import { EditPersonalInfo } from "./Page/EditPersonalInfo";
 import { Dashboard } from "./Page/Dashboard";
 import { QueryClient, QueryClientProvider, useQuery } from "react-query";
@@ -110,6 +111,10 @@ function App() {
           />
           <Route path="/my_account/tests/" element={<MyAccount />} />
           <Route path="/my_account/settings/" element={<EditPersonalInfo />} />
+          <Route
+            path="/my_account/tests/created"
+            element={<MyAccountTestCreated />}
+          />
           <Route path="/test" element={<Test />} />
         </CustomRoutes>
       </Admin>
