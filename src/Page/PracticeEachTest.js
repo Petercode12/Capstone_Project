@@ -41,6 +41,7 @@ import { Map, List } from "immutable";
 import getMuiTheme from "material-ui/styles/getMuiTheme";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import HighlightApp from "./containers/HighlightApp";
+// import HighlightApp from "./containers/HighlightApp1";
 import configureStore from "./store/configureStore";
 import Form from "./notepads/Form.js";
 import TodoList from "./notepads/TodoList.js";
@@ -255,12 +256,14 @@ export function PracticeTest() {
         display: "flex",
         textAlign: "center",
         justifyContent: "center",
+        alignItems: "center",
+        maxWidth: "220px",
       }}
     >
       <Stack spacing={2}>
         <Paper
           style={{
-            maxHeight: "23.916rem",
+            maxHeight: "40vh",
             overflow: "auto",
           }}
           className="NavigationAsidePaper"
@@ -336,7 +339,7 @@ export function PracticeTest() {
           style={{
             marginTop: "1em",
             wordBreak: "break-all",
-            maxHeight: "15rem",
+            maxHeight: "40vh",
             overflow: "auto",
           }}
         >
@@ -520,7 +523,7 @@ export function PracticeTest() {
       }}
     >
       <Grid container justifyContent="space-between" spacing={2}>
-        <Grid item xs={12} sm={8} md={9} lg={10} style={{ paddingTop: "48px" }}>
+        <Grid item xs={12} sm={8} md={9} lg={10} style={{ paddingTop: "24px" }}>
           <Provider store={store}>
             <MuiThemeProvider muiTheme={getMuiTheme()}>
               <Edit
@@ -535,7 +538,7 @@ export function PracticeTest() {
                   <div className="multipleChoice">
                     <div className="question-section">
                       <div className="question-text">
-                        <div
+                        {/* <div
                           className="highlight-control"
                           style={{
                             top: "100px",
@@ -569,8 +572,8 @@ export function PracticeTest() {
                               <span className="far fa-check highlight-icon highlight-save" />
                             </div>
                           </div>
-                        </div>
-                        <highlightapp
+                        </div> */}
+                        <HighlightApp
                           id={1}
                           questionText={
                             "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In vitae magna lacus. Sed rhoncus tortor eget venenatis faucibus. Vivamus quis nunc vel eros volutpat auctor. Suspendisse sit amet lorem tristique lectus hendrerit aliquet. Aliquam erat volutpat. Vivamus malesuada, neque at consectetur semper, nibh urna ullamcorper metus, in dapibus arcu massa feugiat erat. Nullam hendrerit malesuada dictum. Nullam mattis orci diam, eu accumsan est maximus quis. Cras mauris nibh, bibendum in pharetra vitae, porttitor at ante. Duis pharetra elit ante, ut feugiat nibh imperdiet eget. Aenean at leo consectetur, sodales sem sit amet, consectetur massa. Ut blandit erat et turpis vestibulum euismod. Cras vitae molestie libero, vel gravida risus. Curabitur dapibus risus eu justo maximus, efficitur blandit leo porta. Donec dignissim felis ac turpis pharetra lobortis. Sed quis vehicula nulla."
@@ -610,6 +613,8 @@ export function PracticeTest() {
                                   className="noteTextField"
                                   placeholder="Start typing ..."
                                   multiline
+                                  maxRows={3}
+                                  fullWidth
                                   variant="standard"
                                   style={{
                                     marginTop: "2px",
@@ -802,6 +807,8 @@ export function PracticeTest() {
                                   className="noteTextField"
                                   placeholder="Start typing ..."
                                   multiline
+                                  fullWidth
+                                  maxRows={3}
                                   variant="standard"
                                   style={{
                                     marginTop: "2px",
@@ -851,7 +858,7 @@ export function PracticeTest() {
           md={3}
           lg={2}
           style={{
-            paddingTop: "64px",
+            paddingTop: "40px",
           }}
         >
           <Aside />

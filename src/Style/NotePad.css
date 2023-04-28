@@ -5,9 +5,10 @@
 }
 
 .todo-list {
-  min-width: 30%;
+  width: 100%;
   list-style: none;
   padding-left: 1em;
+  margin: 8px 0px;
 }
 
 .todo {
@@ -41,11 +42,6 @@
 }
 .todo-item {
   padding: 0rem 0.5rem;
-}
-
-.fa-trash,
-.fa-check {
-  pointer-events: none;
 }
 
 .fall {

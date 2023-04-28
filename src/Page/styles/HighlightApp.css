@@ -1,21 +1,21 @@
 .highlight-icon1 {
-  padding: 0px !important;
+  padding: 4px 0px 0px !important;
   cursor: pointer !important;
 }
-.rc-tooltip-inner {
+/* .rc-tooltip-inner {
   padding: 5px 8px 0px !important;
   min-height: 0px !important;
   opacity: 1 !important;
 }
 .rc-tooltip {
   opacity: 1 !important;
-}
+} */
 .trashmovetop {
   position: relative;
   font-size: 1rem;
   transform: translateY(-2px);
   pointer-events: visible !important;
 }
-.rc-tooltip-hidden {
+/* .rc-tooltip-hidden {
   display: block;
-}
+} */

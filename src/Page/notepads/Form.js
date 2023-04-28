@@ -31,41 +31,41 @@ const Form = ({ todos, setTodos }) => {
           textAlign: "center",
           fontWeight: "bold",
           padding: "8px 0px",
-          minWidth: "170px",
+          width: "100%",
         }}
       >
         Todo List
       </div>
-      <TextField
-        id="notePad"
-        label="Note"
-        rows={5}
-        variant="filled"
-        style={{
-          width: "60%",
-        }}
-        onChange={noteChange}
-        defaultValue={""}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            submitTodoHandler(e);
-          }
-        }}
-      />
-      <IconButton
-        onClick={submitTodoHandler}
-        className="todo-button"
-        color="primary"
-        aria-label="add to shopping cart"
-        style={{
-          marginTop: "12px",
-          marginLeft: "5px",
-          textAlign: "center",
-          justifyContent: "center",
-        }}
-      >
-        <AddCircleOutlineIcon />
-      </IconButton>
+      <div style={{display: "flex", justifyContent: "space-around"}}>
+        <TextField
+          id="notePad"
+          label="Note"
+          variant="filled"
+          onChange={noteChange}
+          defaultValue={""}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              submitTodoHandler(e);
+            }
+          }}
+          sx={{ 
+            margin: "0px 8px",
+          }}
+        />
+        <IconButton
+          onClick={submitTodoHandler}
+          // className="todo-button"
+          color="primary"
+          aria-label="add to shopping cart"
+          style={{
+            padding: "2px",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <AddCircleOutlineIcon />
+        </IconButton>
+      </div>
     </form>
   );
 };

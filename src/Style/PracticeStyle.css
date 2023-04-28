@@ -64,7 +64,7 @@
   width: 100%;
 }
 .multipleChoice button:hover {
-  background-color: #555e7d;
+  background-color: #e5e8f2;
 }
 
 .multipleChoice button:focus {
@@ -192,7 +192,7 @@ div.css-46bh2p-MuiCardContent-root {
   background-color: #ffff7b;
 }
 .highlight-color.red {
-  background-color: #FF3333;
+  background-color: #ff3333;
 }
 .highlight-color.crossed {
   background-color: rgba(0, 0, 0, 0.01);

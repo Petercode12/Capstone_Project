@@ -23,7 +23,7 @@ const Todo = ({ text, todos, todo, setTodos }) => {
   return (
     <div className="todo">
       <li
-        style={{ fontSize: "18px" }}
+        style={{ fontSize: "16px" }}
         className={`todo-item ${todo.completed ? "completed" : ""}`}
       >
         {text}
