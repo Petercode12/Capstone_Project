@@ -74,7 +74,15 @@ form.loginFormform {
   height: 100%;
   text-align: center;
 }
+.errorType {
+  font-size: 0.875rem;
+  color: red;
+}
 
+.errorType::before {
+  display: inline;
+  content: "⚠ ";
+}
 input.loginForminput {
   background-color: #eee;
   border: none;

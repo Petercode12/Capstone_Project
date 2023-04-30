@@ -428,18 +428,32 @@ def query_total_test_result(request, user_id):
         print("user_id: ", user_id)
         test_results = TEST_RESULT.objects.filter(user_id=user_id).order_by(
             "exam_id", "Date"
-        )
-        name=[]
-        for test in test_results:
-            # print(test.exam_id, EXAMS_COLLECTION.objects.get(id=test.exam_id).Name)
-            # test.exam_id.add(Name= EXAMS_COLLECTION.objects.get(id=test.exam_id).Name)
-            name += [EXAMS_COLLECTION.objects.get(id=test.exam_id).Name]
-        print(name)    
+        ).select_related("exam")
         test_results_ser = test_result_serializer(test_results, many=True)
+        
         for i in range(0, len(test_results_ser.data)):
-            test_results_ser.data[i]['Name'] = name[i]
-            # print(test_results_ser.data[i]['Start_time'])
+            test_results_ser.data[i]['Name'] = test_results[i].exam.Name
         return JsonResponse(test_results_ser.data, safe=False)
+    
+@csrf_exempt
+def query_total_test_created_result(request, user_id):
+    if request.method == "GET":
+        print("user_id: ", user_id)
+        exam_collection = TEST_RESULT.objects.select_related("exam")
+        exam_collection = exam_collection.select_related("user")
+        # prefetch_related ngược lại với select_related
+        result = []
+        
+        for i in exam_collection: 
+            print(i.exam.User_id)
+            if(i.exam.User_id == user_id):
+                temp = {"id": i.id, "Score": i.Score, "Date": i.Date, "Username": i.user.Username, 
+                        "exam_id": i.exam.id, "End_time": i.End_time, "Start_time": i.Start_time,
+                        "test_name": i.exam.Name, "last_modified_date": i.exam.Last_Modified_Date,
+                        }
+                result.append(temp)
+        
+        return JsonResponse(result, safe=False)
 # @csrf_exempt
 # def test_api(request):
 #     if request.method == "GET":

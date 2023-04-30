@@ -52,5 +52,6 @@ urlpatterns = [
         views.authentication,
         name="authentication",
     ),
-    path("my_account/tests/<int:user_id>", views.query_total_test_result, name="queryAllTestResults")
+    path("my_account/tests/<int:user_id>", views.query_total_test_result, name="queryAllTestResults"),
+    path("my_account/tests/created/<int:user_id>", views.query_total_test_created_result, name="queryAllTestCreatedResults"),
 ]

@@ -1,9 +1,11 @@
 import * as React from "react";
 import { useState } from "react";
 import { useLogin, useNotify } from "react-admin";
+import { useForm } from "react-hook-form";
 import axios from "axios";
 import "../Style/MyLoginPage.css";
 import { Typography, Container } from "@mui/material";
+import { ErrorMessage } from "@hookform/error-message";
 export function MyLoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -19,24 +21,36 @@ export function MyLoginPage() {
   const SPECIAL_CHARS_REGEX = new RegExp(
     /.*[-’/`~!#*$@_%+=.,^&(){}[\]|;:”<>?\\]/
   );
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+  } = useForm({
+    criteriaMode: "all",
+  });
   const handleSubmitSignIn = (e) => {
     e.preventDefault();
     login({ email, password }).catch(() =>
       notify("Invalid email or password", { type: "error" })
     );
   };
-  const handleSubmitSignUp = (e) => {
+  const onSubmit = (data) => {
+    console.log("Data: ", data);
     axios
       .post("http://localhost:8000/save_user/", {
-        username,
-        password,
-        email,
+        username: data.Name,
+        password: data.Password,
+        email: data.Email,
         avatar,
       })
       .then((res) => {
         notify("Sign up successfully!", { type: "success" });
+        handleSignIn();
       })
       .catch((err) => {
+        notify("Sign up fail! Email has been used", {
+          type: "error",
+        });
         console.log(err);
       });
   };
@@ -89,9 +103,9 @@ export function MyLoginPage() {
       <div className="loginForm">
         <div className="container" id="container">
           <div className="form-container sign-up-container">
-            <form className="loginFormform" action="#">
+            <form className="loginFormform" onSubmit={handleSubmit(onSubmit)}>
               <h1 className="loginFormh1">Create Account</h1>
-              <div className="social-container">
+              {/* <div className="social-container">
                 <a href="#" className="social loginForma">
                   <i className="fab fa-facebook-f" />
                 </a>
@@ -101,40 +115,124 @@ export function MyLoginPage() {
                 <a href="#" className="social loginForma">
                   <i className="fab fa-linkedin-in" />
                 </a>
-              </div>
+              </div> */}
               <span className="loginFormspan">
                 or use your email for registration
               </span>
               <input
                 className="loginForminput"
+                {...register("Name", {
+                  required: "This input is required!",
+                  maxLength: {
+                    value: 15,
+                    message: "This input must not exceed 15 characters",
+                  },
+                })}
                 type="text"
                 placeholder="Name"
-                onChange={(e) => setUsername(e.target.value)}
+                // onChange={(e) => setUsername(e.target.value)}
               />
+              <ErrorMessage
+                errors={errors}
+                name="Name"
+                render={({ messages }) => {
+                  console.log("messages", messages);
+                  return messages
+                    ? Object.entries(messages).map(([type, message]) => (
+                        <Typography
+                          variant="subtitle2"
+                          className="errorType"
+                          key={type}
+                        >
+                          {message}
+                        </Typography>
+                      ))
+                    : null;
+                }}
+              />
+
               <input
                 className="loginForminput"
                 type="email"
+                {...register("Email", {
+                  required: "This input is required!",
+                  pattern: {
+                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+                    message: "Invalid email format!",
+                  },
+                  maxLength: {
+                    value: 200,
+                    message: "This input must not exceed 200 characters",
+                  },
+                })}
                 placeholder="Email"
-                onChange={(e) => setEmail(e.target.value)}
+                // onChange={(e) => setEmail(e.target.value)}
+              />
+              <ErrorMessage
+                errors={errors}
+                name="Email"
+                render={({ messages }) => {
+                  return messages
+                    ? Object.entries(messages).map(([type, message]) => (
+                        <Typography
+                          variant="subtitle2"
+                          className="errorType"
+                          key={type}
+                        >
+                          {message}
+                        </Typography>
+                      ))
+                    : null;
+                }}
               />
               <input
                 className="loginForminput"
                 type="password"
+                {...register("Password", {
+                  required: "This input is required!",
+                  validate: {
+                    hasUpperCase: (value) =>
+                      UPPERCASE_REGEX.test(value) || "At least one Uppercase!",
+                    hasLowerCase: (value) =>
+                      LOWERCASE_REGEX.test(value) || "At least one Lowercase!",
+                    hasNumbers: (value) =>
+                      NUMBER_REGEX.test(value) || "At least one digit!",
+                    hasSpecialChar: (value) =>
+                      SPECIAL_CHARS_REGEX.test(value) ||
+                      "At least one Special Characters!",
+                    hasEnoughChar: (value) =>
+                      LENGTH_REGEX.test(value) ||
+                      "At least minumum 8 characters!",
+                  },
+                  maxLength: {
+                    value: 30,
+                    message: "This input must not exceed 30 characters",
+                  },
+                })}
                 placeholder="Password"
                 onChange={(e) => {
                   setPassword(e.target.value);
                   validatePassword(e.target.value);
                 }}
               />
-              <Typography
-                alignLeft
-                noWrap
-                variant="subtitle2"
-                color="red"
-                sx={{ textAlign: "left !important" }}
-              >
-                {error}
-              </Typography>
+              <ErrorMessage
+                errors={errors}
+                name="Password"
+                render={({ messages }) => {
+                  console.log("Messages: ", messages);
+                  return messages
+                    ? Object.entries(messages).map(([type, message]) => (
+                        <Typography
+                          variant="subtitle2"
+                          className="errorType"
+                          key={type}
+                        >
+                          {message}
+                        </Typography>
+                      ))
+                    : null;
+                }}
+              />
               <span style={{ margin: "8px 0px 18px 0px" }}>
                 <label
                   htmlFor="avatar"
@@ -154,7 +252,11 @@ export function MyLoginPage() {
                   onChange={handleAvatar}
                 />
               </span>
-              <button className="loginFormbutton" onClick={handleSubmitSignUp}>
+              <button
+                className="loginFormbutton"
+                type="submit"
+                // onClick={handleSubmitSignUp}
+              >
                 Sign Up
               </button>
             </form>

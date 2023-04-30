@@ -270,8 +270,9 @@ export const MyAccount = () => {
   };
 
   useEffect(() => {
+    console.log(userInfo.id);
     axios
-      .get("http://localhost:8000/my_account/tests/".concat(1))
+      .get("http://localhost:8000/my_account/tests/".concat(userInfo.id))
       .then((res) => {
         setQuestionList(convertQueryDataToQuestionList(res.data));
       })

@@ -171,3 +171,6 @@ a {
 .MyLayout-label-5 {
   font-size: 17;
 }
+.MuiTextField-root {
+  margin: 0 !important;
+}
