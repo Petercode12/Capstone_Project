@@ -165,17 +165,17 @@ function convertQueryDataToQuestionList(data) {
     let end = e.End_time;
     let diff = start
       .split(":")
-      .map((item, index) =>
-        Math.max((end.split(":")[index] - item).toFixed(0), 0)
-      )
+      .map((item, index) => {
+        let temp = Math.max(
+          (end.split(":")[index] - item).toFixed(0),
+          0
+        ).toString();
+        console.log("Temp :", temp);
+        if (temp.length === 1) temp = "0" + temp;
+        return temp;
+      })
       .join(":");
-    let time_diff = start
-      .split(":")
-      .map((item, index) =>
-        Math.max((end.split(":")[index] - item).toFixed(0), 0)
-      );
-    let time_diff_sec =
-      time_diff[0] * 60 * 60 + time_diff[1] * 60 + time_diff[2];
+
     var d = new Date(Date.parse(e.Date)),
       dformat =
         [
@@ -194,8 +194,7 @@ function convertQueryDataToQuestionList(data) {
       name: e.Name,
       score: e.Score,
       date: dformat, //new Date(Date.parse("2012-01-26T13:51:50.417-07:00")),
-      time: time_diff_sec,
-      diff: diff,
+      time: diff,
       viewresult: "View",
     };
     questionList.push(k);
@@ -434,7 +433,7 @@ export const MyAccount = () => {
                             maxWidth: headCells[3].maxWidth,
                           }}
                         >
-                          {row.diff}
+                          {row.time}
                         </StyledTableCell>
                         <StyledTableCell align="right">
                           <Button
