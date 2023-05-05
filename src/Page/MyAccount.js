@@ -53,6 +53,7 @@ import {
   FormControlLabel,
   Switch,
   Typography,
+  Button,
 } from "@mui/material";
 import { visuallyHidden } from "@mui/utils";
 import { useState, useEffect } from "react";
@@ -69,6 +70,10 @@ const toBase64 = (file) =>
     reader.onload = () => resolve(reader.result);
     reader.onerror = (error) => reject(error);
   });
+Number.prototype.padLeft = function(base, chr) {
+  var len = String(base || 10).length - String(this).length + 1;
+  return len > 0 ? new Array(len).join(chr || "0") + this : this;
+};
 const headCells = [
   {
     id: "name",
@@ -82,9 +87,10 @@ const headCells = [
     id: "date",
     numeric: true,
     disablePadding: false,
+    type: "dateTime",
     label: "Date",
-    minWidth: 180,
-    maxWidth: 180,
+    minWidth: 120,
+    maxWidth: 120,
   },
   {
     id: "score",
@@ -99,8 +105,8 @@ const headCells = [
     numeric: true,
     disablePadding: false,
     label: "Time taken",
-    minWidth: 80,
-    maxWidth: 80,
+    minWidth: 100,
+    maxWidth: 100,
   },
   {
     id: "viewresult",
@@ -114,10 +120,10 @@ const headCells = [
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
-    backgroundColor: "#ddd",
+    backgroundColor: "#fff",
     color: theme.palette.common.black,
     fontSize: 15,
-    fontWeight: "bold",
+    fontWeight: "500",
   },
   [`&.${tableCellClasses.body}`]: {
     fontSize: 14,
@@ -170,11 +176,24 @@ function convertQueryDataToQuestionList(data) {
       );
     let time_diff_sec =
       time_diff[0] * 60 * 60 + time_diff[1] * 60 + time_diff[2];
+    var d = new Date(Date.parse(e.Date)),
+      dformat =
+        [
+          (d.getMonth() + 1).padLeft(),
+          d.getDate().padLeft(),
+          d.getFullYear(),
+        ].join("/") +
+        " " +
+        [
+          d.getHours().padLeft(),
+          d.getMinutes().padLeft(),
+          d.getSeconds().padLeft(),
+        ].join(":");
     let k = {
       id: e.id,
       name: e.Name,
       score: e.Score,
-      date: e.Date, //new Date(Date.parse("2012-01-26T13:51:50.417-07:00")),
+      date: dformat, //new Date(Date.parse("2012-01-26T13:51:50.417-07:00")),
       time: time_diff_sec,
       diff: diff,
       viewresult: "View",
@@ -398,7 +417,8 @@ export const MyAccount = () => {
                             maxWidth: headCells[1].maxWidth,
                           }}
                         >
-                          {new Date(Date.parse(row.date)).toString()}
+                          {row.date}
+                          {/* {new Date(Date.parse(row.date)).toString()} */}
                         </StyledTableCell>
                         <StyledTableCell
                           align="right"
@@ -417,9 +437,13 @@ export const MyAccount = () => {
                           {row.diff}
                         </StyledTableCell>
                         <StyledTableCell align="right">
-                          <a href={"#/practice_tests/result/" + row.id}>
-                            {row.viewresult}
-                          </a>
+                          <Button
+                            variant="outlined"
+                            size="small"
+                            href={"#/practice_tests/result/" + row.id}
+                          >
+                            View
+                          </Button>
                         </StyledTableCell>
                       </TableRow>
                     );

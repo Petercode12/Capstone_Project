@@ -969,6 +969,7 @@ export function PostEdit() {
                                   value="A"
                                   control={<Radio />}
                                   label=""
+                                  sx={{ margin: 0 }}
                                 />
                                 <Box
                                   component="form"
@@ -1001,6 +1002,7 @@ export function PostEdit() {
                                   value="B"
                                   control={<Radio />}
                                   label=""
+                                  sx={{ margin: 0 }}
                                 />
                                 <Box
                                   component="form"
@@ -1033,6 +1035,7 @@ export function PostEdit() {
                                   value="C"
                                   control={<Radio />}
                                   label=""
+                                  sx={{ margin: 0 }}
                                 />
                                 <Box
                                   component="form"
@@ -1065,6 +1068,7 @@ export function PostEdit() {
                                   value="D"
                                   control={<Radio />}
                                   label=""
+                                  sx={{ margin: 0 }}
                                 />
                                 <Box
                                   component="form"
@@ -1190,9 +1194,10 @@ export function PostEdit() {
                                   <span
                                     className="number"
                                     style={{
-                                      marginTop: "20px",
+                                      marginTop: "5px",
                                       marginRight: "1em",
                                       marginLeft: "10px",
+                                      marginBottom: "1em",
                                     }}
                                   >
                                     {idx + 1}

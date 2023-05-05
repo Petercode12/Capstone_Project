@@ -53,6 +53,7 @@ import {
   FormControlLabel,
   Switch,
   Typography,
+  Button,
 } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { useDemoData } from "@mui/x-data-grid-generator";
@@ -64,6 +65,7 @@ import "../Style/MyAccount.css";
 import axios from "axios";
 import userBanner from "../Images/user_banner.png";
 import userIcon from "../Images/user_icon5.png";
+
 const toBase64 = (file) =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -73,40 +75,119 @@ const toBase64 = (file) =>
   });
 
 function convertQueryDataToQuestionList(data) {
-  let questionList = [];
-
+  let columns = [
+    { field: "id", hide: true, width: 40 },
+    {
+      field: "test_name",
+      hide: false,
+      headerName: "Test name",
+      width: 120,
+    },
+    {
+      field: "username",
+      hide: false,
+      headerName: "Username",
+      width: 130,
+    },
+    { field: "score", hide: false, headerName: "Score", width: 60 },
+    {
+      field: "date",
+      hide: false,
+      headerName: "Taken on",
+      type: "dateTime",
+      width: 180,
+    },
+    {
+      field: "exam_id",
+      hide: false,
+      headerName: "Exam id",
+      width: 80,
+    },
+    {
+      field: "time",
+      hide: false,
+      headerName: "Time taken",
+      type: "time",
+      width: 120,
+    },
+    {
+      field: "last_modified_date",
+      hide: true,
+      headerName: "Modified date",
+      width: 140,
+    },
+    {
+      field: "view",
+      hide: false,
+      headerName: "View",
+      sortable: false,
+      disableClickEventBubbling: true,
+      width: 80,
+      renderCell: (params) => {
+        return (
+          <Button
+            variant="outlined"
+            size="small"
+            href={"#/practice_tests/result/" + params.row.id}
+          >
+            View
+          </Button>
+        );
+      },
+    },
+  ];
+  let rows = [];
+  let initialState = {
+    columns: {
+      columnVisibilityModel: { id: false, last_modified_date: false },
+    },
+  };
+  let result = {};
   for (let e of data) {
     let start = e.Start_time;
     let end = e.End_time;
     let diff = start
       .split(":")
-      .map((item, index) =>
-        Math.max((end.split(":")[index] - item).toFixed(0), 0)
-      )
+      .map((item, index) => {
+        let temp = Math.max(
+          (end.split(":")[index] - item).toFixed(0),
+          0
+        ).toString();
+        console.log("Temp :", temp);
+        if (temp.length === 1) temp = "0" + temp;
+        return temp;
+      })
       .join(":");
     let time_diff = start
       .split(":")
       .map((item, index) =>
         Math.max((end.split(":")[index] - item).toFixed(0), 0)
       );
-    let time_diff_sec =
-      time_diff[0] * 60 * 60 + time_diff[1] * 60 + time_diff[2];
+    var d = new Date(Date.parse(e.Date));
     let k = {
       id: e.id,
-      name: e.Name,
+      test_name: e.test_name,
+      username: e.Username,
       score: e.Score,
-      date: e.Date, //new Date(Date.parse("2012-01-26T13:51:50.417-07:00")),
-      time: time_diff_sec,
-      diff: diff,
-      viewresult: "View",
+      date: d, //dformat,
+      time: diff,
+      exam_id: e.exam_id,
+      // diff: diff,
+      last_modified_date: e.last_modified_date,
+      view: e.exam_id,
     };
-    questionList.push(k);
+    rows.push(k);
   }
-  // console.log("Question List: ", questionList);
-  return questionList;
+  result = { columns, rows, initialState };
+  // console.log("Question List: ", rows);
+  return result;
 }
 const VISIBLE_FIELDS = ["name", "rating", "country", "dateCreated", "isAdmin"];
-
+let initialState = {
+  columns: {
+    columnVisibilityModel: { id: false, last_modified_date: false },
+  },
+};
 export const MyAccountTestCreated = () => {
   const [userInfo, setUserInfo] = useState(
     JSON.parse(localStorage.getItem("auth"))
@@ -115,12 +196,15 @@ export const MyAccountTestCreated = () => {
   const { data } = useDemoData({
     dataSet: "Employee",
     visibleFields: VISIBLE_FIELDS,
-    rowLength: 100,
+    rowLength: 0,
   });
   useEffect(() => {
     axios
-      .get("http://localhost:8000/my_account/tests/".concat(userInfo.id))
+      .get(
+        "http://localhost:8000/my_account/tests/created/".concat(userInfo.id)
+      )
       .then((res) => {
+        console.log("Initial data:", res.data);
         setQuestionList(convertQueryDataToQuestionList(res.data));
       })
       .catch((err) => {
@@ -128,6 +212,7 @@ export const MyAccountTestCreated = () => {
       });
   }, [userInfo]);
   console.log("Data: ", data);
+  console.log("Result data: ", questionList);
   return (
     <Container
       xs={{ maxWidth: 768 }}
@@ -178,9 +263,7 @@ export const MyAccountTestCreated = () => {
           <h1
             className="h3 profile-header-title"
             id={
-              userInfo
-                ? userInfo.Username + "-public-page"
-                : "user-public-page"
+              userInfo ? userInfo.Username + "-public-page" : "user-public-page"
             }
           >
             {userInfo ? userInfo.Username : "Guest"}{" "}
@@ -203,25 +286,29 @@ export const MyAccountTestCreated = () => {
         <Paper sx={{ width: "100%", overflow: "hidden" }}>
           <div style={{ height: 400, width: "100%" }}>
             <DataGrid
+              sx={{ paddingTop: "4px" }}
               pagination
               {...data}
+              {...questionList}
               slots={{
                 toolbar: GridToolbar,
               }}
               initialState={{
-                ...data.initialState,
-                filter: {
-                  ...data.initialState?.filter,
-                  filterModel: {
-                    items: [
-                      {
-                        field: "rating",
-                        operator: ">",
-                        value: "0",
-                      },
-                    ],
-                  },
-                },
+                // ...data.initialState,
+                ...initialState,
+                // filter: {
+                //   ...data.initialState?.filter,
+                //   ...questionList.initialState?.filter,
+                //   filterModel: {
+                //     // items: [
+                //     //   {
+                //     //     field: "score",
+                //     //     operator: ">",
+                //     //     value: "0",
+                //     //   },
+                //     // ],
+                //   },
+                // },
                 pagination: { paginationModel: { pageSize: 25 } },
               }}
             />

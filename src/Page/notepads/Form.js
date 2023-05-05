@@ -36,7 +36,13 @@ const Form = ({ todos, setTodos }) => {
       >
         Todo List
       </div>
-      <div style={{display: "flex", justifyContent: "space-around"}}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-around",
+          margin: "0px 4px 0px 8px",
+        }}
+      >
         <TextField
           id="notePad"
           label="Note"
@@ -48,7 +54,7 @@ const Form = ({ todos, setTodos }) => {
               submitTodoHandler(e);
             }
           }}
-          sx={{ 
+          sx={{
             margin: "0px 8px",
           }}
         />

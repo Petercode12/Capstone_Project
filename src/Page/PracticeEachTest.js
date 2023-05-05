@@ -257,7 +257,7 @@ export function PracticeTest() {
         textAlign: "center",
         justifyContent: "center",
         alignItems: "center",
-        maxWidth: "220px",
+        maxWidth: "200px",
       }}
     >
       <Stack spacing={2}>
@@ -600,7 +600,9 @@ export function PracticeTest() {
                                 </div>
                                 <IconButton
                                   color="primary"
-                                  style={{ padding: "2px" }}
+                                  style={{
+                                    padding: "2px",
+                                  }}
                                   onClick={() => {
                                     displayNote();
                                   }}
@@ -651,6 +653,9 @@ export function PracticeTest() {
                                       value="A"
                                       control={<Radio />}
                                       label=""
+                                      sx={{
+                                        margin: 0,
+                                      }}
                                     />
                                     <Box
                                       sx={{
@@ -685,6 +690,9 @@ export function PracticeTest() {
                                       value="B"
                                       control={<Radio />}
                                       label=""
+                                      sx={{
+                                        margin: 0,
+                                      }}
                                     />
                                     <Box
                                       sx={{
@@ -719,6 +727,9 @@ export function PracticeTest() {
                                       value="C"
                                       control={<Radio />}
                                       label=""
+                                      sx={{
+                                        margin: 0,
+                                      }}
                                     />
                                     <Box
                                       sx={{
@@ -753,6 +764,9 @@ export function PracticeTest() {
                                       value="D"
                                       control={<Radio />}
                                       label=""
+                                      sx={{
+                                        margin: 0,
+                                      }}
                                     />
                                     <Box
                                       sx={{
