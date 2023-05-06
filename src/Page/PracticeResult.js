@@ -126,7 +126,7 @@ export function PracticeResult() {
               onClick={() => {
                 // show trang đề thi nhưng có đáp án
                 redirect(
-                  "/practice_tests/result_specific?" + params1.toString()
+                  "/app/practice_tests/result_specific?" + params1.toString()
                 );
               }}
             >
@@ -137,7 +137,7 @@ export function PracticeResult() {
               size="small"
               style={{ borderRadius: "15px" }}
               onClick={() => {
-                redirect("/practice_tests");
+                redirect("/app/practice_tests");
               }}
             >
               Back to exam page

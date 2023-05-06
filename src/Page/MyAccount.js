@@ -95,7 +95,10 @@ export const MyAccount = () => {
               }
               alt={userInfo ? userInfo.fullName : "user"}
             />
-            <a className="avatar-button text-dark" href="#/my_account/settings/">
+            <a
+              className="avatar-button text-dark"
+              href="/app/my_account/settings/"
+            >
               <i className="avatar-icon fa fa-pencil" />
             </a>
           </div>
@@ -117,7 +120,7 @@ export const MyAccount = () => {
         </div>
         <ul className="nav nav-tabs mb-4">
           <li className="nav-item">
-            <a className="nav-link active" href="#/my_account/tests/">
+            <a className="nav-link active" href="/app/my_account/tests/">
               Exam results
             </a>
           </li>

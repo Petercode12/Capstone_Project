@@ -95,13 +95,13 @@ WSGI_APPLICATION = "backend_src.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
-DATA_UPLOAD_MAX_MEMORY_SIZE = 100000000 #100mb
+DATA_UPLOAD_MAX_MEMORY_SIZE = 100000000  # 100mb
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
         "NAME": "capstone_project",
         "USER": "root",
-        "PASSWORD": "manhhung148635",
+        "PASSWORD": "tanphuoc1903",
         "HOST": "localhost",
         "PORT": "3306",
     }

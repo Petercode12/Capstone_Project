@@ -658,7 +658,7 @@ export const PraceticeResultSpecific = () => {
         <Grid item xs={12}>
           <LoadingButton
             color="primary"
-            onClick={() => redirect("/practice_tests/result/".concat(id))}
+            onClick={() => redirect("/app/practice_tests/result/".concat(id))}
             loading={false}
             variant="contained"
             className="SaveButton"

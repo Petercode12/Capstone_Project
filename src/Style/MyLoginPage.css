@@ -1,4 +1,4 @@
-/* @import url('https://fonts.googleapis.com/css?family=Montserrat:400,800'); */
+@import url("https://fonts.googleapis.com/css?family=Montserrat:400,800");
 
 * {
   box-sizing: border-box;
@@ -58,7 +58,27 @@ button.loginFormbutton:active {
 button.loginFormbutton:focus {
   outline: none;
 }
+button.backToHome {
+  margin-top: 1em;
+  border-radius: 20px;
+  border: 1px solid #ff4b2b;
+  background-color: #ffffff;
+  color: #ff4b2b;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 8px 25px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  transition: transform 80ms ease-in;
+}
 
+button.backToHome:active {
+  transform: scale(0.95);
+}
+
+button.backToHome:focus {
+  outline: none;
+}
 button.ghost {
   background-color: transparent;
   border-color: #ffffff;
@@ -83,7 +103,7 @@ input.loginForminput {
   width: 100%;
 }
 
-.container {
+.loginPageContainer {
   background-color: #fff;
   border-radius: 10px;
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
@@ -154,7 +174,7 @@ input.loginForminput {
   transform: translateX(-100%);
 }
 
-.overlay {
+.loginPageOverlay {
   background: #ff416c;
   background: -webkit-linear-gradient(to right, #ff4b2b, #ff416c);
   background: linear-gradient(to right, #ff4b2b, #ff416c);

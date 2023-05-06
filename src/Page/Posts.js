@@ -96,7 +96,7 @@ export const PostCreate = () => {
     } else {
       notify("Save successfully!", { type: "success" });
       setTimeout(() => {
-        redirect("/all_exams/".concat(userInfo.id));
+        redirect("/app/all_exams/".concat(userInfo.id));
       }, 100);
     }
   };

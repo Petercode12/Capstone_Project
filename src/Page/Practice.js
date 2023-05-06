@@ -97,8 +97,7 @@ export function PracticeList() {
               );
             });
             setExamList(filteredExamList);
-          }
-          else {
+          } else {
             if (originalExamList.length !== 0) {
               setExamList(originalExamList);
             }
@@ -235,7 +234,6 @@ export function PracticeList() {
             return exam.User_id === userInfo["id"];
           })
           .map((exam, i) => {
-            console.log("I, exam: ", exam, i);
             if (exam["description"] === "") {
               exam["description"] = "No description";
             }

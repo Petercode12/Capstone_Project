@@ -1,10 +1,14 @@
 import * as React from "react";
 import { useState } from "react";
-import { useLogin, useNotify } from "react-admin";
+import { useLogin, useNotify, useRedirect } from "react-admin";
 import axios from "axios";
 import "../Style/MyLoginPage.css";
 import { Typography, Container } from "@mui/material";
+import Button from "@mui/material/Button";
+import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
+
 export function MyLoginPage() {
+  const redirect = useRedirect();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
@@ -87,7 +91,7 @@ export function MyLoginPage() {
       sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
     >
       <div className="loginForm">
-        <div className="container" id="container">
+        <div className="container loginPageContainer" id="container">
           <div className="form-container sign-up-container">
             <form className="loginFormform" action="#">
               <h1 className="loginFormh1">Create Account</h1>
@@ -192,10 +196,22 @@ export function MyLoginPage() {
               <button className="loginFormbutton" onClick={handleSubmitSignIn}>
                 Sign In
               </button>
+              <script type="module" src="./index.js" />
+              <Button
+                className="backToHome"
+                variant="no-outlined"
+                startIcon={<KeyboardBackspaceIcon />}
+                size="small"
+                onClick={() => {
+                  redirect("/");
+                }}
+              >
+                BACK TO HOME
+              </Button>
             </form>
           </div>
           <div className="overlay-container">
-            <div className="overlay">
+            <div className="overlay loginPageOverlay">
               <div className="overlay-panel overlay-left">
                 <h1 className="loginFormh1">Welcome Back!</h1>
                 <p className="loginFormp">

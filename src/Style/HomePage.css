@@ -1,0 +1,30 @@
+@media screen and (max-width: 400px) {
+  #features {
+    padding: 20px;
+    width: 111%;
+  }
+  #about,
+  #services,
+  #testimonials,
+  #team,
+  #contact,
+  #footer {
+    width: 111%;
+  }
+
+  #portfolio {
+    width: 110%;
+  }
+}
+.emailLink:link {
+  color: rgba(255, 255, 255, 0.75);
+}
+.emailLink:visited {
+  color: rgba(255, 255, 255, 0.75);
+}
+.emailLink:active {
+  color: rgba(255, 255, 255, 0.75);
+}
+.emailLink:hover {
+  text-decoration: underline;
+}

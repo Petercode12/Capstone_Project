@@ -473,7 +473,7 @@ export function PracticeTest() {
         type: "success",
       });
       wait(1000);
-      redirect("/practice_tests/result/".concat(id));
+      redirect("/app/practice_tests/result/".concat(id));
     }
   };
   const handleMCQChange = () => {

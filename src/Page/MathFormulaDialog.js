@@ -27,7 +27,7 @@ export function MathFormulaDialog({ ...props }) {
             setEquation("`".concat(event.target.value).concat("`"));
           }}
         />
-        <div>Preview:</div>
+        <div style={{ marginBottom: "5px" }}>Preview:</div>
         <MathJaxContext config={config}>
           <MathJax>{equation}</MathJax>
         </MathJaxContext>

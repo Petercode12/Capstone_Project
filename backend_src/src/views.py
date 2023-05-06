@@ -28,8 +28,8 @@ def query_all_exams_api(request, user_id):
         print("Sort: ", sort, " ; Order: ", order)
         if order == "ASC":
             exams = exams.order_by(sort)
-        elif order == 'DESC':
-            exams = exams.order_by('-'+sort)
+        elif order == "DESC":
+            exams = exams.order_by("-" + sort)
         per_page = end - start
         page = floor(end / per_page)
         exams_paginator = Paginator(exams, per_page)
@@ -41,12 +41,15 @@ def query_all_exams_api(request, user_id):
         return JsonResponse(
             status=200, headers=headers, data=exams_serializer.data, safe=False
         )
+
+
 @csrf_exempt
 def query_all_exams_created_by_userid(request, user_id):
     if request.method == "GET":
         exams = EXAMS_COLLECTION.objects.filter(User_id=user_id)
         exams_serializer = exams_collection_serializer(exams, many=True)
         return JsonResponse(exams_serializer.data, safe=False)
+
 
 @csrf_exempt
 def query_all_practice_tests(request):
@@ -85,6 +88,25 @@ def query_exams_by_userid(request, user_id):
         shared_exams = SHARED_USERS.objects.filter(Shared_user_id=user_id).values()
         for e in shared_exams:
             exam = EXAMS_COLLECTION.objects.filter(id=e["exam_id"])
+            exams = exams | exam
+        exams_serializer = exams_collection_serializer2(exams, many=True)
+        return JsonResponse(exams_serializer.data, safe=False)
+
+
+@csrf_exempt
+def query_recent_practice_exams_by_userid(request, user_id):
+    if request.method == "GET":
+        practice_exams = (
+            TEST_RESULT.objects.filter(user_id=user_id).order_by("-Date").values()
+        )
+        exam_id_list = []
+        for e in practice_exams:
+            if (e["exam_id"] not in exam_id_list) and (len(exam_id_list) <= 3):
+                exam_id_list.append(e["exam_id"])
+        if exam_id_list != []:
+            exams = EXAMS_COLLECTION.objects.filter(id=exam_id_list[0])
+        for e in exam_id_list[1:]:
+            exam = EXAMS_COLLECTION.objects.filter(id=e)
             exams = exams | exam
         exams_serializer = exams_collection_serializer2(exams, many=True)
         return JsonResponse(exams_serializer.data, safe=False)
@@ -398,10 +420,8 @@ def query_exam_tags(request):
 def authentication(request):
     if request.method == "POST":
         data = json.loads(request.body)
-        users = USER.objects.get(
-            Email=data["email"], Password=data["password"]
-        )
-        print("Email: ", data["email"], " Password: ", data["password"]);
+        users = USER.objects.get(Email=data["email"], Password=data["password"])
+        print("Email: ", data["email"], " Password: ", data["password"])
         if users:
             us_serializer = user_serializer(users)
             return JsonResponse(status=200, data=us_serializer.data)
@@ -409,18 +429,17 @@ def authentication(request):
             return HttpResponse(status=400)
     if request.method == "PATCH":
         data = json.loads(request.body)
-        user = USER.objects.get(
-            Email=data["Email"], Password=data["password"]
-        )
-        if(data["mode"] == 0):
-            user.Username=data["fullName"]
-            user.Avatar=data["image"]
-            user.Banner = data["imageBanner"] 
-        elif(data["mode"] == 1): 
+        user = USER.objects.get(Email=data["Email"], Password=data["password"])
+        if data["mode"] == 0:
+            user.Username = data["fullName"]
+            user.Avatar = data["image"]
+            user.Banner = data["imageBanner"]
+        elif data["mode"] == 1:
             user.Password = data["newPassword"]
         user.save()
         user_ser = user_serializer(user)
-        return JsonResponse(status = 200, data=user_ser.data, safe=False)
+        return JsonResponse(status=200, data=user_ser.data, safe=False)
+
 
 @csrf_exempt
 def query_total_test_result(request):
@@ -428,6 +447,8 @@ def query_total_test_result(request):
         exam_tags = EXAM_TAGS.objects.all()
         tags_serializer = exam_tags_serializer(exam_tags, many=True)
         return JsonResponse(tags_serializer.data, safe=False)
+
+
 # @csrf_exempt
 # def test_api(request):
 #     if request.method == "GET":

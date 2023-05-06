@@ -71,10 +71,10 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <Admin
+        basename="/app"
         dashboard={Dashboard}
         dataProvider={dataProvider}
         loginPage={MyLoginPage}
-        // loginPage={HomePage}
         authProvider={authProvider}
         theme={theme}
         layout={MyLayout}
@@ -111,7 +111,6 @@ function App() {
           />
           <Route path="/my_account/tests/" element={<MyAccount />} />
           <Route path="/my_account/settings/" element={<EditPersonalInfo />} />
-          {/* <Route path="/homepage" element={<HomePage />} /> */}
         </CustomRoutes>
       </Admin>
     </QueryClientProvider>
