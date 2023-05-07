@@ -9,6 +9,9 @@ from django.http import HttpResponse
 from django.core.paginator import Paginator
 from django.core import serializers as core_serializers
 from datetime import date
+from django.db.models import CharField, Model
+from django_mysql.models import ListCharField
+from django_mysql.models import ListF
 import datetime
 
 test_result_pk = 1
@@ -168,6 +171,7 @@ def insert_questions_and_answers(request, exam_id):
             Answer_c = data["Answer_c"]
             Answer_d = data["Answer_d"]
             Solution = data["Solution"]
+            Solution_FIB = data["Solution_FIB"]
             Type = data["Type"]
             audioName = data["audioName"]
             audio = data["audio"]
@@ -181,6 +185,7 @@ def insert_questions_and_answers(request, exam_id):
                 Answer_c=Answer_c,
                 Answer_d=Answer_d,
                 Solution=Solution,
+                Solution_FIB=Solution_FIB,
                 Type=Type,
                 audioName=audioName,
                 audio=audio,
@@ -268,12 +273,27 @@ def test_result(request, exam_id):
             User_answer_MCQ__exact="", User_answer_CONS__isnull=True
         ).count()
         num_cons_question = test_specific.filter(Type="Cons").count()
-        print(test_specific_ser.data)
+        total_question = len(test_specific_ser.data)
+        for i in range(0, len(test_specific)):
+            if test_specific[i].Mark_FIB:
+                print("Mark_FIB: ", test_specific[i].Mark_FIB, type(test_specific[i].Mark_FIB))
+                total_question += len(test_specific[i].Mark_FIB) - 1
+            if test_specific[i].User_answer_FIB:
+                # print(test_specific[i].User_answer_FIB)
+                for j in test_specific[i].User_answer_FIB:
+                    test_specific_ser.data[i]["User_answer_FIB"] = test_specific[i].User_answer_FIB
+                    test_specific_ser.data[i]["Solution_FIB"] = test_specific[i].Solution_FIB
+                    test_specific_ser.data[i]["Mark_FIB"] = test_specific[i].Mark_FIB
+                    # print(j, test_specific_ser.data[i]["Solution_FIB"], type(test_specific_ser.data[i]["Solution_FIB"]))
+                    # print(j, test_specific_ser.data[i]["User_answer_FIB"], type(test_specific_ser.data[i]["User_answer_FIB"]))
+                    
+                    if j == " ":
+                        num_test_skip += 1
         return JsonResponse(
             {
                 "test_info": test_ser.data,
                 "test_specific": test_specific_ser.data,
-                "total_question": len(test_specific_ser.data),
+                "total_question": total_question,
                 "skip_question": num_test_skip,
                 "nums_cons_question": num_cons_question,
             },
@@ -296,9 +316,12 @@ def insert_test_result_specific(request, exam_id):
             Answer_d = data["Answer_d"]
             Correct_answer = data["Correct_answer"]
             Solution = data["Solution"]
+            Solution_FIB = data["Solution_FIB"]
             User_answer_MCQ = data["User_answer_MCQ"]
             User_answer_CONS = data["User_answer_CONS"]
+            User_answer_FIB = data["User_answer_FIB"]
             Mark = data["Mark"]
+            Mark_FIB = data["Mark_FIB"]
             test_result_id = data["test_result_id"]
             questions_and_answers = TEST_RESULT_SPECIFIC(
                 Ordinal=Ordinal,
@@ -310,9 +333,12 @@ def insert_test_result_specific(request, exam_id):
                 Answer_d=Answer_d,
                 Correct_answer=Correct_answer,
                 Solution=Solution,
+                Solution_FIB=Solution_FIB,
                 User_answer_MCQ=User_answer_MCQ,
                 User_answer_CONS=User_answer_CONS,
+                User_answer_FIB=User_answer_FIB,
                 Mark=Mark,
+                Mark_FIB=Mark_FIB,
                 test_result_id=test_result_id,
             )
             questions_and_answers.save()

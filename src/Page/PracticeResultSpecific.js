@@ -26,13 +26,38 @@ import Paper from "@mui/material/Paper";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import axios from "axios";
 import Countdown from "react-countdown";
-import { Container, Grid } from "@mui/material";
+import { Container, Grid, Typography } from "@mui/material";
 import "../Style/PracticeResultSpecific.css";
 import "../Style/PracticeStyle.css";
 import { NotFound } from "./NotFound";
 import { eventWrapper, wait } from "@testing-library/user-event/dist/utils";
 import { useLocation, useNavigate } from "react-router-dom";
 import { MathJaxContext, MathJax } from "better-react-mathjax";
+
+function getBlankAnswersFromQuestion(temp) {
+  const regex = /<blank id="[0-9]+">/g;
+  const regex2 = /<\/blank>/g;
+  const found = [...temp.matchAll(regex)];
+  const found2 = [...temp.matchAll(regex2)];
+  let list = [];
+  for (let i = 0; i < found.length; i++) {
+    list.push(
+      temp.substring(found[i].index + found[i][0].length, found2[i].index)
+    );
+  }
+  return list;
+}
+function changeBlankAnswersToEllipsis(temp) {
+  let list = getBlankAnswersFromQuestion(temp);
+  for (let i = 0; i < list.length; i++) {
+    temp = temp.replace(
+      `<blank id="${i}">${list[i]}</blank>`,
+      `<strong id="${i}">${i + 1}</strong> ………… `
+    );
+  }
+  return temp;
+}
+
 function convertQueryDataToQuestionList(data) {
   let questionList = []; // questionList bao gồm: questionText, answerOptions, correctAnswer đối với MCQ, type, câu trả lời và điểm số.
   for (let e of data) {
@@ -51,12 +76,27 @@ function convertQueryDataToQuestionList(data) {
         type: "MCQ",
         mark: e.Mark,
       };
-    } else if (e.Type === "Cons"){
+    } else if (e.Type === "Cons") {
       k = {
         questionText: e.Question,
         answerOptions: e.Solution,
         userAnswer: e.User_answer_CONS,
         type: "Cons",
+      };
+    } else if (e.Type === "FIB") {
+      console.log(e.User_answer_FIB);
+      k = {
+        questionText: changeBlankAnswersToEllipsis(e.Question),
+        answerOptions: e.Solution_FIB,
+        userAnswer: e.User_answer_FIB,
+        mark: e.Mark_FIB,
+        type: "FIB",
+      };
+    } else if (e.Type === "Audio") {
+      k = {
+        fileName: e.Question,
+        file: e.Solution,
+        type: "Audio",
       };
     }
     questionList.push(k);
@@ -64,32 +104,10 @@ function convertQueryDataToQuestionList(data) {
   console.log("Question List: ", questionList);
   return questionList;
 }
-// const CssTextField = styled(TextField)({
-//   "& label.Mui-focused": {
-//     color: "green",
-//   },
-//   "& .MuiInput-underline:after": {
-//     borderBottomColor: "red",
-//   },
-//   "& label": {
-//     color: "green",
-//   },
-//   "& .MuiOutlinedInput-root": {
-//     "& fieldset": {
-//       borderColor: "green",
-//     },
-//     "&:hover fieldset": {
-//       borderColor: "green",
-//     },
-//     "&.Mui-focused fieldset": {
-//       borderColor: "green",
-//     },
-//   },
-// });
+
 export const PraceticeResultSpecific = () => {
   //edit create test
   const [questionList, setQuestionList] = useState([]); // list các câu hỏi bao gồm biến và đáp án
-  const [create, { error }] = useCreate();
   const location = useLocation();
   const params1 = new URLSearchParams();
   const searchParams = new URLSearchParams(location.search);
@@ -181,24 +199,35 @@ export const PraceticeResultSpecific = () => {
       access.scrollIntoView({ behavior: "smooth" }, true);
     }
   };
-
+  function calculateIndexMinusNumOfAudio(i) {
+    let numOfAudio = 0;
+    for (let x = 0; x < i; x++) {
+      if (questionList[x].type === "Audio") {
+        numOfAudio += 1;
+      }
+    }
+    return i + 1 - numOfAudio;
+  }
   const addNavigationMenu = () => {
     let buttonGroupList = [];
     let buttonList = [];
     if (questionList.length < 4) {
       for (let i = 1; i <= questionList.length; i++) {
-        buttonList.push(
-          <Button
-            xs={{ margin: 0, p: 0, minWidth: 30, py: 0.25 }}
-            variant="outlined"
-            onClick={() => {
-              scrolltoId("question".concat(i));
-            }}
-            size="small"
-          >
-            {i}
-          </Button>
-        );
+        if (questionList[i].type !== "Audio") {
+          let calculatedIndex = calculateIndexMinusNumOfAudio(i);
+          buttonList.push(
+            <Button
+              xs={{ margin: 0, p: 0, maxWidth: 10, py: 0.25 }}
+              variant="outlined"
+              onClick={() => {
+                scrolltoId("question".concat(calculatedIndex));
+              }}
+              size="small"
+            >
+              {calculatedIndex}
+            </Button>
+          );
+        }
       }
       buttonGroupList.push(
         <ButtonGroup variant="outlined" aria-label="outlined button group">
@@ -206,35 +235,41 @@ export const PraceticeResultSpecific = () => {
         </ButtonGroup>
       );
     } else {
-      for (let i = 1; i <= questionList.length; i++) {
-        if (i % 4 !== 0) {
-          buttonList.push(
-            <Button
-              onClick={() => {
-                scrolltoId("question".concat(i));
-              }}
-              size="small"
-            >
-              {i}
-            </Button>
-          );
-        } else {
-          buttonList.push(
-            <Button
-              onClick={() => {
-                scrolltoId("question".concat(i));
-              }}
-              size="small"
-            >
-              {i}
-            </Button>
-          );
-          buttonGroupList.push(
-            <ButtonGroup variant="outlined" aria-label="outlined button group">
-              {buttonList}
-            </ButtonGroup>
-          );
-          buttonList = [];
+      for (let i = 0; i < questionList.length; i++) {
+        if (questionList[i].type !== "Audio") {
+          let calculatedIndex = calculateIndexMinusNumOfAudio(i);
+          if (calculatedIndex % 4 !== 0) {
+            buttonList.push(
+              <Button
+                onClick={() => {
+                  scrolltoId("question".concat(calculatedIndex));
+                }}
+                size="small"
+              >
+                {calculatedIndex}
+              </Button>
+            );
+          } else {
+            buttonList.push(
+              <Button
+                onClick={() => {
+                  scrolltoId("question".concat(calculatedIndex));
+                }}
+                size="small"
+              >
+                {calculatedIndex}
+              </Button>
+            );
+            buttonGroupList.push(
+              <ButtonGroup
+                variant="outlined"
+                aria-label="outlined button group"
+              >
+                {buttonList}
+              </ButtonGroup>
+            );
+            buttonList = [];
+          }
         }
       }
       buttonGroupList.push(
@@ -249,8 +284,6 @@ export const PraceticeResultSpecific = () => {
     let dom = document.createElement("div");
     dom.style.cssText = "line-break: anywhere;";
     dom.innerHTML = str;
-    // console.log("dom: ", dom, typeof dom, str);
-    // console.log("dom html: ", dom.firstChild.innerHTML);
     return dom;
   };
   // Renderer callback with condition
@@ -354,6 +387,7 @@ export const PraceticeResultSpecific = () => {
                   <div className="question-text">
                     {questionList.map((question, i) => {
                       if (question.type === "MCQ") {
+                        let calculatedIndex = calculateIndexMinusNumOfAudio(i);
                         return (
                           <div
                             key={i}
@@ -367,9 +401,9 @@ export const PraceticeResultSpecific = () => {
                               style={{
                                 marginTop: "1em",
                               }}
-                              id={"question".concat(i + 1)}
+                              id={"question".concat(calculatedIndex)}
                             >
-                              <span>Question {i + 1}</span>
+                              <span>Question {calculatedIndex}</span>
                               <span
                                 style={{
                                   marginRight: "0.25em",
@@ -379,7 +413,9 @@ export const PraceticeResultSpecific = () => {
                                 &nbsp;
                               </span>
 
-                              {questionList[i].mark === 1 ? (
+                              {questionList[i].userAnswer === "" ? (
+                                <span className="text-unanswer fas fa-minus fa-lg hyphen-icon " />
+                              ) : questionList[i].mark === 1 ? (
                                 <span className="text-correct fas fa-check fa-lg correct-icon " />
                               ) : (
                                 <span className="text-wrong fas fa-times fa-lg wrong-icon " />
@@ -420,9 +456,11 @@ export const PraceticeResultSpecific = () => {
                                   value="A"
                                   control={<Radio />}
                                   label=""
+                                  sx={{
+                                    margin: 0,
+                                  }}
                                 />
                                 <Box
-                                  // component="form"
                                   sx={{
                                     marginLeft: "-4px",
                                     marginRight: "-4px",
@@ -464,9 +502,11 @@ export const PraceticeResultSpecific = () => {
                                   value="B"
                                   control={<Radio />}
                                   label=""
+                                  sx={{
+                                    margin: 0,
+                                  }}
                                 />
                                 <Box
-                                  // component="form"
                                   sx={{
                                     marginLeft: "-4px",
                                     marginRight: "-4px",
@@ -508,9 +548,11 @@ export const PraceticeResultSpecific = () => {
                                   value="C"
                                   control={<Radio />}
                                   label=""
+                                  sx={{
+                                    margin: 0,
+                                  }}
                                 />
                                 <Box
-                                  // component="form"
                                   sx={{
                                     marginLeft: "-4px",
                                     marginRight: "-4px",
@@ -552,9 +594,11 @@ export const PraceticeResultSpecific = () => {
                                   value="D"
                                   control={<Radio />}
                                   label=""
+                                  sx={{
+                                    margin: 0,
+                                  }}
                                 />
                                 <Box
-                                  // component="form"
                                   sx={{
                                     marginLeft: "-4px",
                                     marginRight: "-4px",
@@ -586,17 +630,18 @@ export const PraceticeResultSpecific = () => {
                             </RadioGroup>
                           </div>
                         );
-                      } else {
+                      } else if (question.type === "Cons") {
+                        let calculatedIndex = calculateIndexMinusNumOfAudio(i);
                         return (
                           <div key={i}>
                             <div
-                              id={"question".concat(i + 1)}
+                              id={"question".concat(calculatedIndex)}
                               className="question-count"
                               style={{
                                 marginTop: "1em",
                               }}
                             >
-                              <span>Question {i + 1}</span>
+                              <span>Question {calculatedIndex}</span>
                               <span
                                 style={{
                                   marginRight: "0.25em",
@@ -642,6 +687,128 @@ export const PraceticeResultSpecific = () => {
                             <div className="text-correct mt-2">
                               Answer: {questionList[i].answerOptions}
                             </div>
+                          </div>
+                        );
+                      } else if (question.type === "FIB") {
+                        let calculatedIndex = calculateIndexMinusNumOfAudio(i);
+                        return (
+                          <div key={i}>
+                            <div
+                              id={"question".concat(calculatedIndex)}
+                              className="question-count"
+                              style={{
+                                marginTop: "2em",
+                              }}
+                            >
+                              <span>Question {calculatedIndex}</span>
+                            </div>
+                            <MathJaxContext config={config}>
+                              <MathJax>
+                                <div
+                                  style={{
+                                    width: "100%",
+                                  }}
+                                  className={"question-".concat(i + 1)}
+                                />
+                              </MathJax>
+                            </MathJaxContext>
+                            {question.answerOptions.map((answer, idx) => {
+                              console.log(
+                                questionList[i].userAnswer[idx],
+                                questionList[i].mark[idx],
+                                typeof questionList[i].mark
+                              );
+                              return (
+                                <div>
+                                  <span
+                                    className="number"
+                                    style={{
+                                      marginTop: "5px",
+                                      marginRight: "1em",
+                                      marginLeft: "10px",
+                                      marginBottom: "1em",
+                                    }}
+                                  >
+                                    {idx + 1}
+                                  </span>
+                                  <TextField
+                                    id={"blankAnswer"
+                                      .concat(idx)
+                                      .concat("in")
+                                      .concat(i)}
+                                    label="Answer"
+                                    variant="outlined"
+                                    style={{
+                                      position: "relative",
+                                      marginTop: "1em",
+                                    }}
+                                    defaultValue={
+                                      questionList[i].userAnswer[idx]
+                                    }
+                                    sx={() => {
+                                      return questionList[i].userAnswer[idx] ===
+                                        " "
+                                        ? gray_color
+                                        : questionList[i].mark[idx]
+                                        ? blue_color
+                                        : red_color;
+                                    }}
+                                    InputProps={{
+                                      readOnly: true,
+                                    }}
+                                  />
+                                  {questionList[i].userAnswer[idx] === " " ? (
+                                    <span className="text-unanswer fas fa-minus fa-lg hyphen-icon ml-3" />
+                                  ) : questionList[i].mark[idx] === 1 ? (
+                                    <span className="text-correct fas fa-check fa-lg correct-icon ml-3" />
+                                  ) : (
+                                    <span className="text-wrong fas fa-times fa-lg wrong-icon ml-3" />
+                                  )}
+                                  <div className="text-correct mb-3 ml-3">
+                                    Answer: {questionList[i].answerOptions[idx]}
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        );
+                      } else if (question.type === "Audio") {
+                        return (
+                          <div
+                            key={i}
+                            style={{
+                              marginTop: "1.5em",
+                              marginBottom: "1.5em",
+                              border: "none",
+                              width: "100%",
+                              display: "flex",
+                              flexWrap: "wrap",
+                              rowGap: "0.5rem",
+                              columnGap: "1rem",
+                              alignItems: "baseline",
+                            }}
+                          >
+                            <Typography variant="h5">Audio: </Typography>
+                            <span
+                              style={{
+                                color: "#fb8500",
+                                paddingBottom: "2px",
+                              }}
+                            >
+                              {questionList[i].fileName}
+                            </span>
+                            {questionList[i].file !== "" ? (
+                              <audio
+                                src={questionList[i].file}
+                                controls
+                                style={{
+                                  height: "40px",
+                                  width: "100%",
+                                }}
+                              />
+                            ) : (
+                              ""
+                            )}
                           </div>
                         );
                       }

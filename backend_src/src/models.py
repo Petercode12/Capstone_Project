@@ -1,7 +1,7 @@
 from django.db import models
 from django.core.files.base import ContentFile
-
-
+from django.db.models import CharField, Model
+from django_mysql.models import ListTextField
 # Create your models here.
 class USER(models.Model):
     id = models.AutoField(primary_key=True, null=False)
@@ -45,7 +45,6 @@ class AUDIO_QUESTIONS_AND_SOLUTIONS(models.Model):
     Question = models.TextField()
     Solution = models.TextField()
     Ordinal = models.IntegerField()
-    Split_content = models.BooleanField(default=True)
     exam = models.ForeignKey(EXAMS_COLLECTION, on_delete=models.CASCADE)
 
 
@@ -83,11 +82,14 @@ class TEST_RESULT_SPECIFIC(models.Model):
     Answer_d = models.TextField(null=True)
     Correct_answer = models.CharField(max_length=1, blank=False, null=True)  # For MCQ
     Solution = models.TextField(null=True)  # For constructive
+    Solution_FIB = ListTextField(base_field=models.CharField(max_length=100),null=True) # For FIB
     User_answer_MCQ = models.CharField(max_length=1, blank=False, null=True)  # For MCQ
     User_answer_CONS = models.TextField(null=True)  # For constructive
+    User_answer_FIB = ListTextField(base_field=models.CharField(max_length=100),null=True)  # For fill in blank
     Mark = models.IntegerField(
         null=True
     )  # 0 hoặc 1 tương ứng với điểm của câu trắc nghiệm
+    Mark_FIB = ListTextField(base_field=models.IntegerField(), size=100, null=True)
     test_result = models.ForeignKey(TEST_RESULT, on_delete=models.CASCADE)
 
 

@@ -202,6 +202,10 @@ div.css-46bh2p-MuiCardContent-root {
   line-height: 30px;
   color: #fff;
 }
+.break {
+  flex-basis: 100%;
+  height: 0;
+}
 /* Responsive tablet */
 @media only screen and (max-width: 1200px) {
   .NavigationAside {

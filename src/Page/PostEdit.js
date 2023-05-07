@@ -9,7 +9,7 @@ import Box from "@mui/material/Box";
 import LoadingButton from "@mui/lab/LoadingButton";
 import Button from "@mui/material/Button";
 import { SimpleForm } from "react-admin";
-import { ToggleButton } from "@mui/material";
+import { ToggleButton, Typography } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import FunctionsIcon from "@mui/icons-material/Functions";
 import SettingsIcon from "@mui/icons-material/Settings";
@@ -972,7 +972,6 @@ export function PostEdit() {
                                   sx={{ margin: 0 }}
                                 />
                                 <Box
-                                  component="form"
                                   sx={{
                                     marginLeft: "-4px",
                                     marginRight: "-4px",
@@ -1005,7 +1004,6 @@ export function PostEdit() {
                                   sx={{ margin: 0 }}
                                 />
                                 <Box
-                                  component="form"
                                   sx={{
                                     marginLeft: "-4px",
                                     marginRight: "-4px",
@@ -1038,7 +1036,6 @@ export function PostEdit() {
                                   sx={{ margin: 0 }}
                                 />
                                 <Box
-                                  component="form"
                                   sx={{
                                     marginLeft: "-4px",
                                     marginRight: "-4px",
@@ -1071,7 +1068,6 @@ export function PostEdit() {
                                   sx={{ margin: 0 }}
                                 />
                                 <Box
-                                  component="form"
                                   sx={{
                                     marginLeft: "-4px",
                                     marginRight: "-4px",
@@ -1229,23 +1225,43 @@ export function PostEdit() {
                             style={{
                               marginTop: "1.5em",
                               marginBottom: "1.5em",
-                              border: "2px solid blue",
-                              borderRadius: "5px",
-                              width: "fit-content",
-                              padding: "5px",
+                              border: "none",
+                              width: "100%",
+                              display: "flex",
+                              flexWrap: "wrap",
+                              alignContent: "space-between",
+                              justifyContent: "space-between",
+                              rowGap: "0.5rem",
                             }}
                           >
-                            <span>Upload audio: </span>
-                            {/* {questionList[i].file !== "" ? (
-                              <audio src={questionList[i].file} controls />
-                            ) : (
-                              ""
-                            )} */}
-
+                            <Typography variant="h5">Upload audio: </Typography>
+                            <span
+                              style={{
+                                display: "flex",
+                                flex: 1,
+                              }}
+                            />
+                            <Button
+                              variant="outlined"
+                              style={{
+                                display: "flex",
+                                // float: "right",
+                                marginLeft: "1em",
+                              }}
+                              startIcon={<DeleteIcon />}
+                              onClick={() => {
+                                removeQuestionAndAnswerFromQuestionList(i);
+                              }}
+                            >
+                              Delete
+                            </Button>
+                            <div class="break" />
                             <Button
                               color="secondary"
+                              size="small"
                               variant="contained"
                               component="label"
+                              sx={{ height: "36.5px" }}
                             >
                               Choose file
                               <input
@@ -1267,19 +1283,17 @@ export function PostEdit() {
                             >
                               {questionList[i].fileName}
                             </span>
-                            <Button
-                              variant="outlined"
-                              style={{
-                                float: "right",
-                                marginLeft: "1em",
-                              }}
-                              startIcon={<DeleteIcon />}
-                              onClick={() => {
-                                removeQuestionAndAnswerFromQuestionList(i);
-                              }}
-                            >
-                              Delete
-                            </Button>
+                            {questionList[i].file !== "" ? (
+                              <audio
+                                src={questionList[i].file}
+                                controls
+                                style={{
+                                  height: "40px",
+                                }}
+                              />
+                            ) : (
+                              ""
+                            )}
                           </div>
                         );
                       }

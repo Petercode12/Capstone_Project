@@ -82,9 +82,12 @@ class test_result_specific_serializer(serializers.ModelSerializer):
             "Answer_d",
             "Correct_answer",
             "Solution",
+            "Solution_FIB",
             "User_answer_MCQ",
             "User_answer_CONS",
+            "User_answer_FIB",
             "Mark",
+            "Mark_FIB",
             "test_result_id",
         )
 

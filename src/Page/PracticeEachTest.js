@@ -20,7 +20,21 @@ import {
   useGetIdentity,
   useRedirect,
 } from "react-admin";
-import { RichTextInput, RichTextInputToolbar } from "ra-input-rich-text";
+import {
+  DefaultEditorOptions,
+  RichTextInput,
+  RichTextInputToolbar,
+  LevelSelect,
+  FormatButtons,
+  AlignmentButtons,
+  ListButtons,
+  LinkButtons,
+  QuoteButtons,
+  ClearButtons,
+  ColorButtons,
+  ImageButtons,
+  useTiptapEditor,
+} from "ra-input-rich-text";
 import SaveIcon from "@mui/icons-material/Save";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
@@ -28,7 +42,14 @@ import Paper from "@mui/material/Paper";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import axios from "axios";
 import Countdown from "react-countdown";
-import { useMediaQuery, useTheme, Container, Grid } from "@mui/material";
+import {
+  useMediaQuery,
+  useTheme,
+  Container,
+  Grid,
+  Typography,
+  ToggleButton,
+} from "@mui/material";
 import "../Style/PracticeStyle.css";
 import { wait } from "@testing-library/user-event/dist/utils";
 import { MathJaxContext, MathJax } from "better-react-mathjax";
@@ -49,6 +70,29 @@ import Stack from "@mui/material/Stack";
 import "../Style/NotePad.css";
 import Textarea from "react-expanding-textarea";
 
+function changeBlankAnswersToEllipsis(temp) {
+  let list = getBlankAnswersFromQuestion(temp);
+  for (let i = 0; i < list.length; i++) {
+    temp = temp.replace(
+      `<blank id="${i}">${list[i]}</blank>`,
+      `<strong id="${i}">${i + 1}</strong> ………… `
+    );
+  }
+  return temp;
+}
+function getBlankAnswersFromQuestion(temp) {
+  const regex = /<blank id="[0-9]+">/g;
+  const regex2 = /<\/blank>/g;
+  const found = [...temp.matchAll(regex)];
+  const found2 = [...temp.matchAll(regex2)];
+  let list = [];
+  for (let i = 0; i < found.length; i++) {
+    list.push(
+      temp.substring(found[i].index + found[i][0].length, found2[i].index)
+    );
+  }
+  return list;
+}
 function convertQueryDataToQuestionList(data) {
   let questionList = []; // questionList bao gồm: questionText, answerOptions, correctAnswer đối với MCQ, type
   for (let e of data) {
@@ -73,9 +117,22 @@ function convertQueryDataToQuestionList(data) {
         userAnswer: "",
         type: "Cons",
       };
+    } else if (e.Type === "FIB") {
+      k = {
+        questionText: changeBlankAnswersToEllipsis(e.Question),
+        answerOptions: getBlankAnswersFromQuestion(e.Question),
+        type: "FIB",
+      };
+    } else if (e.Type === "Audio") {
+      k = {
+        fileName: e.audioName,
+        file: e.audio,
+        type: "Audio",
+      };
     }
     questionList.push(k);
   }
+  console.log("Question list: ", questionList);
   return questionList;
 }
 
@@ -91,7 +148,7 @@ export function PracticeTest() {
   // Notepad states
   const [todos, setTodos] = useState([]);
   // Notepad states
-  const [noteDisplay, setNoteDisplay] = useState("block");
+  const [noteDisplay, setNoteDisplay] = useState("None");
   const redirect = useRedirect();
   var ranges = [];
   const store = configureStore();
@@ -107,7 +164,21 @@ export function PracticeTest() {
     today.getMinutes() +
     ":" +
     today.getSeconds().toFixed(2);
-
+  const toBase64 = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
+  const getFileName = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.fileName = file.name;
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.fileName);
+      reader.onerror = (error) => reject(error);
+    });
   useEffect(() => {
     // get the data from the api
     axios
@@ -117,7 +188,6 @@ export function PracticeTest() {
         )
       )
       .then((res) => {
-        console.log("Question List: ", res.data["q_and_a"]);
         // xử lý string
         setQuestionList(convertQueryDataToQuestionList(res.data["q_and_a"]));
         setDuration(res.data["duration"]);
@@ -141,28 +211,35 @@ export function PracticeTest() {
       );
     }
   };
+  function calculateIndexMinusNumOfAudio(i) {
+    let numOfAudio = 0;
+    for (let x = 0; x < i; x++) {
+      if (questionList[x].type === "Audio") {
+        numOfAudio += 1;
+      }
+    }
+    return i + 1 - numOfAudio;
+  }
   const addNavigationMenu = () => {
     let buttonGroupList = [];
     let buttonList = [];
     if (questionList.length < 4) {
       for (let i = 1; i <= questionList.length; i++) {
-        buttonList.push(
-          <Button
-            xs={{
-              margin: 0,
-              p: 0,
-              minWidth: 30,
-              py: 0.25,
-            }}
-            variant="outlined"
-            onClick={() => {
-              scrolltoId("question".concat(i));
-            }}
-            size="small"
-          >
-            {i}
-          </Button>
-        );
+        if (questionList[i].type !== "Audio") {
+          let calculatedIndex = calculateIndexMinusNumOfAudio(i);
+          buttonList.push(
+            <Button
+              xs={{ margin: 0, p: 0, maxWidth: 10, py: 0.25 }}
+              variant="outlined"
+              onClick={() => {
+                scrolltoId("question".concat(calculatedIndex));
+              }}
+              size="small"
+            >
+              {calculatedIndex}
+            </Button>
+          );
+        }
       }
       buttonGroupList.push(
         <ButtonGroup variant="outlined" aria-label="outlined button group">
@@ -170,35 +247,41 @@ export function PracticeTest() {
         </ButtonGroup>
       );
     } else {
-      for (let i = 1; i <= questionList.length; i++) {
-        if (i % 4 !== 0) {
-          buttonList.push(
-            <Button
-              onClick={() => {
-                scrolltoId("question".concat(i));
-              }}
-              size="small"
-            >
-              {i}
-            </Button>
-          );
-        } else {
-          buttonList.push(
-            <Button
-              onClick={() => {
-                scrolltoId("question".concat(i));
-              }}
-              size="small"
-            >
-              {i}
-            </Button>
-          );
-          buttonGroupList.push(
-            <ButtonGroup variant="outlined" aria-label="outlined button group">
-              {buttonList}
-            </ButtonGroup>
-          );
-          buttonList = [];
+      for (let i = 0; i < questionList.length; i++) {
+        if (questionList[i].type !== "Audio") {
+          let calculatedIndex = calculateIndexMinusNumOfAudio(i);
+          if (calculatedIndex % 4 !== 0) {
+            buttonList.push(
+              <Button
+                onClick={() => {
+                  scrolltoId("question".concat(calculatedIndex));
+                }}
+                size="small"
+              >
+                {calculatedIndex}
+              </Button>
+            );
+          } else {
+            buttonList.push(
+              <Button
+                onClick={() => {
+                  scrolltoId("question".concat(calculatedIndex));
+                }}
+                size="small"
+              >
+                {calculatedIndex}
+              </Button>
+            );
+            buttonGroupList.push(
+              <ButtonGroup
+                variant="outlined"
+                aria-label="outlined button group"
+              >
+                {buttonList}
+              </ButtonGroup>
+            );
+            buttonList = [];
+          }
         }
       }
       buttonGroupList.push(
@@ -225,6 +308,7 @@ export function PracticeTest() {
         document.getElementById(bien).style.width = "100%";
 
       if (div_question != null) {
+        console.log(i, questionList[i].questionText);
         let temp = stringToHTML(`${questionList[i].questionText}`);
         console.log("Question text: ", questionList[i].questionText);
         div_question.parentNode.replaceChild(temp, div_question);
@@ -342,6 +426,7 @@ export function PracticeTest() {
             maxHeight: "40vh",
             overflow: "auto",
           }}
+          className="NavigationAsidePaper"
         >
           <Form todos={todos} setTodos={setTodos} />
           <TodoList setTodos={setTodos} todos={todos} />
@@ -376,9 +461,12 @@ export function PracticeTest() {
           Answer_d: questionList[i].answerOptions[3].answerText,
           Correct_answer: questionList[i].correctAnswer,
           Solution: null,
+          Solution_FIB: null,
           User_answer_MCQ: questionList[i].userAnswer,
           User_answer_CONS: null,
+          User_answer_FIB: null,
           Mark: questionList[i].correctAnswer === questionList[i].userAnswer,
+          Mark_FIB: null,
           test_result_id: id,
         };
         saveData.push(k);
@@ -393,9 +481,68 @@ export function PracticeTest() {
           Answer_d: null,
           Correct_answer: null,
           Solution: questionList[i].answerOptions,
+          Solution_FIB: null,
           User_answer_MCQ: null,
           User_answer_CONS: questionList[i].userAnswer,
+          User_answer_FIB: null,
           Mark: 0,
+          Mark_FIB: null,
+          test_result_id: id,
+        };
+        saveData.push(k);
+      } else if (questionList[i].type === "FIB") {
+        let Score = [];
+        for (let j = 0; j < questionList[i].answerOptions.length; ++j) {
+          console.log(
+            "So sanh dap an: ",
+            questionList[i].answerOptions[j],
+            questionList[i].userAnswer[j]
+          );
+          if (
+            questionList[i].answerOptions[j].toUpperCase() ===
+              questionList[i].userAnswer[j].toUpperCase() &&
+            questionList[i].userAnswer[j] !== ""
+          ) {
+            nums_right_question += 1;
+            Score.push(1);
+          } else Score.push(0);
+        }
+        let k = {
+          Ordinal: i + 1,
+          Question: questionList[i].questionText,
+          Type: "FIB",
+          Answer_a: null,
+          Answer_b: null,
+          Answer_c: null,
+          Answer_d: null,
+          Correct_answer: null,
+          Solution: null,
+          Solution_FIB: questionList[i].answerOptions,
+          User_answer_MCQ: null,
+          User_answer_CONS: null,
+          User_answer_FIB: questionList[i].userAnswer,
+          Mark: 0,
+          Mark_FIB: Score,
+          test_result_id: id,
+        };
+        saveData.push(k);
+      } else if (questionList[i].type === "Audio") {
+        let k = {
+          Ordinal: i + 1,
+          Question: questionList[i].fileName,
+          Answer_a: null,
+          Answer_b: null,
+          Answer_c: null,
+          Answer_d: null,
+          Correct_answer: null,
+          Solution: questionList[i].file,
+          Solution_FIB: null,
+          Type: "Audio",
+          User_answer_MCQ: null,
+          User_answer_CONS: null,
+          User_answer_FIB: null,
+          Mark: 0,
+          Mark_FIB: null,
           test_result_id: id,
         };
         saveData.push(k);
@@ -453,13 +600,15 @@ export function PracticeTest() {
     handleMCQChange();
     for (let i in questionList) {
       if (questionList[i].type === "MCQ") {
-      } else {
+      } else if (questionList[i].type === "Cons") {
         handleTextField_ConsChange(i);
+      } else if (questionList[i].type === "FIB") {
+        handleFIBChange(i);
       }
     }
-    // console.log("Question List", questionList);
+    console.log("Question List", questionList);
     var data = test_result_Gen();
-    console.log("DATA TEST", data);
+    // console.log("DATA TEST", data);
     const id = await test_result_Save_API(data); // post  lich sử làm bài và kết quả
     var [data1, score] = await test_result_specific_Gen(id);
     data = data1;
@@ -487,17 +636,41 @@ export function PracticeTest() {
         "textAnswerMCQ".length
       );
       let value = e.firstChild.value;
-      console.log("value all: ", i);
-      console.log("value ", ": ", value);
       newArr[i].userAnswer = value;
     }
     setQuestionList(newArr);
-    console.log("Update user Answer");
   };
   const handleTextField_ConsChange = (i) => {
     let textFieldElement = document.getElementById("textAnswerCons".concat(i));
     let newArr = [...questionList];
     newArr[i].userAnswer = textFieldElement.value;
+    console.log("Answer Cons: ", textFieldElement.value);
+    setQuestionList(newArr);
+  };
+  const handleFIBChange = (i) => {
+    console.log("handle FIB change: ", i);
+    let result = [];
+    let newArr = [...questionList];
+
+    for (let j = 0; j < questionList[i].answerOptions.length; ++j) {
+      let textFieldElement = document.getElementById(
+        "blankAnswer"
+          .concat(j)
+          .concat("in")
+          .concat(i)
+      );
+      console.log(
+        "đáp án thứ: ",
+        j,
+        questionList[i].answerOptions[j].answerText,
+        textFieldElement.value
+      );
+      let k = textFieldElement.value;
+      if (k === "") k = " ";
+      result.push(k);
+    }
+    console.log("Result: ", result);
+    newArr[i].userAnswer = result;
     setQuestionList(newArr);
   };
   let stringToHTML = (str) => {
@@ -581,6 +754,9 @@ export function PracticeTest() {
                         />
                         {questionList.map((question, i) => {
                           if (question.type === "MCQ") {
+                            let calculatedIndex = calculateIndexMinusNumOfAudio(
+                              i
+                            );
                             return (
                               <div
                                 key={i}
@@ -594,9 +770,9 @@ export function PracticeTest() {
                                   style={{
                                     marginTop: "1em",
                                   }}
-                                  id={"question".concat(i + 1)}
+                                  id={"question".concat(calculatedIndex)}
                                 >
-                                  <span>Question {i + 1}</span>
+                                  <span>Question {calculatedIndex}</span>
                                 </div>
                                 <IconButton
                                   color="primary"
@@ -794,21 +970,26 @@ export function PracticeTest() {
                                 </RadioGroup>
                               </div>
                             );
-                          } else {
+                          } else if (question.type === "Cons") {
+                            let calculatedIndex = calculateIndexMinusNumOfAudio(
+                              i
+                            );
                             return (
                               <div key={i}>
                                 <div
-                                  id={"question".concat(i + 1)}
+                                  id={"question".concat(calculatedIndex)}
                                   className="question-count"
                                   style={{
                                     marginTop: "1em",
                                   }}
                                 >
-                                  <span>Question {i + 1}</span>
+                                  <span>Question {calculatedIndex}</span>
                                 </div>
                                 <IconButton
                                   color="primary"
-                                  style={{ padding: "2px" }}
+                                  style={{
+                                    padding: "2px",
+                                  }}
                                   onClick={() => {
                                     displayNote();
                                   }}
@@ -839,7 +1020,6 @@ export function PracticeTest() {
                                     />
                                   </MathJax>
                                 </MathJaxContext>
-
                                 <div>
                                   <TextField
                                     id={"textAnswerCons".concat(i)}
@@ -853,6 +1033,130 @@ export function PracticeTest() {
                                     defaultValue={""}
                                   />
                                 </div>
+                              </div>
+                            );
+                          } else if (question.type === "FIB") {
+                            let calculatedIndex = calculateIndexMinusNumOfAudio(
+                              i
+                            );
+                            return (
+                              <div key={i}>
+                                <div
+                                  id={"question".concat(calculatedIndex)}
+                                  className="question-count"
+                                  style={{
+                                    marginTop: "2em",
+                                  }}
+                                >
+                                  <span>Question {calculatedIndex}</span>
+                                </div>
+                                <IconButton
+                                  color="primary"
+                                  style={{
+                                    padding: "2px",
+                                  }}
+                                  onClick={() => {
+                                    displayNote();
+                                  }}
+                                >
+                                  <EditNoteIcon />
+                                </IconButton>
+                                <TextField
+                                  id="textAreaNote"
+                                  label="Note here"
+                                  className="noteTextField"
+                                  placeholder="Start typing ..."
+                                  multiline
+                                  maxRows={3}
+                                  fullWidth
+                                  variant="standard"
+                                  style={{
+                                    marginTop: "2px",
+                                    display: noteDisplay,
+                                  }}
+                                />
+                                <MathJaxContext config={config}>
+                                  <MathJax>
+                                    <div
+                                      style={{
+                                        width: "100%",
+                                      }}
+                                      className={"question-".concat(i + 1)}
+                                    />
+                                  </MathJax>
+                                </MathJaxContext>
+                                {question.answerOptions.map((answer, idx) => {
+                                  return (
+                                    <div>
+                                      <span
+                                        className="number"
+                                        style={{
+                                          marginTop: "5px",
+                                          marginRight: "1em",
+                                          marginLeft: "10px",
+                                          marginBottom: "1em",
+                                        }}
+                                      >
+                                        {idx + 1}
+                                      </span>
+                                      <TextField
+                                        id={"blankAnswer"
+                                          .concat(idx)
+                                          .concat("in")
+                                          .concat(i)}
+                                        label="Answer"
+                                        variant="outlined"
+                                        style={{
+                                          position: "relative",
+                                          marginTop: "1em",
+                                        }}
+                                        defaultValue={
+                                          ""
+                                          // question.answerOptions[idx].answerText
+                                        }
+                                      />
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            );
+                          } else if (question.type === "Audio") {
+                            return (
+                              <div
+                                key={i}
+                                style={{
+                                  marginTop: "1.5em",
+                                  marginBottom: "1.5em",
+                                  border: "none",
+                                  width: "100%",
+                                  display: "flex",
+                                  flexWrap: "wrap",
+                                  rowGap: "0.5rem",
+                                  columnGap: "1rem",
+                                  alignItems: "baseline",
+                                }}
+                              >
+                                <Typography variant="h5">Audio: </Typography>
+                                <span
+                                  style={{
+                                    color: "#fb8500",
+                                    paddingBottom: "2px",
+                                  }}
+                                >
+                                  {questionList[i].fileName}
+                                </span>
+                                {questionList[i].file !== "" ? (
+                                  <audio
+                                    src={questionList[i].file}
+                                    controls
+                                    style={{
+                                      height: "40px",
+                                      width: "100%",
+                                    }}
+                                  />
+                                ) : (
+                                  ""
+                                )}
                               </div>
                             );
                           }

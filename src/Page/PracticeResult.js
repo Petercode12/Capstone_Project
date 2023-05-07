@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import Radio from "@mui/material/Radio";
-import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
@@ -51,8 +49,8 @@ const Item = styled(Paper)(({ theme }) => ({
   textAlign: "center",
   color: theme.palette.text.secondary,
 }));
+
 export function PracticeResult() {
-  const [originalExamList, setOriginalExamList] = useState([]);
   const [time, setTime] = useState(0);
   const [testInfo, setTestInfo] = useState({});
   const [testSpecific, setTestSpecific] = useState([]);
@@ -67,8 +65,16 @@ export function PracticeResult() {
   params1.append("exam_id", testInfo["exam_id"]);
   console.log("Param1 url: ", params1.toString());
   console.log("param id: ", params.id);
-  let infinity = "♾️";
-
+  function calculateIndexMinusNumOfAudio(i) {
+    let numOfAudio = 0;
+    for (let x = 0; x < i; x++) {
+      console.log(testSpecific[x].Type);
+      if (testSpecific[x].Type === "Audio") {
+        numOfAudio += 1;
+      }
+    }
+    return i + 1 - numOfAudio;
+  }
   useEffect(() => {
     axios
       .get("http://localhost:8000/test_result/".concat(params.id))
@@ -272,7 +278,9 @@ export function PracticeResult() {
                 </div>
                 <div className="result-score-icontext text-correct">Right</div>
                 <div className="result-score-text">{testInfo["Score"]}</div>
-                <div classname="result-score-subtext">question</div>
+                <div classname="result-score-subtext">
+                  {testInfo["Score"] > 1 ? "questions" : "question"}
+                </div>
               </div>
             </div>
             <div className="col">
@@ -299,7 +307,9 @@ export function PracticeResult() {
                   Unanswered
                 </div>
                 <div className="result-score-text">{skipQuestion}</div>
-                <div classname="result-score-subtext">question</div>
+                <div classname="result-score-subtext">
+                  {skipQuestion > 1 ? "questions" : "question"}
+                </div>
               </div>
             </div>
             <div className="col">
@@ -311,7 +321,9 @@ export function PracticeResult() {
                   Constructive
                 </div>
                 <div className="result-score-text">{numsConsQuestion}</div>
-                <div classname="result-score-subtext">question</div>
+                <div classname="result-score-subtext">
+                  {numsConsQuestion > 1 ? "questions" : "question"}
+                </div>
               </div>
             </div>
           </div>
@@ -331,8 +343,10 @@ export function PracticeResult() {
           <div spacing={2} className="result-detail-box result-answers-list">
             {testSpecific.map((exam, i) => {
               let type = exam["Type"];
+              if (type === "Audio") return "";
               let userAnswer, correctAnswer;
-
+              let calculatedIndex = calculateIndexMinusNumOfAudio(i);
+              console.log(i, calculatedIndex);
               if (type === "MCQ") {
                 if (exam["User_answer_MCQ"] === "")
                   userAnswer = "Not anwsered!";
@@ -343,12 +357,72 @@ export function PracticeResult() {
                   userAnswer = "Not anwsered!";
                 else userAnswer = exam["User_answer_CONS"];
                 correctAnswer = exam["Solution"];
+              } else if (type === "FIB") {
+                if (exam["User_answer_FIB"]) userAnswer = "Not anwsered!";
+                console.log(
+                  "FIB: ",
+                  exam["User_answer_FIB"],
+                  exam["Solution_FIB"],
+                  typeof exam["User_answer_FIB"]
+                );
+
+                return (
+                  <div className="result-answers-item">
+                    <span className="question-number">
+                      <strong>{calculatedIndex}</strong>
+                    </span>
+                    {exam["User_answer_FIB"].map((value, index) => {
+                      let compare =
+                        value.toUpperCase() ===
+                        exam["Solution_FIB"][index].toUpperCase();
+
+                      return (
+                        <div
+                          style={{
+                            display: "inline-block",
+                            marginRight: "20px",
+                          }}
+                        >
+                          <span>
+                            <Typography
+                              variant="h6"
+                              display="inline"
+                              className="text-answerkey"
+                            >
+                              {exam["Solution_FIB"][index]}:
+                            </Typography>
+                            <span
+                              style={{
+                                marginRight: "0.25em",
+                              }}
+                            >
+                              &nbsp;
+                            </span>
+                            <span className="mr-1 text-useranswer">
+                              {value === " " ? "Not anwsered!" : value}
+                            </span>
+                          </span>
+                          <span
+                            className={
+                              value === " "
+                                ? "text-unanswer fas fa-minus fa-lg hyphen-icon"
+                                : compare
+                                ? "text-correct fas fa-check fa-lg correct-icon"
+                                : "text-wrong fas fa-times fa-lg wrong-icon"
+                            }
+                          />
+                          <br />
+                        </div>
+                      );
+                    })}
+                  </div>
+                );
               }
 
               return (
                 <div className="result-answers-item">
                   <span className="question-number">
-                    <strong>{i + 1}</strong>
+                    <strong>{calculatedIndex}</strong>
                   </span>
                   <span>
                     <Typography
@@ -375,8 +449,9 @@ export function PracticeResult() {
             {testSpecific.map((exam, i) => {
               let temp = document.querySelectorAll(".result-answers-item");
               let type = exam["Type"];
+              if (type === "Audio" || type === "FIB") return "";
               let userAnswer, correctAnswer;
-
+              let calculatedIndex = calculateIndexMinusNumOfAudio(i);
               if (type === "MCQ") {
                 if (exam["User_answer_MCQ"] === "")
                   userAnswer = "Not anwsered!";
@@ -388,25 +463,25 @@ export function PracticeResult() {
                 else userAnswer = exam["User_answer_CONS"];
                 correctAnswer = exam["Solution"];
               }
-              if (temp != null && temp[i] != null) {
+              if (temp != null && temp[calculatedIndex - 1] != null) {
                 if (type === "MCQ" && userAnswer === correctAnswer)
-                  temp[i].lastChild.className =
+                  temp[calculatedIndex - 1].lastChild.className =
                     "text-correct fas fa-check fa-lg correct-icon";
                 else if (
                   type === "MCQ" &&
                   exam["User_answer_MCQ"] !== "" &&
                   userAnswer !== correctAnswer
                 )
-                  temp[i].lastChild.className =
+                  temp[calculatedIndex - 1].lastChild.className =
                     "text-wrong fas fa-times fa-lg wrong-icon";
-                else if (!type === "MCQ") {
-                  temp[i].lastChild.className =
+                else if (type === "Cons") {
+                  console.log("YES", i);
+                  temp[calculatedIndex - 1].lastChild.className =
                     "text-constructive fas fa-pencil-alt fa-lg";
                 } else {
-                  temp[i].lastChild.className =
+                  temp[calculatedIndex - 1].lastChild.className =
                     "text-unanswer fas fa-minus fa-lg hyphen-icon";
                 }
-                console.log("temp: ", temp[i].lastChild);
               }
               return "";
             })}
