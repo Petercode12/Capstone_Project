@@ -35,6 +35,7 @@ import {
   useUserMenu,
 } from "react-admin";
 import logo from "./Images/logo.jpg";
+import logo2 from "./Images/logo2.png";
 import { Link, matchPath, useLocation } from "react-router-dom";
 const styles = {
   title: {
@@ -97,7 +98,7 @@ const ProfileMenu = () => {
   return (
     <MenuItem
       component={Link}
-      to="/my_account/tests/"
+      to="/app/my_account/tests/"
       onClick={onClose}
       sx={{ minWidth: "130px" }}
     >
@@ -154,7 +155,7 @@ const MyLayout = ({ children, dashboard, title, classes, ...props }) => {
                 {isLargeEnough && (
                   <Box
                     component="img"
-                    src={logo}
+                    src={logo2}
                     alt="StudyAll Logo"
                     className={classes.logo}
                   />
@@ -166,8 +167,6 @@ const MyLayout = ({ children, dashboard, title, classes, ...props }) => {
                   aria-label="Navigation Tabs"
                   indicatorColor="secondary"
                   textColor="inherit"
-
-                  // variant="h6"
                 >
                   {() => {
                     console.log("all_exams/".concat(userInfo.id));
@@ -175,22 +174,22 @@ const MyLayout = ({ children, dashboard, title, classes, ...props }) => {
                   <Tab
                     label={"Dashboard"}
                     component={Link}
-                    to="/"
-                    value="/"
+                    to="/app/"
+                    value="/app/"
                     className={classes.label}
                   />
                   <Tab
                     label={"Create test"}
                     component={Link}
-                    to={"/all_exams/".concat(userInfo.id)}
-                    value={"/all_exams/".concat(userInfo.id)}
+                    to={"/app/all_exams/".concat(userInfo.id)}
+                    value={"/app/all_exams/".concat(userInfo.id)}
                     className={classes.label}
                   />
                   <Tab
                     label={"Practice test"}
                     component={Link}
-                    to="/practice_tests"
-                    value="/practice_tests"
+                    to="/app/practice_tests"
+                    value="/app/practice_tests"
                     className={classes.label}
                   />
                 </Tabs>

@@ -1,0 +1,54 @@
+* {
+  box-sizing: border-box;
+}
+
+/* Create two equal columns that floats next to each other */
+.columnDashboard {
+  float: left;
+  width: 50%;
+  padding: 10px;
+  height: 300px; /* Should be removed. Only for demonstration */
+}
+
+/* Clear floats after the columns */
+.rowDashboard:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+@import url("https://fonts.googleapis.com/css2?family=Architects+Daughter&display=swap");
+.text-purple-600 {
+  --tw-text-opacity: 1;
+  color: rgb(93 93 255 / var(--tw-text-opacity));
+}
+.text-xl {
+  font-size: 1.25rem;
+}
+.font-architects-daughter {
+  font-family: "Architects Daughter", cursive;
+}
+.mb-2 {
+  margin-bottom: 0.5rem;
+}
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300&display=swap");
+.dashBoardElements {
+  font-family: "Inter", sans-serif;
+}
+.ulDashboard {
+  --icon-space: 1.3em;
+  list-style: none;
+  padding: 0;
+}
+
+.liDashboard {
+  padding-left: var(--icon-space);
+  color: #35509a;
+}
+
+.liDashboard:before {
+  content: "\f00c"; /* FontAwesome Unicode */
+  font-family: FontAwesome;
+  display: inline-block;
+  margin-left: calc(var(--icon-space) * -1);
+  width: var(--icon-space);
+}

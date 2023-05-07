@@ -98,6 +98,11 @@ button.InsertAudioFile {
   display: block;
   padding: 6px 8px 6px 4px;
 }
+button.InsertParagraphButton {
+  display: flex;
+  float: left;
+  margin-left: 1.5em;
+}
 .css-mhc70k-MuiGrid-root > .MuiGrid-item {
   padding-left: 0px;
 }
@@ -238,6 +243,9 @@ div.css-46bh2p-MuiCardContent-root {
     margin-left: 0px;
   }
   button.InsertAudioFile {
+    margin-left: 0px;
+  }
+  button.InsertParagraphButton {
     margin-left: 0px;
   }
 }

@@ -234,7 +234,6 @@ export function PracticeList() {
             return exam.User_id === userInfo["id"];
           })
           .map((exam, i) => {
-            console.log("I, exam: ", exam, i);
             if (exam["description"] === "") {
               exam["description"] = "No description";
             }

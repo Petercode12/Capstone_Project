@@ -30,7 +30,7 @@ import { MyAccountTestCreated } from "./Page/MyAccountTestCreated";
 import { EditPersonalInfo } from "./Page/EditPersonalInfo";
 import { Dashboard } from "./Page/Dashboard";
 import { QueryClient, QueryClientProvider, useQuery } from "react-query";
-import { Test } from "./Page/Test";
+import { HomePage } from "./Page/HomePage";
 // A list of allowed origins that can access our backend API
 
 const httpClient = (url, options = {}) => {
@@ -72,6 +72,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <Admin
+        basename="/app"
         dashboard={Dashboard}
         dataProvider={dataProvider}
         loginPage={MyLoginPage}
@@ -115,7 +116,6 @@ function App() {
             path="/my_account/tests/created"
             element={<MyAccountTestCreated />}
           />
-          <Route path="/test" element={<Test />} />
         </CustomRoutes>
       </Admin>
     </QueryClientProvider>

@@ -110,6 +110,11 @@ function convertQueryDataToQuestionList(data) {
         file: e.audio,
         type: "Audio",
       };
+    } else if (e.Type === "Paragraph") {
+      k = {
+        questionText: temp,
+        type: "Paragraph",
+      };
     }
     questionList.push(k);
   }
@@ -210,6 +215,13 @@ export function PostEdit() {
       behavior: "smooth",
     });
   };
+  const insertParagraph = () => {
+    setQuestionList([...questionList, { questionText: "", type: "Paragraph" }]);
+    window.scrollTo({
+      top: document.body.scrollHeight,
+      behavior: "smooth",
+    });
+  };
   const PostEditToolbar = () => (
     <Toolbar>
       <Box sx={{ "& > button": { m: 1 } }}>
@@ -231,12 +243,16 @@ export function PostEdit() {
   );
   function calculateIndexMinusNumOfAudio(i) {
     let numOfAudio = 0;
+    let numOfParagraph = 0;
     for (let x = 0; x < i; x++) {
       if (questionList[x].type === "Audio") {
         numOfAudio += 1;
       }
+      if (questionList[x].type === "Paragraph") {
+        numOfParagraph += 1;
+      }
     }
-    return i + 1 - numOfAudio;
+    return i + 1 - numOfAudio - numOfParagraph;
   }
   const scrolltoId = (target) => {
     let access = document.getElementById(target);
@@ -249,7 +265,10 @@ export function PostEdit() {
     let buttonList = [];
     if (questionList.length < 4) {
       for (let i = 0; i < questionList.length; i++) {
-        if (questionList[i].type !== "Audio") {
+        if (
+          questionList[i].type !== "Audio" &&
+          questionList[i].type !== "Paragraph"
+        ) {
           let calculatedIndex = calculateIndexMinusNumOfAudio(i);
           buttonList.push(
             <Button
@@ -272,7 +291,10 @@ export function PostEdit() {
       );
     } else {
       for (let i = 0; i < questionList.length; i++) {
-        if (questionList[i].type !== "Audio") {
+        if (
+          questionList[i].type !== "Audio" &&
+          questionList[i].type !== "Paragraph"
+        ) {
           let calculatedIndex = calculateIndexMinusNumOfAudio(i);
           if (calculatedIndex % 4 !== 0) {
             buttonList.push(
@@ -442,6 +464,22 @@ export function PostEdit() {
           exam_id: params.id,
         };
         saveData.push(k);
+      } else if (questionList[i].type === "Paragraph") {
+        let k = {
+          Ordinal: i + 1,
+          Question: questionList[i].questionText,
+          Answer_a: null,
+          Answer_b: null,
+          Answer_c: null,
+          Answer_d: null,
+          Correct_answer: null,
+          Solution: null,
+          Type: "Paragraph",
+          audioName: "",
+          audio: "",
+          exam_id: params.id,
+        };
+        saveData.push(k);
       }
     }
     return saveData;
@@ -460,6 +498,8 @@ export function PostEdit() {
       } else if (questionList[i].type === "FIB") {
         handleQuestionTextChange(i);
         handleBlankAnswerChange(i);
+      } else if (questionList[i].type === "Paragraph") {
+        handleQuestionTextChange(i);
       }
     }
     const data = saveDataGen();
@@ -638,6 +678,14 @@ export function PostEdit() {
             newArr[i].answerOptions[idx].answerText = blankAnswer_Element.value;
           }
         }
+      } else if (questionList[i].type === "Paragraph") {
+        // questionText
+        let questionTextElement = document.getElementById(
+          "questionText".concat(i)
+        );
+        if (questionTextElement !== null) {
+          newArr[i].questionText = questionTextElement.innerHTML;
+        }
       }
     }
     //
@@ -730,6 +778,14 @@ export function PostEdit() {
             blankAnswer_Element.value =
               questionList[i].answerOptions[idx].answerText;
           }
+        }
+      } else if (questionList[i].type === "Paragraph") {
+        // questionText
+        let questionTextElement = document.getElementById(
+          "questionText".concat(i)
+        );
+        if (questionTextElement !== null) {
+          questionTextElement.innerHTML = questionList[i].questionText;
         }
       }
     }
@@ -891,6 +947,14 @@ export function PostEdit() {
               mr={{ xs: 0, sm: "0.5em" }}
             >
               <i className="bi bi-plus" /> Audio
+            </Button>
+            <Button
+              variant="contained"
+              onClick={insertParagraph}
+              className="InsertParagraphButton"
+              mr={{ xs: 0, sm: "0.5em" }}
+            >
+              <i className="bi bi-plus" /> Paragraph
             </Button>
           </div>
         </Grid>
@@ -1294,6 +1358,34 @@ export function PostEdit() {
                             ) : (
                               ""
                             )}
+                          </div>
+                        );
+                      } else if (question.type === "Paragraph") {
+                        return (
+                          <div key={i}>
+                            <Button
+                              variant="outlined"
+                              style={{
+                                float: "right",
+                              }}
+                              startIcon={<DeleteIcon />}
+                              onClick={() => {
+                                removeQuestionAndAnswerFromQuestionList(i);
+                              }}
+                            >
+                              Delete
+                            </Button>
+                            <RichTextInput
+                              id={"questionText".concat(i)}
+                              key={i}
+                              source=""
+                              editorOptions={MyEditorOptions}
+                              toolbar={
+                                <MyRichTextInputToolbar size="medium" idx={i} />
+                              }
+                              defaultValue={questionList[i].questionText}
+                              className="RichTextContentEdit"
+                            />
                           </div>
                         );
                       }
