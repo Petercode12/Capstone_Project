@@ -61,10 +61,6 @@ urlpatterns = [
         views.authentication,
         name="authentication",
     ),
-<<<<<<< HEAD
     path("my_account/tests/<int:user_id>", views.query_total_test_result, name="queryAllTestResults"),
     path("my_account/tests/created/<int:user_id>", views.query_total_test_created_result, name="queryAllTestCreatedResults"),
-=======
-    path("my_account/tests", views.query_total_test_result, name="queryAllTestResults"),
->>>>>>> master
 ]
