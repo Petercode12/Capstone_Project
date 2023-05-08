@@ -98,6 +98,11 @@ function convertQueryDataToQuestionList(data) {
         file: e.Solution,
         type: "Audio",
       };
+    } else if (e.Type === "Paragraph") {
+      k = {
+        questionText: e.Question,
+        type: "Paragraph",
+      };
     }
     questionList.push(k);
   }
@@ -167,6 +172,7 @@ export const PraceticeResultSpecific = () => {
     axios
       .get("http://localhost:8000/test_result/".concat(id))
       .then((res) => {
+        console.log("Data: ", res.data);
         setQuestionList(
           convertQueryDataToQuestionList(res.data["test_specific"])
         );
@@ -201,19 +207,26 @@ export const PraceticeResultSpecific = () => {
   };
   function calculateIndexMinusNumOfAudio(i) {
     let numOfAudio = 0;
+    let numOfParagraph = 0;
     for (let x = 0; x < i; x++) {
       if (questionList[x].type === "Audio") {
         numOfAudio += 1;
       }
+      if (questionList[x].type === "Paragraph") {
+        numOfParagraph += 1;
+      }
     }
-    return i + 1 - numOfAudio;
+    return i + 1 - numOfAudio - numOfParagraph;
   }
   const addNavigationMenu = () => {
     let buttonGroupList = [];
     let buttonList = [];
     if (questionList.length < 4) {
       for (let i = 1; i <= questionList.length; i++) {
-        if (questionList[i].type !== "Audio") {
+        if (
+          questionList[i].type !== "Audio" &&
+          questionList[i].type !== "Paragraph"
+        ) {
           let calculatedIndex = calculateIndexMinusNumOfAudio(i);
           buttonList.push(
             <Button
@@ -236,7 +249,10 @@ export const PraceticeResultSpecific = () => {
       );
     } else {
       for (let i = 0; i < questionList.length; i++) {
-        if (questionList[i].type !== "Audio") {
+        if (
+          questionList[i].type !== "Audio" &&
+          questionList[i].type !== "Paragraph"
+        ) {
           let calculatedIndex = calculateIndexMinusNumOfAudio(i);
           if (calculatedIndex % 4 !== 0) {
             buttonList.push(
@@ -809,6 +825,12 @@ export const PraceticeResultSpecific = () => {
                             ) : (
                               ""
                             )}
+                          </div>
+                        );
+                      } else if (question.type === "Paragraph") {
+                        return (
+                          <div key={i} style={{ marginTop: "2em" }}>
+                            {questionList[i].questionText}
                           </div>
                         );
                       }

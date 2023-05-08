@@ -299,10 +299,11 @@ def test_result(request, exam_id):
         num_cons_question = test_specific.filter(Type="Cons").count()
         total_question = len(test_specific_ser.data)
         for i in range(0, len(test_specific)):
-            if test_specific[i].Type == "Audio": total_question -= 1
+            if test_specific[i].Type == "Audio" or test_specific[i].Type == "Paragraph": 
+                total_question -= 1
             if test_specific[i].Mark_FIB:
                 print("Mark_FIB: ", test_specific[i].Mark_FIB, type(test_specific[i].Mark_FIB))
-                # total_question += len(test_specific[i].Mark_FIB) - 1
+                
             if test_specific[i].User_answer_FIB:
                 # print(test_specific[i].User_answer_FIB)
                 check = False
@@ -332,8 +333,9 @@ def test_result(request, exam_id):
 def insert_test_result_specific(request, exam_id):
     if request.method == "POST":
         dataList = json.loads(request.body)
+        # print(type(dataList[0]), dataList[0])
         questions_and_answers = None
-        for data in dataList:
+        for data in dataList: # dataList là array of dict
             Ordinal = data["Ordinal"]
             Question = data["Question"]
             Type = data["Type"]

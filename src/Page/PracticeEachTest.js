@@ -73,10 +73,13 @@ import Textarea from "react-expanding-textarea";
 function changeBlankAnswersToEllipsis(temp) {
   let list = getBlankAnswersFromQuestion(temp);
   for (let i = 0; i < list.length; i++) {
+    console.log("Temp before: ", temp, `<blank id="${i}">${list[i]}</blank>`);
+    console.log(list[i]);
     temp = temp.replace(
       `<blank id="${i}">${list[i]}</blank>`,
       `<strong id="${i}">${i + 1}</strong> ………… `
     );
+    console.log("Temp after: ", temp);
   }
   return temp;
 }
@@ -218,19 +221,27 @@ export function PracticeTest() {
   };
   function calculateIndexMinusNumOfAudio(i) {
     let numOfAudio = 0;
+    let numOfParagraph = 0;
+
     for (let x = 0; x < i; x++) {
       if (questionList[x].type === "Audio") {
         numOfAudio += 1;
       }
+      if (questionList[x].type === "Paragraph") {
+        numOfParagraph += 1;
+      }
     }
-    return i + 1 - numOfAudio;
+    return i + 1 - numOfAudio - numOfParagraph;
   }
   const addNavigationMenu = () => {
     let buttonGroupList = [];
     let buttonList = [];
     if (questionList.length < 4) {
       for (let i = 1; i <= questionList.length; i++) {
-        if (questionList[i].type !== "Audio") {
+        if (
+          questionList[i].type !== "Audio" &&
+          questionList[i].type !== "Paragraph"
+        ) {
           let calculatedIndex = calculateIndexMinusNumOfAudio(i);
           buttonList.push(
             <Button
@@ -253,7 +264,10 @@ export function PracticeTest() {
       );
     } else {
       for (let i = 0; i < questionList.length; i++) {
-        if (questionList[i].type !== "Audio") {
+        if (
+          questionList[i].type !== "Audio" &&
+          questionList[i].type !== "Paragraph"
+        ) {
           let calculatedIndex = calculateIndexMinusNumOfAudio(i);
           if (calculatedIndex % 4 !== 0) {
             buttonList.push(
@@ -497,6 +511,7 @@ export function PracticeTest() {
         saveData.push(k);
       } else if (questionList[i].type === "FIB") {
         let Score = [];
+        let check = true;
         for (let j = 0; j < questionList[i].answerOptions.length; ++j) {
           console.log(
             "So sanh dap an: ",
@@ -508,9 +523,14 @@ export function PracticeTest() {
               questionList[i].userAnswer[j].toUpperCase() &&
             questionList[i].userAnswer[j] !== ""
           ) {
-            nums_right_question += 1;
             Score.push(1);
-          } else Score.push(0);
+          } else {
+            Score.push(0);
+            check = false;
+          }
+        }
+        if (check) {
+          nums_right_question += 1;
         }
         let k = {
           Ordinal: i + 1,
@@ -543,6 +563,26 @@ export function PracticeTest() {
           Solution: questionList[i].file,
           Solution_FIB: null,
           Type: "Audio",
+          User_answer_MCQ: null,
+          User_answer_CONS: null,
+          User_answer_FIB: null,
+          Mark: 0,
+          Mark_FIB: null,
+          test_result_id: id,
+        };
+        saveData.push(k);
+      } else if (questionList[i].type === "Paragraph") {
+        let k = {
+          Ordinal: i + 1,
+          Question: questionList[i].questionText,
+          Answer_a: null,
+          Answer_b: null,
+          Answer_c: null,
+          Answer_d: null,
+          Correct_answer: null,
+          Solution: null,
+          Solution_FIB: null,
+          Type: "Paragraph",
           User_answer_MCQ: null,
           User_answer_CONS: null,
           User_answer_FIB: null,
@@ -595,7 +635,23 @@ export function PracticeTest() {
     await axios // update lịch sử làm bài và kết quả
       .patch("http://localhost:8000/test_result/".concat(id), { Score })
       .then((res) => {
-        console.log("Data: ", res.data);
+        console.log("Data save practice test: ", res.data);
+        wait(1000);
+        redirect("/app/practice_tests/result/".concat(id));
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+  async function saveTestResultSpecific(data) {
+    console.log("DATA specific will be saved: ", data);
+    await axios // update lịch sử làm bài và kết quả
+      .post(
+        "http://localhost:8000/test_result_specific/".concat(params.id),
+        data
+      )
+      .then((res) => {
+        console.log("Data save practice test: ", res.data);
       })
       .catch((err) => {
         console.log(err);
@@ -617,8 +673,9 @@ export function PracticeTest() {
     const id = await test_result_Save_API(data); // post  lich sử làm bài và kết quả
     var [data1, score] = await test_result_specific_Gen(id);
     data = data1;
-    console.log("DATA specific will be saved: ", data);
-    create("test_result_specific/".concat(params.id), { data }); // post chi tiết bài làm
+
+    await saveTestResultSpecific(data);
+    // await create("test_result_specific/", { data }); // post chi tiết bài làm
     console.log("Điểm bài làm: ", score); // update điểm bài làm
     await updateTestMark(score, id);
     if (error) {
@@ -629,8 +686,6 @@ export function PracticeTest() {
       notify("Save successfully!", {
         type: "success",
       });
-      wait(1000);
-      redirect("/app/practice_tests/result/".concat(id));
     }
   };
   const handleMCQChange = () => {
@@ -1044,87 +1099,87 @@ export function PracticeTest() {
                             let calculatedIndex = calculateIndexMinusNumOfAudio(
                               i
                             );
-                            // return (
-                            //   <div key={i}>
-                            //     <div
-                            //       id={"question".concat(calculatedIndex)}
-                            //       className="question-count"
-                            //       style={{
-                            //         marginTop: "2em",
-                            //       }}
-                            //     >
-                            //       <span>Question {calculatedIndex}</span>
-                            //     </div>
-                            //     <IconButton
-                            //       color="primary"
-                            //       style={{
-                            //         padding: "2px",
-                            //       }}
-                            //       onClick={() => {
-                            //         displayNote();
-                            //       }}
-                            //     >
-                            //       <EditNoteIcon />
-                            //     </IconButton>
-                            //     <TextField
-                            //       id="textAreaNote"
-                            //       label="Note here"
-                            //       className="noteTextField"
-                            //       placeholder="Start typing ..."
-                            //       multiline
-                            //       maxRows={3}
-                            //       fullWidth
-                            //       variant="standard"
-                            //       style={{
-                            //         marginTop: "2px",
-                            //         display: noteDisplay,
-                            //       }}
-                            //     />
-                            //     <MathJaxContext config={config}>
-                            //       <MathJax>
-                            //         <div
-                            //           style={{
-                            //             width: "100%",
-                            //           }}
-                            //           className={"question-".concat(i + 1)}
-                            //         />
-                            //       </MathJax>
-                            //     </MathJaxContext>
-                            //     {question.answerOptions.map((answer, idx) => {
-                            //       return (
-                            //         <div>
-                            //           <span
-                            //             className="number"
-                            //             style={{
-                            //               marginTop: "5px",
-                            //               marginRight: "1em",
-                            //               marginLeft: "10px",
-                            //               marginBottom: "1em",
-                            //             }}
-                            //           >
-                            //             {idx + 1}
-                            //           </span>
-                            //           <TextField
-                            //             id={"blankAnswer"
-                            //               .concat(idx)
-                            //               .concat("in")
-                            //               .concat(i)}
-                            //             label="Answer"
-                            //             variant="outlined"
-                            //             style={{
-                            //               position: "relative",
-                            //               marginTop: "1em",
-                            //             }}
-                            //             defaultValue={
-                            //               ""
-                            //               // question.answerOptions[idx].answerText
-                            //             }
-                            //           />
-                            //         </div>
-                            //       );
-                            //     })}
-                            //   </div>
-                            // );
+                            return (
+                              <div key={i}>
+                                <div
+                                  id={"question".concat(calculatedIndex)}
+                                  className="question-count"
+                                  style={{
+                                    marginTop: "2em",
+                                  }}
+                                >
+                                  <span>Question {calculatedIndex}</span>
+                                </div>
+                                <IconButton
+                                  color="primary"
+                                  style={{
+                                    padding: "2px",
+                                  }}
+                                  onClick={() => {
+                                    displayNote();
+                                  }}
+                                >
+                                  <EditNoteIcon />
+                                </IconButton>
+                                <TextField
+                                  id="textAreaNote"
+                                  label="Note here"
+                                  className="noteTextField"
+                                  placeholder="Start typing ..."
+                                  multiline
+                                  maxRows={3}
+                                  fullWidth
+                                  variant="standard"
+                                  style={{
+                                    marginTop: "2px",
+                                    display: noteDisplay,
+                                  }}
+                                />
+                                <MathJaxContext config={config}>
+                                  <MathJax>
+                                    <div
+                                      style={{
+                                        width: "100%",
+                                      }}
+                                      className={"question-".concat(i + 1)}
+                                    />
+                                  </MathJax>
+                                </MathJaxContext>
+                                {question.answerOptions.map((answer, idx) => {
+                                  return (
+                                    <div>
+                                      <span
+                                        className="number"
+                                        style={{
+                                          marginTop: "5px",
+                                          marginRight: "1em",
+                                          marginLeft: "10px",
+                                          marginBottom: "1em",
+                                        }}
+                                      >
+                                        {idx + 1}
+                                      </span>
+                                      <TextField
+                                        id={"blankAnswer"
+                                          .concat(idx)
+                                          .concat("in")
+                                          .concat(i)}
+                                        label="Answer"
+                                        variant="outlined"
+                                        style={{
+                                          position: "relative",
+                                          marginTop: "1em",
+                                        }}
+                                        defaultValue={
+                                          ""
+                                          // question.answerOptions[idx].answerText
+                                        }
+                                      />
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            );
                           } else if (question.type === "Audio") {
                             return (
                               <div
@@ -1153,6 +1208,12 @@ export function PracticeTest() {
                                 ) : (
                                   ""
                                 )}
+                              </div>
+                            );
+                          } else if (question.type === "Paragraph") {
+                            return (
+                              <div key={i} style={{ marginTop: "2em" }}>
+                                {questionList[i].questionText}
                               </div>
                             );
                           }

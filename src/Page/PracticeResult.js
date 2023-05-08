@@ -63,17 +63,19 @@ export function PracticeResult() {
   const redirect = useRedirect();
   params1.append("id", params.id);
   params1.append("exam_id", testInfo["exam_id"]);
-  console.log("Param1 url: ", params1.toString());
-  console.log("param id: ", params.id);
   function calculateIndexMinusNumOfAudio(i) {
     let numOfAudio = 0;
+    let numOfParagraph = 0;
     for (let x = 0; x < i; x++) {
       console.log(testSpecific[x].Type);
       if (testSpecific[x].Type === "Audio") {
         numOfAudio += 1;
       }
+      if (testSpecific[x].Type === "Paragraph") {
+        numOfParagraph += 1;
+      }
     }
-    return i + 1 - numOfAudio;
+    return i + 1 - numOfAudio - numOfParagraph;
   }
   useEffect(() => {
     axios
@@ -343,7 +345,7 @@ export function PracticeResult() {
           <div spacing={2} className="result-detail-box result-answers-list">
             {testSpecific.map((exam, i) => {
               let type = exam["Type"];
-              if (type === "Audio") return "";
+              if (type === "Audio" || type === "Paragraph") return "";
               let userAnswer, correctAnswer;
               let calculatedIndex = calculateIndexMinusNumOfAudio(i);
               console.log(i, calculatedIndex);
@@ -449,7 +451,8 @@ export function PracticeResult() {
             {testSpecific.map((exam, i) => {
               let temp = document.querySelectorAll(".result-answers-item");
               let type = exam["Type"];
-              if (type === "Audio" || type === "FIB") return "";
+              if (type === "Audio" || type === "FIB" || type === "Paragraph")
+                return "";
               let userAnswer, correctAnswer;
               let calculatedIndex = calculateIndexMinusNumOfAudio(i);
               if (type === "MCQ") {

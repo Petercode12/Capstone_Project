@@ -62,10 +62,12 @@ function getBlankAnswersFromQuestion(temp) {
 function changeBlankAnswersToEllipsis(temp) {
   let list = getBlankAnswersFromQuestion(temp);
   for (let i = 0; i < list.length; i++) {
+    console.log("Temp before: ", temp, `<blank id="${i}">${list[i]}</blank>`);
     temp = temp.replace(
       `<blank id="${i}">${list[i].answerText}</blank>`,
       `&lt;blank id="${i}"&gt;...&lt;/blank&gt;`
     );
+    console.log("Temp after: ", temp);
   }
   return temp;
 }
@@ -1362,7 +1364,7 @@ export function PostEdit() {
                         );
                       } else if (question.type === "Paragraph") {
                         return (
-                          <div key={i}>
+                          <div key={i} style={{ marginTop: "2em" }}>
                             <Button
                               variant="outlined"
                               style={{
@@ -1379,10 +1381,6 @@ export function PostEdit() {
                               id={"questionText".concat(i)}
                               key={i}
                               source=""
-                              editorOptions={MyEditorOptions}
-                              toolbar={
-                                <MyRichTextInputToolbar size="medium" idx={i} />
-                              }
                               defaultValue={questionList[i].questionText}
                               className="RichTextContentEdit"
                             />
