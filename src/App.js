@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { render } from "react-dom";
 import {
   Admin,
@@ -30,7 +30,6 @@ import { MyAccountTestCreated } from "./Page/MyAccountTestCreated";
 import { EditPersonalInfo } from "./Page/EditPersonalInfo";
 import { Dashboard } from "./Page/Dashboard";
 import { QueryClient, QueryClientProvider, useQuery } from "react-query";
-import { HomePage } from "./Page/HomePage";
 // A list of allowed origins that can access our backend API
 
 const httpClient = (url, options = {}) => {
@@ -69,6 +68,7 @@ const queryClient = new QueryClient();
 
 function App() {
   const [userID, setUserID] = useState();
+
   return (
     <QueryClientProvider client={queryClient}>
       <Admin

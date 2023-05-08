@@ -1,3 +1,4 @@
+from asyncio.windows_events import NULL
 from math import ceil, floor
 import json
 from django.shortcuts import render, redirect
@@ -99,6 +100,8 @@ def query_exams_by_userid(request, user_id):
 @csrf_exempt
 def query_recent_practice_exams_by_userid(request, user_id):
     if request.method == "GET":
+        if user_id == 0:
+            return JsonResponse([], safe=False)
         practice_exams = (
             TEST_RESULT.objects.filter(user_id=user_id).order_by("-Date").values()
         )
@@ -106,6 +109,7 @@ def query_recent_practice_exams_by_userid(request, user_id):
         for e in practice_exams:
             if (e["exam_id"] not in exam_id_list) and (len(exam_id_list) <= 3):
                 exam_id_list.append(e["exam_id"])
+                
         if exam_id_list != []:
             exams = EXAMS_COLLECTION.objects.filter(id=exam_id_list[0])
         for e in exam_id_list[1:]:
@@ -193,7 +197,6 @@ def insert_questions_and_answers(request, exam_id):
             Answer_c = data["Answer_c"]
             Answer_d = data["Answer_d"]
             Solution = data["Solution"]
-            Solution_FIB = data["Solution_FIB"]
             Type = data["Type"]
             audioName = data["audioName"]
             audio = data["audio"]
@@ -207,7 +210,6 @@ def insert_questions_and_answers(request, exam_id):
                 Answer_c=Answer_c,
                 Answer_d=Answer_d,
                 Solution=Solution,
-                Solution_FIB=Solution_FIB,
                 Type=Type,
                 audioName=audioName,
                 audio=audio,
@@ -297,11 +299,13 @@ def test_result(request, exam_id):
         num_cons_question = test_specific.filter(Type="Cons").count()
         total_question = len(test_specific_ser.data)
         for i in range(0, len(test_specific)):
+            if test_specific[i].Type == "Audio": total_question -= 1
             if test_specific[i].Mark_FIB:
                 print("Mark_FIB: ", test_specific[i].Mark_FIB, type(test_specific[i].Mark_FIB))
-                total_question += len(test_specific[i].Mark_FIB) - 1
+                # total_question += len(test_specific[i].Mark_FIB) - 1
             if test_specific[i].User_answer_FIB:
                 # print(test_specific[i].User_answer_FIB)
+                check = False
                 for j in test_specific[i].User_answer_FIB:
                     test_specific_ser.data[i]["User_answer_FIB"] = test_specific[i].User_answer_FIB
                     test_specific_ser.data[i]["Solution_FIB"] = test_specific[i].Solution_FIB
@@ -309,8 +313,9 @@ def test_result(request, exam_id):
                     # print(j, test_specific_ser.data[i]["Solution_FIB"], type(test_specific_ser.data[i]["Solution_FIB"]))
                     # print(j, test_specific_ser.data[i]["User_answer_FIB"], type(test_specific_ser.data[i]["User_answer_FIB"]))
                     
-                    if j == " ":
-                        num_test_skip += 1
+                    if j != " ":
+                        check = True
+                if check == False: num_test_skip+=1
         return JsonResponse(
             {
                 "test_info": test_ser.data,

@@ -129,6 +129,11 @@ function convertQueryDataToQuestionList(data) {
         file: e.audio,
         type: "Audio",
       };
+    } else if (e.Type === "Paragraph") {
+      k = {
+        questionText: e.Question,
+        type: "Paragraph",
+      };
     }
     questionList.push(k);
   }
@@ -1039,87 +1044,87 @@ export function PracticeTest() {
                             let calculatedIndex = calculateIndexMinusNumOfAudio(
                               i
                             );
-                            return (
-                              <div key={i}>
-                                <div
-                                  id={"question".concat(calculatedIndex)}
-                                  className="question-count"
-                                  style={{
-                                    marginTop: "2em",
-                                  }}
-                                >
-                                  <span>Question {calculatedIndex}</span>
-                                </div>
-                                <IconButton
-                                  color="primary"
-                                  style={{
-                                    padding: "2px",
-                                  }}
-                                  onClick={() => {
-                                    displayNote();
-                                  }}
-                                >
-                                  <EditNoteIcon />
-                                </IconButton>
-                                <TextField
-                                  id="textAreaNote"
-                                  label="Note here"
-                                  className="noteTextField"
-                                  placeholder="Start typing ..."
-                                  multiline
-                                  maxRows={3}
-                                  fullWidth
-                                  variant="standard"
-                                  style={{
-                                    marginTop: "2px",
-                                    display: noteDisplay,
-                                  }}
-                                />
-                                <MathJaxContext config={config}>
-                                  <MathJax>
-                                    <div
-                                      style={{
-                                        width: "100%",
-                                      }}
-                                      className={"question-".concat(i + 1)}
-                                    />
-                                  </MathJax>
-                                </MathJaxContext>
-                                {question.answerOptions.map((answer, idx) => {
-                                  return (
-                                    <div>
-                                      <span
-                                        className="number"
-                                        style={{
-                                          marginTop: "5px",
-                                          marginRight: "1em",
-                                          marginLeft: "10px",
-                                          marginBottom: "1em",
-                                        }}
-                                      >
-                                        {idx + 1}
-                                      </span>
-                                      <TextField
-                                        id={"blankAnswer"
-                                          .concat(idx)
-                                          .concat("in")
-                                          .concat(i)}
-                                        label="Answer"
-                                        variant="outlined"
-                                        style={{
-                                          position: "relative",
-                                          marginTop: "1em",
-                                        }}
-                                        defaultValue={
-                                          ""
-                                          // question.answerOptions[idx].answerText
-                                        }
-                                      />
-                                    </div>
-                                  );
-                                })}
-                              </div>
-                            );
+                            // return (
+                            //   <div key={i}>
+                            //     <div
+                            //       id={"question".concat(calculatedIndex)}
+                            //       className="question-count"
+                            //       style={{
+                            //         marginTop: "2em",
+                            //       }}
+                            //     >
+                            //       <span>Question {calculatedIndex}</span>
+                            //     </div>
+                            //     <IconButton
+                            //       color="primary"
+                            //       style={{
+                            //         padding: "2px",
+                            //       }}
+                            //       onClick={() => {
+                            //         displayNote();
+                            //       }}
+                            //     >
+                            //       <EditNoteIcon />
+                            //     </IconButton>
+                            //     <TextField
+                            //       id="textAreaNote"
+                            //       label="Note here"
+                            //       className="noteTextField"
+                            //       placeholder="Start typing ..."
+                            //       multiline
+                            //       maxRows={3}
+                            //       fullWidth
+                            //       variant="standard"
+                            //       style={{
+                            //         marginTop: "2px",
+                            //         display: noteDisplay,
+                            //       }}
+                            //     />
+                            //     <MathJaxContext config={config}>
+                            //       <MathJax>
+                            //         <div
+                            //           style={{
+                            //             width: "100%",
+                            //           }}
+                            //           className={"question-".concat(i + 1)}
+                            //         />
+                            //       </MathJax>
+                            //     </MathJaxContext>
+                            //     {question.answerOptions.map((answer, idx) => {
+                            //       return (
+                            //         <div>
+                            //           <span
+                            //             className="number"
+                            //             style={{
+                            //               marginTop: "5px",
+                            //               marginRight: "1em",
+                            //               marginLeft: "10px",
+                            //               marginBottom: "1em",
+                            //             }}
+                            //           >
+                            //             {idx + 1}
+                            //           </span>
+                            //           <TextField
+                            //             id={"blankAnswer"
+                            //               .concat(idx)
+                            //               .concat("in")
+                            //               .concat(i)}
+                            //             label="Answer"
+                            //             variant="outlined"
+                            //             style={{
+                            //               position: "relative",
+                            //               marginTop: "1em",
+                            //             }}
+                            //             defaultValue={
+                            //               ""
+                            //               // question.answerOptions[idx].answerText
+                            //             }
+                            //           />
+                            //         </div>
+                            //       );
+                            //     })}
+                            //   </div>
+                            // );
                           } else if (question.type === "Audio") {
                             return (
                               <div
@@ -1136,15 +1141,6 @@ export function PracticeTest() {
                                   alignItems: "baseline",
                                 }}
                               >
-                                <Typography variant="h5">Audio: </Typography>
-                                <span
-                                  style={{
-                                    color: "#fb8500",
-                                    paddingBottom: "2px",
-                                  }}
-                                >
-                                  {questionList[i].fileName}
-                                </span>
                                 {questionList[i].file !== "" ? (
                                   <audio
                                     src={questionList[i].file}

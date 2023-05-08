@@ -278,7 +278,7 @@ export function PracticeResult() {
                 </div>
                 <div className="result-score-icontext text-correct">Right</div>
                 <div className="result-score-text">{testInfo["Score"]}</div>
-                <div classname="result-score-subtext">
+                <div className="result-score-subtext">
                   {testInfo["Score"] > 1 ? "questions" : "question"}
                 </div>
               </div>
@@ -295,7 +295,7 @@ export function PracticeResult() {
                     skipQuestion -
                     testInfo["Score"]}
                 </div>
-                <div classname="result-score-subtext">question</div>
+                <div className="result-score-subtext">question</div>
               </div>
             </div>
             <div className="col">
@@ -307,7 +307,7 @@ export function PracticeResult() {
                   Unanswered
                 </div>
                 <div className="result-score-text">{skipQuestion}</div>
-                <div classname="result-score-subtext">
+                <div className="result-score-subtext">
                   {skipQuestion > 1 ? "questions" : "question"}
                 </div>
               </div>
@@ -321,7 +321,7 @@ export function PracticeResult() {
                   Constructive
                 </div>
                 <div className="result-score-text">{numsConsQuestion}</div>
-                <div classname="result-score-subtext">
+                <div className="result-score-subtext">
                   {numsConsQuestion > 1 ? "questions" : "question"}
                 </div>
               </div>

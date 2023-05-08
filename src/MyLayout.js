@@ -17,7 +17,6 @@ import {
 } from "@mui/material";
 import PropTypes from "prop-types";
 import Avatar from "@mui/material/Avatar";
-import SettingsIcon from "@mui/icons-material/Settings";
 import { withStyles } from "@material-ui/core/styles";
 import PermIdentityIcon from "@mui/icons-material/PermIdentity";
 import "./Style/MyLayout.css";
@@ -121,11 +120,11 @@ const MyLayout = ({ children, dashboard, title, classes, ...props }) => {
     fullName: data.Username,
     avatar: data.Avatar,
   };
-  let currentPath = "/";
-  if (!!matchPath("/all_exams/*", location.pathname)) {
-    currentPath = "/all_exams/".concat(userInfo.id);
-  } else if (!!matchPath("/practice_tests/*", location.pathname)) {
-    currentPath = "/practice_tests";
+  let currentPath = "/app/";
+  if (!!matchPath("/app/all_exams/*", location.pathname)) {
+    currentPath = "/app/all_exams/".concat(userInfo.id);
+  } else if (!!matchPath("/app/practice_tests/*", location.pathname)) {
+    currentPath = "/app/practice_tests";
   }
   return (
     <Root>
@@ -138,7 +137,7 @@ const MyLayout = ({ children, dashboard, title, classes, ...props }) => {
             id="react-admin-title"
           />
           {isLargeEnough && (
-            <img src={logo} alt="logo" className={classes.logo} />
+            <img src={logo2} alt="logo" className={classes.logo} />
           )}
 
           <span className={classes.spacer} />
@@ -174,8 +173,8 @@ const MyLayout = ({ children, dashboard, title, classes, ...props }) => {
                   <Tab
                     label={"Dashboard"}
                     component={Link}
-                    to="/app/"
-                    value="/app/"
+                    to="/app"
+                    value="/app"
                     className={classes.label}
                   />
                   <Tab

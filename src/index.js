@@ -6,9 +6,8 @@ import reportWebVitals from "./reportWebVitals";
 import { Provider } from "react-redux";
 import configureStore from "./Page/store/configureStore";
 // import HighlightApp from "./Page/containers/HighlightApp";
-import HighlightApp from "./Page/containers/HighlightApp1";
-import getMuiTheme from "material-ui/styles/getMuiTheme";
-import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
+// import getMuiTheme from "material-ui/styles/getMuiTheme";
+// import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import "./Page/styles/styles.scss";
 import { HomePage } from "./Page/HomePage";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
@@ -22,12 +21,6 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
   <React.StrictMode>
-    {/* <Provider store={store}>
-      <MuiThemeProvider muiTheme={getMuiTheme()}>
-        <HighlightApp />
-      </MuiThemeProvider>
-    </Provider> */}
-    {/* <App /> */}
     <BrowserRouter>
       <Routes>
         <Route exact path="/" element={<HomePage />} />

@@ -39,7 +39,7 @@ import { Toolbar, Edit, useCreate, useNotify } from "react-admin";
 import Paper from "@mui/material/Paper";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import axios from "axios";
-import { useMediaQuery, useTheme, Container, Grid } from "@mui/material";
+import { Container, Grid } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import insertTextAtCursor from "insert-text-at-cursor";
 

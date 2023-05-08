@@ -11,14 +11,31 @@ import {
   CardContent,
   CardActions,
   Typography,
+  Container,
+  Grid,
 } from "@mui/material";
+import { useNotify } from "react-admin";
+import emailjs from "emailjs-com";
 import Button from "@mui/material/Button";
-
+import { Contact } from "./components/contact";
+import JsonData from "./data/data.json";
+import "../Style/HomePage.css";
+const initialState = {
+  name: "",
+  email: "",
+  message: "",
+};
 export const Dashboard = () => {
   const { data: userInfo, isLoading, err } = useGetIdentity();
   const [examList, setExamList] = useState([]);
   const redirect = useRedirect();
   let infinity = "♾️";
+  const [landingPageData, setLandingPageData] = useState({});
+  const [{ name, email, message }, setState] = useState(initialState);
+  const notify = useNotify();
+  useEffect(() => {
+    setLandingPageData(JsonData);
+  }, []);
   useEffect(() => {
     axios
       .get(
@@ -34,7 +51,34 @@ export const Dashboard = () => {
         console.log(err);
       });
   }, [userInfo]);
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setState((prevState) => ({ ...prevState, [name]: value }));
+  };
+  const clearState = () => setState({ ...initialState });
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(name, email, message);
 
+    emailjs
+      .sendForm(
+        "service_32fsbp5",
+        "template_ml3ygdg",
+        e.target,
+        "zgEUaSGmakp-N6JaL"
+      )
+      .then(
+        (result) => {
+          console.log(result.text);
+          notify("Send successfully!", { type: "success" });
+          clearState();
+        },
+        (error) => {
+          notify("Cannot save!", { type: "error" });
+          console.log(error.text);
+        }
+      );
+  };
   const data2 = [
     {
       image:
@@ -53,11 +97,6 @@ export const Dashboard = () => {
     },
     {
       image:
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Palace_of_Fine_Arts_%2816794p%29.jpg/1200px-Palace_of_Fine_Arts_%2816794p%29.jpg",
-      caption: "San Francisco",
-    },
-    {
-      image:
         "https://i.natgeofe.com/n/f7732389-a045-402c-bf39-cb4eda39e786/scotland_travel_4x3.jpg",
       caption: "Scotland",
     },
@@ -65,11 +104,6 @@ export const Dashboard = () => {
       image:
         "https://www.tusktravel.com/blog/wp-content/uploads/2020/07/Best-Time-to-Visit-Darjeeling-for-Honeymoon.jpg",
       caption: "Darjeeling",
-    },
-    {
-      image:
-        "https://www.omm.com/~/media/images/site/locations/san_francisco_780x520px.ashx",
-      caption: "San Francisco",
     },
     {
       image:
@@ -113,90 +147,92 @@ export const Dashboard = () => {
           </h1>
           <h2>Your recent practice test</h2>
           <div spacing={2} className="GridContainer">
-            {examList.map((exam, i) => {
-              if (exam["description"] === "") {
-                exam["description"] = "No description";
-              }
-              if (exam["duration"] === 0) {
-                exam["duration"] = infinity;
-              }
-              return (
-                <div item="true" key={i} className="GridPaper">
-                  <Card
-                    sx={{
-                      width: 340,
-                      justifyContent: "center",
-                      alignItems: "center",
-                      marginBottom: "4px",
-                    }}
-                    className="NavigationAsidePaper"
-                  >
-                    <CardMedia
-                      component="img"
-                      alt="exam paper"
-                      height="140"
-                      image={exam["image"]}
-                    />
-                    <CardContent sx={{ padding: "0px 12px" }}>
-                      <Typography
-                        gutterBottom
-                        variant="h5"
-                        component="div"
-                        noWrap
-                        sx={{ margin: "4px 0px" }}
-                      >
-                        {exam["Name"]}
-                      </Typography>
-                      <Typography
-                        variant="body1"
-                        inline="true"
-                        color="text.secondary"
-                        noWrap
+            {examList
+              ? examList.map((exam, i) => {
+                  if (exam["description"] === "") {
+                    exam["description"] = "No description";
+                  }
+                  if (exam["duration"] === 0) {
+                    exam["duration"] = infinity;
+                  }
+                  return (
+                    <div item="true" key={i} className="GridPaper">
+                      <Card
                         sx={{
-                          marginBottom: "2px",
-                          marginLeft: "2px",
+                          width: 340,
+                          justifyContent: "center",
+                          alignItems: "center",
+                          marginBottom: "4px",
                         }}
+                        className="NavigationAsidePaper"
                       >
-                        {exam["description"]}
-                      </Typography>
-                      <Typography variant="subtitle1" component="div">
-                        <div
-                          style={{
-                            transform: "translateY(1px)",
-                            display: "inline-block",
-                          }}
-                        >
-                          <i
-                            className="fa-regular fa-clock"
-                            style={{
-                              fontSize: "20px",
-                              marginRight: ".4rem",
-                              marginTop: ".4rem",
+                        <CardMedia
+                          component="img"
+                          alt="exam paper"
+                          height="140"
+                          image={exam["image"]}
+                        />
+                        <CardContent sx={{ padding: "0px 12px" }}>
+                          <Typography
+                            gutterBottom
+                            variant="h5"
+                            component="div"
+                            noWrap
+                            sx={{ margin: "4px 0px" }}
+                          >
+                            {exam["Name"]}
+                          </Typography>
+                          <Typography
+                            variant="body1"
+                            inline="true"
+                            color="text.secondary"
+                            noWrap
+                            sx={{
+                              marginBottom: "2px",
+                              marginLeft: "2px",
                             }}
-                            sx={{ margin: "0px 4px" }}
-                          />
-                        </div>
-                        {exam["duration"]} min
-                      </Typography>
-                    </CardContent>
-                    <CardActions>
-                      <Button
-                        size="small"
-                        onClick={() => {
-                          redirect(
-                            window.location.href +
-                              "practice_tests/" +
-                              exam["id"]
-                          );
-                        }}
-                      >
-                        Practice again
-                      </Button>
-                    </CardActions>
-                  </Card>
-                </div>
-              );
-            })}
+                          >
+                            {exam["description"]}
+                          </Typography>
+                          <Typography variant="subtitle1" component="div">
+                            <div
+                              style={{
+                                transform: "translateY(1px)",
+                                display: "inline-block",
+                              }}
+                            >
+                              <i
+                                className="fa-regular fa-clock"
+                                style={{
+                                  fontSize: "20px",
+                                  marginRight: ".4rem",
+                                  marginTop: ".4rem",
+                                }}
+                                sx={{ margin: "0px 4px" }}
+                              />
+                            </div>
+                            {exam["duration"]} min
+                          </Typography>
+                        </CardContent>
+                        <CardActions>
+                          <Button
+                            size="small"
+                            onClick={() => {
+                              redirect(
+                                window.location.href +
+                                  "practice_tests/" +
+                                  exam["id"]
+                              );
+                            }}
+                          >
+                            Practice again
+                          </Button>
+                        </CardActions>
+                      </Card>
+                    </div>
+                  );
+                })
+              : ""}
           </div>
         </div>
       </div>
@@ -248,7 +284,7 @@ export const Dashboard = () => {
             <div className="columnDashboard">
               <img
                 src={mathformula2}
-                style={{ marginLeft: "15%" }}
+                style={{ marginLeft: "10%" }}
                 alt="MathFormula"
               />
             </div>
@@ -259,7 +295,7 @@ export const Dashboard = () => {
       <Carousel
         data={data2}
         time={2000}
-        width="850px"
+        width="750px"
         height="500px"
         captionStyle={captionStyle}
         radius="10px"
@@ -280,6 +316,185 @@ export const Dashboard = () => {
           margin: "40px auto",
         }}
       />
+
+      <Grid
+        container
+        justifyContent="space-between"
+        spacing={2}
+        wrap="nowrap"
+        id="contact"
+        alignItems="center"
+        justify="center"
+      >
+        {/* <div > */}
+        <div className="container">
+          <Grid container columnSpacing={10}>
+            <Grid item xs={12} md={8}>
+              <div className="row">
+                <div className="section-title">
+                  <h2>Get In Touch</h2>
+                  <p style={{ color: "rgba(255, 255, 255, 0.75)" }}>
+                    Please fill out the form below to send us an email and we
+                    will get back to you as soon as possible.
+                  </p>
+                </div>
+                <form
+                  name="sentMessage"
+                  validate="true"
+                  onSubmit={handleSubmit}
+                  style={{ width: "90%" }}
+                >
+                  <Grid container columnSpacing={2} rowSpacing={0}>
+                    <Grid item xs={12} md={6}>
+                      <div className="form-group">
+                        <input
+                          type="text"
+                          id="name"
+                          name="name"
+                          className="form-control"
+                          placeholder="Name"
+                          required
+                          onChange={handleChange}
+                        />
+                        <p className="help-block text-danger" />
+                      </div>
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                      <div className="form-group">
+                        <input
+                          type="email"
+                          id="email"
+                          name="email"
+                          className="form-control"
+                          placeholder="Email"
+                          required
+                          onChange={handleChange}
+                        />
+                        <p className="help-block text-danger" />
+                      </div>
+                    </Grid>
+                    <Grid item xs={12}>
+                      <div className="form-group">
+                        <textarea
+                          name="message"
+                          id="message"
+                          className="form-control"
+                          rows="4"
+                          placeholder="Message"
+                          required
+                          onChange={handleChange}
+                        />
+                        <p className="help-block text-danger" />
+                      </div>
+                    </Grid>
+                  </Grid>
+                  <div id="success" />
+                  <button type="submit" className="btn btn-custom btn-lg">
+                    Send Message
+                  </button>
+                </form>
+              </div>
+            </Grid>
+            <Grid item md={4} className="contact-info">
+              <div className="contact-item">
+                <h3>Contact Info</h3>
+                <p style={{ color: "rgba(255, 255, 255, 0.75)" }}>
+                  <span>
+                    <i className="fa fa-map-marker" /> Address
+                  </span>
+                  {landingPageData.Contact
+                    ? landingPageData.Contact.address
+                    : "loading"}
+                </p>
+              </div>
+              <div className="contact-item">
+                <p style={{ color: "rgba(255, 255, 255, 0.75)" }}>
+                  <span>
+                    <i className="fa fa-phone" /> Phone
+                  </span>{" "}
+                  {landingPageData.Contact
+                    ? landingPageData.Contact.phone
+                    : "loading"}
+                </p>
+              </div>
+              <div className="contact-item">
+                <p style={{ color: "rgba(255, 255, 255, 0.75)" }}>
+                  <span>
+                    <i className="fa fa-envelope-o" /> Email
+                  </span>{" "}
+                  <a
+                    className="emailLink"
+                    href="mailto:phuoc.phamcse206@hcmut.edu.vn"
+                  >
+                    {landingPageData.Contact
+                      ? landingPageData.Contact.email
+                      : "loading"}
+                  </a>
+                  <span className="break-line" />
+                  <a
+                    className="emailLink"
+                    href="mailto:hung.trinh_hungking@hcmut.edu.vn"
+                  >
+                    hung.trinh_hungking@hcmut.edu.vn
+                  </a>
+                </p>
+              </div>
+            </Grid>
+            <Grid item md={12}>
+              <div className="row">
+                <div className="social">
+                  <ul>
+                    <li>
+                      <a
+                        href={
+                          landingPageData.Contact
+                            ? landingPageData.Contact.facebook
+                            : "/"
+                        }
+                      >
+                        <i className="fa fa-facebook" />
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        href={
+                          landingPageData.Contact
+                            ? landingPageData.Contact.twitter
+                            : "/"
+                        }
+                      >
+                        <i className="fa fa-twitter" />
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        href={
+                          landingPageData.Contact
+                            ? landingPageData.Contact.youtube
+                            : "/"
+                        }
+                      >
+                        <i className="fa fa-youtube" />
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </Grid>
+          </Grid>
+        </div>
+        {/* </div> */}
+      </Grid>
+      <div id="footer">
+        <div className="container text-center">
+          <p>
+            &copy; 2023 StudyAll. Design by{" "}
+            <a href="http://www.studyall.com" rel="nofollow">
+              StudyAll
+            </a>
+          </p>
+        </div>
+      </div>
     </>
   );
 };

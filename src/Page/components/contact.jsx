@@ -1,6 +1,8 @@
 import { useState } from "react";
 import emailjs from "emailjs-com";
 import React from "react";
+import { useNotify } from "react-admin";
+import "../../Style/Contact.css";
 
 const initialState = {
   name: "",
@@ -9,7 +11,7 @@ const initialState = {
 };
 export const Contact = (props) => {
   const [{ name, email, message }, setState] = useState(initialState);
-
+  const notify = useNotify();
   const handleChange = (e) => {
     const { name, value } = e.target;
     setState((prevState) => ({ ...prevState, [name]: value }));
@@ -19,6 +21,8 @@ export const Contact = (props) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(name, email, message);
+    alert("Send successfully!", { type: "success" });
+
     emailjs
       .sendForm(
         "service_32fsbp5",
@@ -29,9 +33,11 @@ export const Contact = (props) => {
       .then(
         (result) => {
           console.log(result.text);
+          notify("Send successfully!", { type: "success" });
           clearState();
         },
         (error) => {
+          notify("Cannot save!", { type: "error" });
           console.log(error.text);
         }
       );
@@ -49,7 +55,7 @@ export const Contact = (props) => {
                   get back to you as soon as possible.
                 </p>
               </div>
-              <form name="sentMessage" validate onSubmit={handleSubmit}>
+              <form name="sentMessage" validate="true" onSubmit={handleSubmit}>
                 <div className="row">
                   <div className="col-md-6">
                     <div className="form-group">
@@ -128,6 +134,13 @@ export const Contact = (props) => {
                 >
                   {props.data ? props.data.email : "loading"}
                 </a>
+                <span className="break-line" />
+                <a
+                  className="emailLink"
+                  href="mailto:hung.trinh_hungking@hcmut.edu.vn"
+                >
+                  hung.trinh_hungking@hcmut.edu.vn
+                </a>
               </p>
             </div>
           </div>
@@ -156,16 +169,16 @@ export const Contact = (props) => {
           </div>
         </div>
       </div>
-      {/* <div id="footer">
+      <div id="footer">
         <div className="container text-center">
           <p>
-            &copy; 2023 Issaaf Kattan React Land Page Template. Design by{" "}
-            <a href="http://www.templatewire.com" rel="nofollow">
-              TemplateWire
+            &copy; 2023 StudyAll. Design by{" "}
+            <a href="http://www.studyall.com" rel="nofollow">
+              StudyAll
             </a>
           </p>
         </div>
-      </div> */}
+      </div>
     </div>
   );
 };

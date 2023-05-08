@@ -99,9 +99,8 @@ button.InsertAudioFile {
   padding: 6px 8px 6px 4px;
 }
 button.InsertParagraphButton {
-  display: flex;
-  float: left;
-  margin-left: 1.5em;
+  display: block;
+  padding: 6px 8px 6px 4px;
 }
 .css-mhc70k-MuiGrid-root > .MuiGrid-item {
   padding-left: 0px;
@@ -126,10 +125,11 @@ button.InsertParagraphButton {
   position: fixed;
   transition-duration: 0.3s;
   z-index: 100 !important;
-  justify-content: space-between;
   column-gap: 16px;
+  row-gap: 8px;
   transform: translateZ(0);
-  flex-flow: wrap;
+  flex-flow: row wrap;
+  flex-direction: row;
 }
 .RichTextContentEdit {
   background-color: #fff;
