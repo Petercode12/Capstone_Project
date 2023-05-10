@@ -130,12 +130,12 @@ const MyLayout = ({ children, dashboard, title, classes, ...props }) => {
     <Root>
       <AppFrame>
         <AppBar {...props} open={open} className="MobileAppBar">
-          <Typography
+          {/* <Typography
             variant="h6"
             color="inherit"
             className={classes.title}
             id="react-admin-title"
-          />
+          /> */}
           {isLargeEnough && (
             <img src={logo2} alt="logo" className={classes.logo} />
           )}

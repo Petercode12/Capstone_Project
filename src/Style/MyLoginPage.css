@@ -5,6 +5,7 @@
 }
 
 div.loginForm {
+  overflow: auto;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -17,6 +18,8 @@ div.loginForm {
 h1.loginFormh1 {
   font-weight: bold;
   margin: 0;
+  margin-top: 20px;
+  margin-bottom: 10px;
 }
 
 p.loginFormp {
@@ -25,6 +28,7 @@ p.loginFormp {
   line-height: 20px;
   letter-spacing: 0.5px;
   margin: 20px 0 30px;
+  color: white;
 }
 
 span.loginFormspan {
@@ -40,12 +44,13 @@ a.loginForma {
 
 button.loginFormbutton {
   border-radius: 20px;
-  border: 1px solid #ff4b2b;
-  background-color: #ff4b2b;
+  border: 1px solid #0568c1;
+  background-color: #0568c1;
   color: #ffffff;
   font-size: 12px;
   font-weight: bold;
   padding: 12px 45px;
+  margin: 10px 0px;
   letter-spacing: 1px;
   text-transform: uppercase;
   transition: transform 80ms ease-in;
@@ -61,9 +66,9 @@ button.loginFormbutton:focus {
 button.backToHome {
   margin-top: 1em;
   border-radius: 20px;
-  border: 1px solid #ff4b2b;
+  border: 1px solid #0568c1;
   background-color: #ffffff;
-  color: #ff4b2b;
+  color: #0568c1;
   font-size: 12px;
   font-weight: bold;
   padding: 8px 25px;
@@ -86,7 +91,6 @@ button.ghost {
 
 form.loginFormform {
   background-color: #ffffff;
-  display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
@@ -183,9 +187,9 @@ input.loginForminput {
 }
 
 .loginPageOverlay {
-  background: #ff416c;
-  background: -webkit-linear-gradient(to right, #ff4b2b, #ff416c);
-  background: linear-gradient(to right, #ff4b2b, #ff416c);
+  background-color: #2a2a72;
+  background: -webkit-linear-gradient(315deg, #2a2a72 0%, #009ffd 74%);
+  background-image: linear-gradient(315deg, #2a2a72 0%, #009ffd 74%);
   background-repeat: no-repeat;
   background-size: cover;
   background-position: 0 0;
@@ -235,7 +239,7 @@ input.loginForminput {
 }
 
 .social-container {
-  margin: 20px 0;
+  margin-bottom: 10px;
 }
 
 .social-container a {
@@ -276,7 +280,7 @@ footer a {
 input[type="file"]::file-selector-button {
   margin-right: 20px;
   border: none;
-  background: #ff4b2b;
+  background: #0568c1;
   padding: 10px 20px;
   border-radius: 10px;
   color: #fff;
@@ -285,5 +289,5 @@ input[type="file"]::file-selector-button {
 }
 
 input[type="file"]::file-selector-button:hover {
-  background: #ff4b2b;
+  background: #0568c1;
 }

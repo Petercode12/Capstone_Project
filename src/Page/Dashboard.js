@@ -220,7 +220,7 @@ export const Dashboard = () => {
                             onClick={() => {
                               redirect(
                                 window.location.href +
-                                  "practice_tests/" +
+                                  "/practice_tests/" +
                                   exam["id"]
                               );
                             }}

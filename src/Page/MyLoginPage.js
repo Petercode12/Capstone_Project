@@ -106,10 +106,17 @@ export function MyLoginPage() {
     >
       <div className="loginForm">
         <div className="container loginPageContainer" id="container">
-          <div className="form-container sign-up-container">
-            <form className="loginFormform" onSubmit={handleSubmit(onSubmit)}>
+          <div
+            className="form-container sign-up-container"
+            // style={{ overflow: "scroll" }}
+          >
+            <form
+              className="loginFormform"
+              onSubmit={handleSubmit(onSubmit)}
+              style={{ overflow: "scroll" }}
+            >
               <h1 className="loginFormh1">Create Account</h1>
-              {/* <div className="social-container">
+              <div className="social-container">
                 <a href="#" className="social loginForma">
                   <i className="fab fa-facebook-f" />
                 </a>
@@ -119,7 +126,7 @@ export function MyLoginPage() {
                 <a href="#" className="social loginForma">
                   <i className="fab fa-linkedin-in" />
                 </a>
-              </div> */}
+              </div>
               <span className="loginFormspan">
                 or use your email for registration
               </span>
@@ -267,7 +274,12 @@ export function MyLoginPage() {
           </div>
           <div className="form-container sign-in-container">
             <form className="loginFormform" action="#">
-              <h1 className="loginFormh1">Sign in</h1>
+              <h1
+                className="loginFormh1"
+                style={{ marginTop: "40px", marginBottom: "20px" }}
+              >
+                Sign in
+              </h1>
               <div className="social-container">
                 <a href="#" className="social loginForma">
                   <i className="fab fa-facebook-f" />
