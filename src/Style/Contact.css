@@ -202,10 +202,6 @@ h3 {
   border-radius: 50%;
   transition: all 0.3s;
 }
-ul,
-ol {
-  list-style: none;
-}
 #contact .social ul li {
   display: inline-block;
   margin: 0 20px;

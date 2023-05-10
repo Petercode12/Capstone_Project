@@ -231,7 +231,13 @@ def insert_questions_and_answers(request, exam_id):
 def query_questions_and_answers_by_examid(request, exam_id):
     if request.method == "GET":
         exam = EXAMS_COLLECTION.objects.get(id=exam_id)
-
+        shared = SHARED_USERS.objects.filter(exam_id=exam_id)
+        authority = [] 
+        # print(exam.User_id)
+        if exam: 
+            authority.append(exam.User_id)
+        for i in shared:
+            authority.append(i.Shared_user_id)
         questions_and_answers = QUESTIONS_AND_ANSWERS.objects.filter(
             exam_id=exam_id
         ).order_by("Ordinal")
@@ -243,6 +249,7 @@ def query_questions_and_answers_by_examid(request, exam_id):
             {
                 "q_and_a": q_and_a_serializer.data,
                 "duration": exam_collections.data["duration"],
+                "is_authority": authority
             },
             safe=False,
         )

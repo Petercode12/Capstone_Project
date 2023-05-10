@@ -157,24 +157,21 @@ function stableSort(array, comparator) {
   });
   return stabilizedThis.map((el) => el[0]);
 }
+function hmsToSeconds(t) {
+  const [hours, minutes, seconds] = t.split(":");
+  return Number(hours) * 60 * 60 + Number(minutes) * 60 + Number(seconds);
+}
+
+function secondsToHMS(secs) {
+  return new Date(secs * 1000).toISOString().substr(11, 8);
+}
 function convertQueryDataToQuestionList(data) {
   let questionList = [];
 
   for (let e of data) {
     let start = e.Start_time;
     let end = e.End_time;
-    let diff = start
-      .split(":")
-      .map((item, index) => {
-        let temp = Math.max(
-          (end.split(":")[index] - item).toFixed(0),
-          0
-        ).toString();
-        console.log("Temp :", temp);
-        if (temp.length === 1) temp = "0" + temp;
-        return temp;
-      })
-      .join(":");
+    let diff = secondsToHMS(hmsToSeconds(end) - hmsToSeconds(start));
 
     var d = new Date(Date.parse(e.Date)),
       dformat =
@@ -363,7 +360,7 @@ export const MyAccount = () => {
             <a className="nav-link active" href="/app/my_account/tests/">
               Exam results
             </a>
-            <a className="nav-link" href="#/my_account/tests/created/">
+            <a className="nav-link" href="/app/my_account/tests/created/">
               Exam created management
             </a>
           </li>
@@ -439,7 +436,7 @@ export const MyAccount = () => {
                           <Button
                             variant="outlined"
                             size="small"
-                            href={"#/practice_tests/result/" + row.id}
+                            href={"/app/practice_tests/result/" + row.id}
                           >
                             View
                           </Button>

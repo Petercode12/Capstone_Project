@@ -167,6 +167,47 @@ export const PraceticeResultSpecific = () => {
   const red_color = JSON.parse(text_red);
   const yellow_color = JSON.parse(text_yellow);
   const gray_color = JSON.parse(text_gray);
+  function hmsToSeconds(t) {
+    const [hours, minutes, seconds] = t.split(":");
+    return Number(hours) * 60 * 60 + Number(minutes) * 60 + Number(seconds);
+  }
+
+  function secondsToHMS(secs) {
+    return new Date(secs * 1000).toISOString().substr(11, 8);
+  }
+  function hmsToSeconds(t) {
+    const [hours, minutes, seconds] = t.split(":");
+    return Number(hours) * 60 * 60 + Number(minutes) * 60 + Number(seconds);
+  }
+
+  function secondsToHMS(secs) {
+    return new Date(secs * 1000).toISOString().substr(11, 8);
+  }
+  function hmsToSeconds(t) {
+    const [hours, minutes, seconds] = t.split(":");
+    return Number(hours) * 60 * 60 + Number(minutes) * 60 + Number(seconds);
+  }
+
+  function secondsToHMS(secs) {
+    return new Date(secs * 1000).toISOString().substr(11, 8);
+  }
+  function hmsToSeconds(t) {
+    const [hours, minutes, seconds] = t.split(":");
+    return Number(hours) * 60 * 60 + Number(minutes) * 60 + Number(seconds);
+  }
+
+  
+  function secondsToHMS(secs) {
+    return new Date(secs * 1000).toISOString().substr(11, 8);
+  }
+  function hmsToSeconds(t) {
+    const [hours, minutes, seconds] = t.split(":");
+    return Number(hours) * 60 * 60 + Number(minutes) * 60 + Number(seconds);
+  }
+
+  function secondsToHMS(secs) {
+    return new Date(secs * 1000).toISOString().substr(11, 8);
+  }
   useEffect(() => {
     // get the data from the api
     axios
@@ -178,12 +219,7 @@ export const PraceticeResultSpecific = () => {
         );
         var start = res.data["test_info"]["Start_time"];
         var end = res.data["test_info"]["End_time"];
-        var diff = start
-          .split(":")
-          .map((item, index) =>
-            Math.max((end.split(":")[index] - item).toFixed(0), 0)
-          )
-          .join(":");
+        var diff = secondsToHMS(hmsToSeconds(end) - hmsToSeconds(start));
         console.log("Time done: ", diff);
         setTime(diff);
       })
@@ -222,7 +258,7 @@ export const PraceticeResultSpecific = () => {
     let buttonGroupList = [];
     let buttonList = [];
     if (questionList.length < 4) {
-      for (let i = 1; i <= questionList.length; i++) {
+      for (let i = 0; i < questionList.length; i++) {
         if (
           questionList[i].type !== "Audio" &&
           questionList[i].type !== "Paragraph"

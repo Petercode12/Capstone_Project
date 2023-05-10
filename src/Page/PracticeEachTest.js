@@ -69,7 +69,7 @@ import TodoList from "./notepads/TodoList.js";
 import Stack from "@mui/material/Stack";
 import "../Style/NotePad.css";
 import Textarea from "react-expanding-textarea";
-
+import { NotFound } from "./NotFound";
 function changeBlankAnswersToEllipsis(temp) {
   let list = getBlankAnswersFromQuestion(temp);
   for (let i = 0; i < list.length; i++) {
@@ -147,11 +147,13 @@ function convertQueryDataToQuestionList(data) {
 export function PracticeTest() {
   //edit create test
   const [questionList, setQuestionList] = useState([]); // list các câu hỏi bao gồm biến và đáp án
+
   const [create, { error }] = useCreate();
   const notify = useNotify();
   const params = useParams();
   const [duration, setDuration] = useState();
   const { data: userInfo, isLoading, error1 } = useGetIdentity();
+  const data_user = JSON.parse(localStorage.getItem("auth"));
   const [countdown, setCountdown] = useState();
   // Notepad states
   const [todos, setTodos] = useState([]);
@@ -172,21 +174,7 @@ export function PracticeTest() {
     today.getMinutes() +
     ":" +
     today.getSeconds().toFixed(2);
-  const toBase64 = (file) =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = (error) => reject(error);
-    });
-  const getFileName = (file) =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.fileName = file.name;
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.fileName);
-      reader.onerror = (error) => reject(error);
-    });
+  let [isAuthority, setIsAuthority] = useState(false);
   useEffect(() => {
     // get the data from the api
     axios
@@ -196,7 +184,15 @@ export function PracticeTest() {
         )
       )
       .then((res) => {
-        // xử lý string
+        console.log("Api data: ", res.data);
+        if (res.data["is_authority"]) {
+          for (let i = 0; i < res.data["is_authority"].length; ++i) {
+            if (res.data["is_authority"][i] === data_user.id) {
+              console.log("Has authority");
+              setIsAuthority(true);
+            }
+          }
+        }
         setQuestionList(convertQueryDataToQuestionList(res.data["q_and_a"]));
         setDuration(res.data["duration"]);
         setCountdown(Date.now() + res.data["duration"] * 60 * 1000);
@@ -237,7 +233,7 @@ export function PracticeTest() {
     let buttonGroupList = [];
     let buttonList = [];
     if (questionList.length < 4) {
-      for (let i = 1; i <= questionList.length; i++) {
+      for (let i = 0; i < questionList.length; i++) {
         if (
           questionList[i].type !== "Audio" &&
           questionList[i].type !== "Paragraph"
@@ -746,7 +742,9 @@ export function PracticeTest() {
       setNoteDisplay("block");
     }
   };
-  // const HighlightPop = require("react-highlight-pop");
+  if (!isAuthority) {
+    return <NotFound />;
+  }
   return (
     <Container
       sx={{
@@ -1212,7 +1210,22 @@ export function PracticeTest() {
                             );
                           } else if (question.type === "Paragraph") {
                             return (
-                              <div key={i} style={{ marginTop: "2em" }}>
+                              <div
+                                key={i}
+                                style={{
+                                  marginTop: "2em",
+                                }}
+                              >
+                                <MathJaxContext config={config}>
+                                  <MathJax>
+                                    <div
+                                      style={{
+                                        width: "100%",
+                                      }}
+                                      className={"question-".concat(i + 1)}
+                                    />
+                                  </MathJax>
+                                </MathJaxContext>
                                 {questionList[i].questionText}
                               </div>
                             );

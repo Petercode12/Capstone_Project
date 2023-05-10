@@ -219,8 +219,12 @@ export const Dashboard = () => {
                             size="small"
                             onClick={() => {
                               redirect(
-                                window.location.href +
-                                  "/practice_tests/" +
+                                window.location.protocol +
+                                  "//" +
+                                  window.location.hostname +
+                                  ":" +
+                                  window.location.port +
+                                  "/app/practice_tests/" +
                                   exam["id"]
                               );
                             }}
@@ -253,7 +257,7 @@ export const Dashboard = () => {
           <div className="rowDashboard">
             <div className="columnDashboard">
               <div
-                class="font-architects-daughter text-xl text-purple-600 mb-2"
+                className="font-architects-daughter text-xl text-purple-600 mb-2"
                 style={{ marginLeft: "30%" }}
               >
                 Math insertion feature

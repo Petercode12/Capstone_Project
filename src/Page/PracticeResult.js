@@ -77,6 +77,14 @@ export function PracticeResult() {
     }
     return i + 1 - numOfAudio - numOfParagraph;
   }
+  function hmsToSeconds(t) {
+    const [hours, minutes, seconds] = t.split(":");
+    return Number(hours) * 60 * 60 + Number(minutes) * 60 + Number(seconds);
+  }
+
+  function secondsToHMS(secs) {
+    return new Date(secs * 1000).toISOString().substr(11, 8);
+  }
   useEffect(() => {
     axios
       .get("http://localhost:8000/test_result/".concat(params.id))
@@ -100,12 +108,7 @@ export function PracticeResult() {
         console.log("Test specific: ", res.data["test_specific"]);
         var start = res.data["test_info"]["Start_time"];
         var end = res.data["test_info"]["End_time"];
-        var diff = start
-          .split(":")
-          .map((item, index) =>
-            Math.max((end.split(":")[index] - item).toFixed(0), 0)
-          )
-          .join(":");
+        var diff = secondsToHMS(hmsToSeconds(end) - hmsToSeconds(start));
         console.log("Time done: ", diff);
         setTime(diff);
       })
