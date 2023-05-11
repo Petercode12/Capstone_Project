@@ -1,4 +1,10 @@
-import React, { useState, useEffect, Component } from "react";
+import React, {
+  useState,
+  useEffect,
+  Component,
+  Children,
+  isValidElement,
+} from "react";
 import { connect, Provider } from "react-redux";
 import { useParams } from "react-router-dom";
 import Radio from "@mui/material/Radio";
@@ -53,16 +59,9 @@ import {
 import "../Style/PracticeStyle.css";
 import { wait } from "@testing-library/user-event/dist/utils";
 import { MathJaxContext, MathJax } from "better-react-mathjax";
-import { BubbleMenu, EditorContent, useEditor } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
-import TextSelector from "text-selection-react";
-import HighlightPop from "react-highlight-pop";
-import Highlightable, { Node } from "highlightable";
-import { Map, List } from "immutable";
 import getMuiTheme from "material-ui/styles/getMuiTheme";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import HighlightApp from "./containers/HighlightApp";
-// import HighlightApp from "./containers/HighlightApp1";
 import configureStore from "./store/configureStore";
 import Form from "./notepads/Form.js";
 import TodoList from "./notepads/TodoList.js";
@@ -70,6 +69,7 @@ import Stack from "@mui/material/Stack";
 import "../Style/NotePad.css";
 import Textarea from "react-expanding-textarea";
 import { NotFound } from "./NotFound";
+let count = 1;
 function changeBlankAnswersToEllipsis(temp) {
   let list = getBlankAnswersFromQuestion(temp);
   for (let i = 0; i < list.length; i++) {
@@ -83,6 +83,68 @@ function changeBlankAnswersToEllipsis(temp) {
   }
   return temp;
 }
+const BasicHighlight = ({ children, name }) => {
+  // console.log("Name: ", name);
+  const RenderChild = (children) => {
+    return Children.map(children, (child) => {
+      console.log("Child text: ", child);
+      console.log(child.type, resolveCalssName(child.type));
+      if (resolveCalssName(child.type) !== "") {
+        return (
+          <child.type
+            {...child.props}
+            children={RenderChild(child.props.children)}
+            // className={resolveCalssName(child.type)}
+          />
+        );
+      }
+
+      return <HighlightApp id={++count} questionText={child} />;
+    });
+  };
+
+  const resolveCalssName = (type) => {
+    switch (type) {
+      case "thead":
+        return "custom-thead-class-name";
+      case "tbody":
+        return "custom-tbody-class-name";
+      case "tr":
+        return "custom-tr-class-name";
+      case "th":
+        return "custom-th-class-name";
+      case "td":
+        return "custom-td-class-name";
+      case "p":
+        return "custom-td-class-name";
+      case "div":
+        return "custom-td-class-name";
+      default:
+        return "";
+    }
+  };
+
+  return (
+    <div>
+      {/* {RenderChild(
+        <div
+          className={name}
+          style={{
+            width: "100%",
+          }}
+        />
+      )} */}
+      <div
+        className={name}
+        style={{
+          width: "100%",
+        }}
+      >
+        {RenderChild(children)}
+      </div>
+    </div>
+  );
+};
 function getBlankAnswersFromQuestion(temp) {
   const regex = /<blank id="[0-9]+">/g;
   const regex2 = /<\/blank>/g;
@@ -188,7 +250,6 @@ export function PracticeTest() {
         if (res.data["is_authority"]) {
           for (let i = 0; i < res.data["is_authority"].length; ++i) {
             if (res.data["is_authority"][i] === data_user.id) {
-              console.log("Has authority");
               setIsAuthority(true);
             }
           }
@@ -326,8 +387,25 @@ export function PracticeTest() {
         console.log(i, questionList[i].questionText);
         let temp = stringToHTML(`${questionList[i].questionText}`);
         console.log("Question text: ", questionList[i].questionText);
+        let element = div_question.parentNode;
         div_question.parentNode.replaceChild(temp, div_question);
+        element = element.firstChild;
+        // loop through children element
+        // console.log("Get children: ", element.children);
+        // [...element.children].map((child) =>
+        //   console.log("Child: ", child, child.innerHTML)
+        // );
       }
+      // var div_question_hl = document.querySelector(
+      //   ".questionHL-".concat(i + 1)
+      // );
+      // if (div_question_hl != null) {
+      //   div_question = div_question_hl.firstChild;
+      //   div_question.parentNode.replaceChild(
+      //     div_question.innerHTML,
+      //     div_question
+      //   );
+      // }
     }
     if (duration > 0) {
       if (completed) {
@@ -769,16 +847,12 @@ export function PracticeTest() {
                   <div className="multipleChoice">
                     <div className="question-section">
                       <div className="question-text">
-                        <HighlightApp
+                        {/* <HighlightApp
                           id={1}
                           questionText={
                             "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In vitae magna lacus. Sed rhoncus tortor eget venenatis faucibus. Vivamus quis nunc vel eros volutpat auctor. Suspendisse sit amet lorem tristique lectus hendrerit aliquet. Aliquam erat volutpat. Vivamus malesuada, neque at consectetur semper, nibh urna ullamcorper metus, in dapibus arcu massa feugiat erat. Nullam hendrerit malesuada dictum. Nullam mattis orci diam, eu accumsan est maximus quis. Cras mauris nibh, bibendum in pharetra vitae, porttitor at ante. Duis pharetra elit ante, ut feugiat nibh imperdiet eget. Aenean at leo consectetur, sodales sem sit amet, consectetur massa. Ut blandit erat et turpis vestibulum euismod. Cras vitae molestie libero, vel gravida risus. Curabitur dapibus risus eu justo maximus, efficitur blandit leo porta. Donec dignissim felis ac turpis pharetra lobortis. Sed quis vehicula nulla."
                           }
-                        />
-                        <HighlightApp
-                          id={2}
-                          questionText={"Lorem ipsum dolor sit amet"}
-                        />
+                        /> */}
                         {questionList.map((question, i) => {
                           if (question.type === "MCQ") {
                             let calculatedIndex = calculateIndexMinusNumOfAudio(
@@ -1182,16 +1256,19 @@ export function PracticeTest() {
                               <div
                                 key={i}
                                 style={{
-                                  marginTop: "2em",
+                                  marginTop: "1em",
                                 }}
                               >
                                 <MathJaxContext config={config}>
                                   <MathJax>
-                                    <div
-                                      style={{
-                                        width: "100%",
-                                      }}
-                                      className={"question-".concat(i + 1)}
+                                    <HighlightApp
+                                      id={i + 1}
+                                      questionText={questionList[
+                                        i
+                                      ].questionText.replace(
+                                        /(<([^>]+)>)/gi,
+                                        "\n "
+                                      )}
                                     />
                                   </MathJax>
                                 </MathJaxContext>

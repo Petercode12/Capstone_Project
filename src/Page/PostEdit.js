@@ -35,7 +35,7 @@ import HorizontalRule from "@tiptap/extension-horizontal-rule";
 import SaveIcon from "@mui/icons-material/Save";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Toolbar, Edit, useCreate, useNotify } from "react-admin";
+import { Toolbar, Edit, useCreate, useNotify, TextInput } from "react-admin";
 import Paper from "@mui/material/Paper";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import axios from "axios";
@@ -526,9 +526,8 @@ export function PostEdit() {
       })
       .catch((err) => {
         console.log(err, err.response.status === 409);
-        if (err.response.status === 409) 
+        if (err.response.status === 409)
           notify("Old version, Please reload the page!", { type: "error" });
-        
         else notify("Cannot save!", { type: "error" });
       });
   };
@@ -898,6 +897,9 @@ export function PostEdit() {
         />
       </RichTextInputToolbar>
     );
+  };
+  const CustomRichTextInputToolbar = (...props) => {
+    return <RichTextInputToolbar {...props} style={{ display: "none" }} />;
   };
   const toBase64 = (file) =>
     new Promise((resolve, reject) => {
@@ -1398,6 +1400,7 @@ export function PostEdit() {
                             <RichTextInput
                               id={"questionText".concat(i)}
                               key={i}
+                              toolbar={<CustomRichTextInputToolbar />}
                               source=""
                               defaultValue={questionList[i].questionText}
                               className="RichTextContentEdit"

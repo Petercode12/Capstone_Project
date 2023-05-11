@@ -33,7 +33,7 @@ import { NotFound } from "./NotFound";
 import { eventWrapper, wait } from "@testing-library/user-event/dist/utils";
 import { useLocation, useNavigate } from "react-router-dom";
 import { MathJaxContext, MathJax } from "better-react-mathjax";
-
+import HighlightApp from "./containers/HighlightApp";
 function getBlankAnswersFromQuestion(temp) {
   const regex = /<blank id="[0-9]+">/g;
   const regex2 = /<\/blank>/g;
@@ -196,7 +196,6 @@ export const PraceticeResultSpecific = () => {
     return Number(hours) * 60 * 60 + Number(minutes) * 60 + Number(seconds);
   }
 
-  
   function secondsToHMS(secs) {
     return new Date(secs * 1000).toISOString().substr(11, 8);
   }
@@ -865,8 +864,17 @@ export const PraceticeResultSpecific = () => {
                         );
                       } else if (question.type === "Paragraph") {
                         return (
-                          <div key={i} style={{ marginTop: "2em" }}>
-                            {questionList[i].questionText}
+                          <div key={i} style={{ marginTop: "1em" }}>
+                            <MathJaxContext config={config}>
+                              <MathJax>
+                                <div
+                                  style={{
+                                    width: "100%",
+                                  }}
+                                  className={"question-".concat(i + 1)}
+                                />
+                              </MathJax>
+                            </MathJaxContext>
                           </div>
                         );
                       }

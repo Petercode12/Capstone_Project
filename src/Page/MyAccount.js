@@ -173,19 +173,22 @@ function convertQueryDataToQuestionList(data) {
     let end = e.End_time;
     let diff = secondsToHMS(hmsToSeconds(end) - hmsToSeconds(start));
 
-    var d = new Date(Date.parse(e.Date)),
-      dformat =
-        [
-          (d.getMonth() + 1).padLeft(),
-          d.getDate().padLeft(),
-          d.getFullYear(),
-        ].join("/") +
-        " " +
-        [
-          d.getHours().padLeft(),
-          d.getMinutes().padLeft(),
-          d.getSeconds().padLeft(),
-        ].join(":");
+    var d = new Date(Date.parse(e.Date));
+    // var d = Date.parse(e.Date);
+    var dformat =
+      [
+        (d.getMonth() + 1).padLeft(),
+        d.getDate().padLeft(),
+        d.getFullYear(),
+      ].join("/") +
+      " " +
+      [
+        d.getHours().padLeft(),
+        d.getMinutes().padLeft(),
+        d.getSeconds().padLeft(),
+      ].join(":") +
+      (d.getHours() >= 12 ? " PM" : " AM");
+    console.log(d, d.getHours());
     let k = {
       id: e.id,
       name: e.Name,
