@@ -9,7 +9,7 @@ from src.serializers import *
 from django.http import HttpResponse
 from django.core.paginator import Paginator
 from django.core import serializers as core_serializers
-from datetime import date
+from datetime import date, timezone
 from django.db.models import CharField, Model
 from django_mysql.models import ListCharField
 from django_mysql.models import ListF
@@ -138,8 +138,12 @@ def query_exam_by_id(request, user_id, event_id):
     if request.method == "PATCH":
         test_detail = EXAMS_COLLECTION.objects.get(id=event_id)
         data = json.loads(request.body)
+        # print(str(test_detail.Last_Modified_Date_Time), data["lastModifiedDateTime"], data["lastModifiedDateTime"] == str(test_detail.Last_Modified_Date_Time))
+        if(data["lastModifiedDateTime"] != str(test_detail.Last_Modified_Date_Time)):
+            return HttpResponse(status=409)
         test_detail.Name = data["Name"]
         test_detail.Last_Modified_Date = str(date.today())
+        test_detail.Last_Modified_Date_Time = str(datetime.datetime.today().replace(tzinfo=timezone.utc))
         test_detail.duration = data["duration"]
         test_detail.description = data["description"]
         test_detail.image = data["image"]
@@ -155,6 +159,7 @@ def insert_new_exam(request):
         Name = data["Name"]
         Created_Date = str(date.today())
         Last_Modified_Date = str(date.today())
+        Last_Modified_Date_Time = str(datetime.datetime.now())
         User_id = data["User_id"]
         image = data["image"]
         duration = data["duration"]
@@ -164,6 +169,7 @@ def insert_new_exam(request):
             Name=Name,
             Created_Date=Created_Date,
             Last_Modified_Date=Last_Modified_Date,
+            Last_Modified_Date_Time=Last_Modified_Date_Time,
             User_id=User_id,
             image=image,
             duration=duration,
@@ -181,14 +187,26 @@ def insert_new_exam(request):
 @csrf_exempt
 def insert_questions_and_answers(request, exam_id):
     if request.method == "POST":
+        # Concurrent update
+        dataList = json.loads(request.body)
+        exam = EXAMS_COLLECTION.objects.get(id=exam_id)
+        last_modified_date_time = ""
+        if exam:
+            print(dataList["last_modified_date_time"])
+            last_modified_date_time = str(exam.Last_Modified_Date_Time)
+            print("Modified Time: ", str(dataList["last_modified_date_time"]), str(last_modified_date_time), str(last_modified_date_time) == str(dataList["last_modified_date_time"]))
+            if last_modified_date_time != str(dataList["last_modified_date_time"]):
+                return HttpResponse(status=409)
+        
+        
         # ko nên xóa chi tiết câu hỏi của những lần thay đổi trước
         delete_questions_and_answers = QUESTIONS_AND_ANSWERS.objects.filter(
             exam_id=exam_id
         )
         delete_questions_and_answers.delete()
-        dataList = json.loads(request.body)
+        
         questions_and_answers = None
-        for data in dataList:  # dataList là array of dict
+        for data in dataList["dataGen"]:  # dataList là array of dict
             Ordinal = data["Ordinal"]
             Question = data["Question"]
             Correct_answer = data["Correct_answer"]
@@ -220,10 +238,11 @@ def insert_questions_and_answers(request, exam_id):
         # sau khi update phải cập nhật lại thời gian thay đổi
         test = EXAMS_COLLECTION.objects.get(id=exam_id)
         test.Last_Modified_Date = datetime.date.today()
+        test.Last_Modified_Date_Time = datetime.datetime.today().replace(tzinfo=timezone.utc)
         test.save()
         test_ser = exams_collection_serializer(test)
         return JsonResponse(
-            {"test_data": test_ser.data, "q_and_a": q_and_a_serializer.data}, safe=False
+            {"test_data": test_ser.data, "q_and_a": q_and_a_serializer.data, "last_modified_date_time": str(test.Last_Modified_Date_Time)}, safe=False
         )
 
 
@@ -232,10 +251,13 @@ def query_questions_and_answers_by_examid(request, exam_id):
     if request.method == "GET":
         exam = EXAMS_COLLECTION.objects.get(id=exam_id)
         shared = SHARED_USERS.objects.filter(exam_id=exam_id)
-        authority = [] 
+        authority = []
+        last_modified_date = ""
         # print(exam.User_id)
         if exam: 
             authority.append(exam.User_id)
+            last_modified_date_time = exam.Last_Modified_Date_Time
+            print("Last modified time: ", last_modified_date_time)
         for i in shared:
             authority.append(i.Shared_user_id)
         questions_and_answers = QUESTIONS_AND_ANSWERS.objects.filter(
@@ -249,7 +271,8 @@ def query_questions_and_answers_by_examid(request, exam_id):
             {
                 "q_and_a": q_and_a_serializer.data,
                 "duration": exam_collections.data["duration"],
-                "is_authority": authority
+                "is_authority": authority,
+                "last_modified_date_time": str(last_modified_date_time)
             },
             safe=False,
         )

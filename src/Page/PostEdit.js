@@ -42,7 +42,6 @@ import axios from "axios";
 import { Container, Grid } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import insertTextAtCursor from "insert-text-at-cursor";
-
 function getBlankAnswersFromQuestion(temp) {
   const regex = /<blank id="[0-9]+">/g;
   const regex2 = /<\/blank>/g;
@@ -141,6 +140,7 @@ export function PostEdit() {
   const [open, setOpen] = useState(false);
   const [openEditInfo, setOpenEditInfo] = useState(false);
   const [idx, setIdx] = useState();
+  const [lastModifiedDateTime, setLastModifiedDateTime] = useState("");
   const [create, { error }] = useCreate();
   const notify = useNotify();
   const params = useParams();
@@ -157,8 +157,9 @@ export function PostEdit() {
         )
       )
       .then((res) => {
-        console.log("Data: ", res.data["q_and_a"]);
+        console.log("Data: ", res.data);
         setQuestionList(convertQueryDataToQuestionList(res.data["q_and_a"]));
+        setLastModifiedDateTime(res.data["last_modified_date_time"]);
       })
       .catch((err) => {
         console.log(err);
@@ -393,6 +394,8 @@ export function PostEdit() {
           open={openEditInfo}
           setOpen={setOpenEditInfo}
           handleCloseDialogEditInfo={handleCloseDialogEditInfo}
+          ModifiedDateTime={lastModifiedDateTime}
+          updatelastModifiedDateTime={setLastModifiedDateTime}
         />
       </Paper>
     </Box>
@@ -504,15 +507,30 @@ export function PostEdit() {
         handleQuestionTextChange(i);
       }
     }
-    const data = saveDataGen();
+    const dataGen = saveDataGen();
+    const data = {
+      dataGen: dataGen,
+      last_modified_date_time: lastModifiedDateTime,
+    };
     console.log("DATA will be saved: ", data);
-    create("save_questions_and_answers/".concat(params.id), { data });
-    if (error) {
-      notify("Cannot save!", { type: "error" });
-    } else {
-      notify("Save successfully!", { type: "success" });
-      // update last_modified_date
-    }
+    // create("save_questions_and_answers/".concat(params.id), { data });
+    axios // post  lich sử làm bài và kết quả
+      .post(
+        "http://localhost:8000/save_questions_and_answers/".concat(params.id),
+        data
+      )
+      .then((res) => {
+        console.log("Data: ", res.data, res.data["last_modified_date_time"]);
+        notify("Save successfully!", { type: "success" });
+        setLastModifiedDateTime(res.data["last_modified_date_time"]);
+      })
+      .catch((err) => {
+        console.log(err, err.response.status === 409);
+        if (err.response.status === 409) 
+          notify("Old version, Please reload the page!", { type: "error" });
+        
+        else notify("Cannot save!", { type: "error" });
+      });
   };
   const handleMCQChange = (event, i) => {
     let newArr = [...questionList];
@@ -912,7 +930,7 @@ export function PostEdit() {
     );
     setQuestionList([...tempQuestionList]);
   };
-  console.log("Question list: ", questionList);
+  // console.log("Question list: ", questionList);
   return (
     <Container sx={{ maxWidth: { xl: 1280 } }}>
       <Grid container justifyContent="space-between" spacing={2}>
@@ -1321,7 +1339,7 @@ export function PostEdit() {
                             >
                               Delete
                             </Button>
-                            <div class="break" />
+                            <div className="break" />
                             <Button
                               color="secondary"
                               size="small"

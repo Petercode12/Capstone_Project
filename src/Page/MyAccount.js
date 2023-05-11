@@ -257,20 +257,11 @@ export const MyAccount = () => {
   const [orderBy, setOrderBy] = useState("date");
   const [dense, setDense] = useState(false);
   const isSelected = (name) => selected.indexOf(name) !== -1;
-  // const [emptyRows, setEmptyRows] = useState(0);
   let emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - questionList.length) : 0;
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
-  // const visibleRows = React.useMemo(
-  //   () =>
-  //     stableSort(questionList, getComparator(order, orderBy)).slice(
-  //       page * rowsPerPage,
-  //       page * rowsPerPage + rowsPerPage
-  //     ),
-  //   [order, orderBy, page, rowsPerPage]
-  // );
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);

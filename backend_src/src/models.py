@@ -2,6 +2,7 @@ from django.db import models
 from django.core.files.base import ContentFile
 from django.db.models import CharField, Model
 from django_mysql.models import ListTextField
+import datetime
 # Create your models here.
 class USER(models.Model):
     id = models.AutoField(primary_key=True, null=False)
@@ -18,6 +19,7 @@ class EXAMS_COLLECTION(models.Model):
     Name = models.CharField(max_length=200, blank=False)
     Created_Date = models.DateField()
     Last_Modified_Date = models.DateField()
+    Last_Modified_Date_Time = models.DateTimeField(default = str(datetime.datetime.now()))
     User = models.ForeignKey(USER, on_delete=models.CASCADE, related_name="User_id1")
     duration = models.FloatField(default=0)
     image = models.TextField(null=False, default="")

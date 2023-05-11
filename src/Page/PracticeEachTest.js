@@ -769,46 +769,15 @@ export function PracticeTest() {
                   <div className="multipleChoice">
                     <div className="question-section">
                       <div className="question-text">
-                        {/* <div
-                          className="highlight-control"
-                          style={{
-                            top: "100px",
-                            position: "fixed",
-                            left: "35px",
-                            display: "none",
-                          }}
-                          data-uid="5e66b2aa-4d7b-4f5a-b0de-da35acb292ef"
-                        >
-                          <div>
-                            <span className="fas fa-trash highlight-icon highlight-remove" />
-                            <span
-                              className="fas fa-pencil highlight-icon highlight-note"
-                              style={{}}
-                            />
-                            <span className="highlight-icon highlight-color blue" />
-                            <span className="highlight-icon highlight-color pink" />
-                            <span className="highlight-icon highlight-color green" />
-                            <span className="highlight-icon highlight-color yellow" />
-                            <span className="highlight-icon highlight-color underred" />
-                            <span className="highlight-icon highlight-color crossed">
-                              abc
-                            </span>
-                          </div>
-                          <div
-                            className="highlight-editor"
-                            style={{ display: "none" }}
-                          >
-                            <textarea rows="3" />
-                            <div>
-                              <span className="far fa-check highlight-icon highlight-save" />
-                            </div>
-                          </div>
-                        </div> */}
                         <HighlightApp
                           id={1}
                           questionText={
                             "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In vitae magna lacus. Sed rhoncus tortor eget venenatis faucibus. Vivamus quis nunc vel eros volutpat auctor. Suspendisse sit amet lorem tristique lectus hendrerit aliquet. Aliquam erat volutpat. Vivamus malesuada, neque at consectetur semper, nibh urna ullamcorper metus, in dapibus arcu massa feugiat erat. Nullam hendrerit malesuada dictum. Nullam mattis orci diam, eu accumsan est maximus quis. Cras mauris nibh, bibendum in pharetra vitae, porttitor at ante. Duis pharetra elit ante, ut feugiat nibh imperdiet eget. Aenean at leo consectetur, sodales sem sit amet, consectetur massa. Ut blandit erat et turpis vestibulum euismod. Cras vitae molestie libero, vel gravida risus. Curabitur dapibus risus eu justo maximus, efficitur blandit leo porta. Donec dignissim felis ac turpis pharetra lobortis. Sed quis vehicula nulla."
                           }
+                        />
+                        <HighlightApp
+                          id={2}
+                          questionText={"Lorem ipsum dolor sit amet"}
                         />
                         {questionList.map((question, i) => {
                           if (question.type === "MCQ") {
@@ -1226,7 +1195,6 @@ export function PracticeTest() {
                                     />
                                   </MathJax>
                                 </MathJaxContext>
-                                {questionList[i].questionText}
                               </div>
                             );
                           }

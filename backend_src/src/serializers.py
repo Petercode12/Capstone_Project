@@ -22,6 +22,7 @@ class exams_collection_serializer2(serializers.ModelSerializer):
             "Name",
             "Created_Date",
             "Last_Modified_Date",
+            "Last_Modified_Date_Time",
             "User_id",
             "duration",
             "image",

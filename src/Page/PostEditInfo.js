@@ -134,30 +134,34 @@ export function PostEditInfo({ ...props }) {
         save_data
       )
       .then((res) => {
+        notify("Save successfully!", { type: "success" });
         console.log("Data saved: ", res.data);
+        console.log("Data saved time: ", res.data["Last_Modified_Date_Time"]);
+        props.handleCloseDialogEditInfo(null);
+        props.updatelastModifiedDateTime(res.data["Last_Modified_Date_Time"]);
       })
       .catch((err) => {
-        console.log(err);
+        // console.log("Error code: ", err.response.status);
+        if (err.response.status === 409)
+          notify("Old version, Please reload the page!", {
+            type: "error",
+          });
+        else notify("Cannot save!", { type: "error" });
       });
   }
   const postSave = async function(data) {
     if (data["image"]) data["image"] = await toBase64(data["image"].rawFile);
     else data["image"] = image;
 
-    data = { ...data, User_id: userInfo.id };
+    data = {
+      ...data,
+      User_id: userInfo.id,
+      lastModifiedDateTime: props.ModifiedDateTime,
+    };
     if (isSetDuration === true) data["duration"] = num;
     else data["duration"] = 0;
 
     updateTestInfo(data);
-    if (error) {
-      notify("Cannot save!", { type: "error" });
-    } else {
-      notify("Save successfully!", { type: "success" });
-      setTimeout(() => {
-        props.handleCloseDialogEditInfo(null);
-        // redirect("/all_exams");
-      }, 100);
-    }
   };
   const PostEditToolbar = (props) => (
     <Toolbar {...props}>
@@ -325,22 +329,6 @@ export function PostEditInfo({ ...props }) {
           })}
         </SimpleForm>
       </div>
-      {/* <DialogActions>
-        <Button
-          onClick={() => {
-            props.handleCloseDialogEditInfo(null);
-          }}
-        >
-          Cancel
-        </Button>
-        <Button
-          onClick={() => {
-            props.handleCloseDialogEditInfo(equation);
-          }}
-        >
-          Insert
-        </Button>
-      </DialogActions> */}
     </Dialog>
   );
 }
