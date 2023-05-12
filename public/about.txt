@@ -1,0 +1,6 @@
+This favicon was generated using the following font:
+
+- Font Title: Jomolhari
+- Font Author: Copyright (c) 2006 by Christopher Fynn. All rights reserved.
+- Font Source: http://fonts.gstatic.com/s/jomolhari/v14/EvONzA1M1Iw_CBd2hsQCF1IZKq5INg.ttf
+- Font License: SIL Open Font License, 1.1 (http://scripts.sil.org/OFL))
