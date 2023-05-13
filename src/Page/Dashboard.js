@@ -81,45 +81,44 @@ export const Dashboard = () => {
   };
   const data2 = [
     {
-      image:
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/GoldenGateBridge-001.jpg/1200px-GoldenGateBridge-001.jpg",
-      caption: "San Francisco",
+      image: "/img/CreateTestMode/CreateTest.png",
+      caption: "Create Test",
+    },
+    {
+      image: "/img/CreateTestMode/ShareTest.png",
+      caption: "Share test",
+    },
+    {
+      image: "/img/CreateTestMode/CreateTestIELTSWriting1.png",
+      caption: "Create IELTS Writing",
+    },
+    {
+      image: "/img/CreateTestMode/CreateTestMath1.png",
+      caption: "Create Math Exam",
+    },
+    {
+      image: "/img/PracticeTestMode/TestPool/PracticePage1.png",
+      caption: "Test Pool",
+    },
+    {
+      image: "/img/PracticeTestMode/DoTest/PracticeMath.png",
+      caption: "Practice Math",
+    },
+    {
+      image: "/img/PracticeTestMode/TestResult/TestResultMath.png",
+      caption: "Math Test Result",
     },
     {
       image:
-        "https://cdn.britannica.com/s:800x450,c:crop/35/204435-138-2F2B745A/Time-lapse-hyper-lapse-Isle-Skye-Scotland.jpg",
-      caption: "Scotland",
-    },
-    {
-      image:
-        "https://static2.tripoto.com/media/filter/tst/img/735873/TripDocument/1537686560_1537686557954.jpg",
-      caption: "Darjeeling",
-    },
-    {
-      image:
-        "https://i.natgeofe.com/n/f7732389-a045-402c-bf39-cb4eda39e786/scotland_travel_4x3.jpg",
-      caption: "Scotland",
-    },
-    {
-      image:
-        "https://www.tusktravel.com/blog/wp-content/uploads/2020/07/Best-Time-to-Visit-Darjeeling-for-Honeymoon.jpg",
-      caption: "Darjeeling",
-    },
-    {
-      image:
-        "https://images.ctfassets.net/bth3mlrehms2/6Ypj2Qd3m3jQk6ygmpsNAM/61d2f8cb9f939beed918971b9bc59bcd/Scotland.jpg?w=750&h=422&fl=progressive&q=50&fm=jpg",
-      caption: "Scotland",
-    },
-    {
-      image:
-        "https://www.oyorooms.com/travel-guide/wp-content/uploads/2019/02/summer-7.jpg",
-      caption: "Darjeeling",
+        "/img/PracticeTestMode/TestResultSpecific/TestResultSpecificMath.png",
+      caption: "Math Test Result Specific",
     },
   ];
 
   const captionStyle = {
     fontSize: "2em",
     fontWeight: "bold",
+    color: "white",
   };
   const slideNumberStyle = {
     fontSize: "20px",

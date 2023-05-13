@@ -10,49 +10,49 @@
   },
   "Gallery": [
     {
-      "title": "Project Title",
-      "largeImage": "img/portfolio/01-large.jpg",
-      "smallImage": "img/portfolio/01-small.jpg"
+      "title": "Dashboard",
+      "largeImage": "img/Dashboard/Dashboard.png",
+      "smallImage": "img/Dashboard/Dashboard.png"
     },
     {
-      "title": "Project Title",
-      "largeImage": "img/portfolio/02-large.jpg",
-      "smallImage": "img/portfolio/02-small.jpg"
+      "title": "Create Test",
+      "largeImage": "img/CreateTestMode/CreateTest.png",
+      "smallImage": "img/CreateTestMode/CreateTest.png"
     },
     {
-      "title": "Project Title",
-      "largeImage": "img/portfolio/03-large.jpg",
-      "smallImage": "img/portfolio/03-small.jpg"
+      "title": "Share test",
+      "largeImage": "img/CreateTestMode/ShareTest.png",
+      "smallImage": "img/CreateTestMode/ShareTest.png"
     },
     {
-      "title": "Project Title",
-      "largeImage": "img/portfolio/04-large.jpg",
-      "smallImage": "img/portfolio/04-small.jpg"
+      "title": "Create IELTS Writing",
+      "largeImage": "img/CreateTestMode/CreateTestIELTSWriting1.png",
+      "smallImage": "img/CreateTestMode/CreateTestIELTSWriting1.png"
     },
     {
-      "title": "Project Title",
-      "largeImage": "img/portfolio/05-large.jpg",
-      "smallImage": "img/portfolio/05-small.jpg"
+      "title": "Create Math Exam",
+      "largeImage": "img/CreateTestMode/CreateTestMath1.png",
+      "smallImage": "img/CreateTestMode/CreateTestMath1.png"
+    }, 
+    {
+      "title": "Test Pool",
+      "largeImage": "img/PracticeTestMode/TestPool/PracticePage1.png",
+      "smallImage": "img/PracticeTestMode/TestPool/PracticePage1.png"
     },
     {
-      "title": "Project Title",
-      "largeImage": "img/portfolio/06-large.jpg",
-      "smallImage": "img/portfolio/06-small.jpg"
+      "title": "Practice Math",
+      "largeImage": "img/PracticeTestMode/DoTest/PracticeMath.png",
+      "smallImage": "img/PracticeTestMode/DoTest/PracticeMath.png"
     },
     {
-      "title": "Project Title",
-      "largeImage": "img/portfolio/07-large.jpg",
-      "smallImage": "img/portfolio/07-small.jpg"
+      "title": "Math Test Result",
+      "largeImage": "img/PracticeTestMode/TestResult/TestResultMath.png",
+      "smallImage": "img/PracticeTestMode/TestResult/TestResultMath.png"
     },
     {
-      "title": "Project Title",
-      "largeImage": "img/portfolio/08-large.jpg",
-      "smallImage": "img/portfolio/08-small.jpg"
-    },
-    {
-      "title": "Project Title",
-      "largeImage": "img/portfolio/09-large.jpg",
-      "smallImage": "img/portfolio/09-small.jpg"
+      "title": "Math Test Result Specific",
+      "largeImage": "img/PracticeTestMode/TestResultSpecific/TestResultSpecificMath.png",
+      "smallImage": "img/PracticeTestMode/TestResultSpecific/TestResultSpecificMath.png"
     }
   ],
   "Services": [
@@ -126,9 +126,9 @@
       "job": "Director"
     },
     {
-      "img": "img/team/02.jpg",
+      "img": "../../Images/Ảnh Hùng.jpg",
       "name": "Trinh Manh Hung",
-      "job": "Director"
+      "job": "Project Owner"
     }
   ],
   "Contact": {

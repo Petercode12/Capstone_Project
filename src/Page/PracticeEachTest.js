@@ -585,7 +585,8 @@ export function PracticeTest() {
         saveData.push(k);
       } else if (questionList[i].type === "FIB") {
         let Score = [];
-        let check = true;
+        let check = false;
+        if(questionList[i].answerOptions.length > 0) check = true;
         for (let j = 0; j < questionList[i].answerOptions.length; ++j) {
           console.log(
             "So sanh dap an: ",

@@ -376,50 +376,66 @@ export function PracticeResult() {
                     <span className="question-number">
                       <strong>{calculatedIndex}</strong>
                     </span>
-                    {exam["User_answer_FIB"].map((value, index) => {
-                      let compare =
-                        value.toUpperCase() ===
-                        exam["Solution_FIB"][index].toUpperCase();
+                    {exam
+                      ? typeof exam["User_answer_FIB"] ===
+                        typeof []
+                        ? exam["User_answer_FIB"].map(
+                            (value, index) => {
+                              let compare =
+                                value.toUpperCase() ===
+                                exam["Solution_FIB"][
+                                  index
+                                ].toUpperCase();
 
-                      return (
-                        <div
-                          style={{
-                            display: "inline-block",
-                            marginRight: "20px",
-                          }}
-                        >
-                          <span>
-                            <Typography
-                              variant="h6"
-                              display="inline"
-                              className="text-answerkey"
-                            >
-                              {exam["Solution_FIB"][index]}:
-                            </Typography>
-                            <span
-                              style={{
-                                marginRight: "0.25em",
-                              }}
-                            >
-                              &nbsp;
-                            </span>
-                            <span className="mr-1 text-useranswer">
-                              {value === " " ? "Not anwsered!" : value}
-                            </span>
-                          </span>
-                          <span
-                            className={
-                              value === " "
-                                ? "text-unanswer fas fa-minus fa-lg hyphen-icon"
-                                : compare
-                                ? "text-correct fas fa-check fa-lg correct-icon"
-                                : "text-wrong fas fa-times fa-lg wrong-icon"
+                              return (
+                                <div
+                                  style={{
+                                    display: "inline-block",
+                                    marginRight: "20px",
+                                  }}
+                                >
+                                  <span>
+                                    <Typography
+                                      variant="h6"
+                                      display="inline"
+                                      className="text-answerkey"
+                                    >
+                                      {
+                                        exam["Solution_FIB"][
+                                          index
+                                        ]
+                                      }
+                                      :
+                                    </Typography>
+                                    <span
+                                      style={{
+                                        marginRight: "0.25em",
+                                      }}
+                                    >
+                                      &nbsp;
+                                    </span>
+                                    <span className="mr-1 text-useranswer">
+                                      {value === " "
+                                        ? "Not anwsered!"
+                                        : value}
+                                    </span>
+                                  </span>
+                                  <span
+                                    className={
+                                      value === " "
+                                        ? "text-unanswer fas fa-minus fa-lg hyphen-icon"
+                                        : compare
+                                        ? "text-correct fas fa-check fa-lg correct-icon"
+                                        : "text-wrong fas fa-times fa-lg wrong-icon"
+                                    }
+                                  />
+                                  <br />
+                                </div>
+                              );
                             }
-                          />
-                          <br />
-                        </div>
-                      );
-                    })}
+                          )
+                        : ""
+                      : ""}
                   </div>
                 );
               }

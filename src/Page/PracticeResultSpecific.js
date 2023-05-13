@@ -763,64 +763,71 @@ export const PraceticeResultSpecific = () => {
                                 />
                               </MathJax>
                             </MathJaxContext>
-                            {question.answerOptions.map((answer, idx) => {
-                              console.log(
-                                questionList[i].userAnswer[idx],
-                                questionList[i].mark[idx],
-                                typeof questionList[i].mark
-                              );
-                              return (
-                                <div>
-                                  <span
-                                    className="number"
-                                    style={{
-                                      marginTop: "5px",
-                                      marginRight: "1em",
-                                      marginLeft: "10px",
-                                      marginBottom: "1em",
-                                    }}
-                                  >
-                                    {idx + 1}
-                                  </span>
-                                  <TextField
-                                    id={"blankAnswer"
-                                      .concat(idx)
-                                      .concat("in")
-                                      .concat(i)}
-                                    label="Answer"
-                                    variant="outlined"
-                                    style={{
-                                      position: "relative",
-                                      marginTop: "1em",
-                                    }}
-                                    defaultValue={
-                                      questionList[i].userAnswer[idx]
-                                    }
-                                    sx={() => {
-                                      return questionList[i].userAnswer[idx] ===
-                                        " "
-                                        ? gray_color
-                                        : questionList[i].mark[idx]
-                                        ? blue_color
-                                        : red_color;
-                                    }}
-                                    InputProps={{
-                                      readOnly: true,
-                                    }}
-                                  />
-                                  {questionList[i].userAnswer[idx] === " " ? (
-                                    <span className="text-unanswer fas fa-minus fa-lg hyphen-icon ml-3" />
-                                  ) : questionList[i].mark[idx] === 1 ? (
-                                    <span className="text-correct fas fa-check fa-lg correct-icon ml-3" />
-                                  ) : (
-                                    <span className="text-wrong fas fa-times fa-lg wrong-icon ml-3" />
-                                  )}
-                                  <div className="text-correct mb-3 ml-3">
-                                    Answer: {questionList[i].answerOptions[idx]}
-                                  </div>
-                                </div>
-                              );
-                            })}
+                            {question
+                              ? typeof question.answerOptions === typeof []
+                                ? question.answerOptions.map((answer, idx) => {
+                                    console.log(
+                                      questionList[i].userAnswer[idx],
+                                      questionList[i].mark[idx],
+                                      typeof questionList[i].mark
+                                    );
+                                    return (
+                                      <div>
+                                        <span
+                                          className="number"
+                                          style={{
+                                            marginTop: "5px",
+                                            marginRight: "1em",
+                                            marginLeft: "10px",
+                                            marginBottom: "1em",
+                                          }}
+                                        >
+                                          {idx + 1}
+                                        </span>
+                                        <TextField
+                                          id={"blankAnswer"
+                                            .concat(idx)
+                                            .concat("in")
+                                            .concat(i)}
+                                          label="Answer"
+                                          variant="outlined"
+                                          style={{
+                                            position: "relative",
+                                            marginTop: "1em",
+                                          }}
+                                          defaultValue={
+                                            questionList[i].userAnswer[idx]
+                                          }
+                                          sx={() => {
+                                            return questionList[i].userAnswer[
+                                              idx
+                                            ] === " "
+                                              ? gray_color
+                                              : questionList[i].mark[idx]
+                                              ? blue_color
+                                              : red_color;
+                                          }}
+                                          InputProps={{
+                                            readOnly: true,
+                                          }}
+                                        />
+                                        {questionList[i].userAnswer[idx] ===
+                                        " " ? (
+                                          <span className="text-unanswer fas fa-minus fa-lg hyphen-icon ml-3" />
+                                        ) : questionList[i].mark[idx] === 1 ? (
+                                          <span className="text-correct fas fa-check fa-lg correct-icon ml-3" />
+                                        ) : (
+                                          <span className="text-wrong fas fa-times fa-lg wrong-icon ml-3" />
+                                        )}
+                                        <div className="text-correct mb-3 ml-3">
+                                          Answer:{" "}
+                                          {questionList[i].answerOptions[idx]}
+                                        </div>
+                                      </div>
+                                    );
+                                  })
+                                : ""
+                              : ""}
                           </div>
                         );
                       } else if (question.type === "Audio") {
