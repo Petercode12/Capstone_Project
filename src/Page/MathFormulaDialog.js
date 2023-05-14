@@ -14,7 +14,8 @@ export function MathFormulaDialog({ ...props }) {
     <Dialog
       open={props.open}
       onClose={props.handleCloseDialog}
-      disablebackdropclick="true"
+      // disablebackdropclick="true"
+      overlayStyle={{ backgroundColor: "transparent" }}
     >
       <div
         style={{ padding: 16, fontFamily: "sans-serif", textAlign: "center" }}

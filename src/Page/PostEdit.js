@@ -890,11 +890,6 @@ export function PostEdit() {
         >
           <FunctionsIcon />
         </IconButton>
-        <MathFormulaDialog
-          open={open}
-          setOpen={setOpen}
-          handleCloseDialog={handleCloseDialog}
-        />
       </RichTextInputToolbar>
     );
   };
@@ -1419,6 +1414,11 @@ export function PostEdit() {
           <Aside />
         </Grid>
       </Grid>
+      <MathFormulaDialog
+        open={open}
+        setOpen={setOpen}
+        handleCloseDialog={handleCloseDialog}
+      />
     </Container>
   );
 }
