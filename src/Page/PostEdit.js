@@ -42,6 +42,9 @@ import axios from "axios";
 import { Container, Grid } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import insertTextAtCursor from "insert-text-at-cursor";
+import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
+import { red } from "@mui/material/colors";
+
 function getBlankAnswersFromQuestion(temp) {
   const regex = /<blank id="[0-9]+">/g;
   const regex2 = /<\/blank>/g;
@@ -932,7 +935,44 @@ export function PostEdit() {
     );
     setQuestionList([...tempQuestionList]);
   };
-  // console.log("Question list: ", questionList);
+  const handleRemoveBlank = (i, idx) => {
+    let newArr = [...questionList];
+    let tempAnswerOptions = newArr[i].answerOptions;
+    for (let idx = 0; idx < tempAnswerOptions.length; idx++) {
+      let blankAnswer_Element = document.getElementById(
+        "blankAnswer"
+          .concat(idx)
+          .concat("in")
+          .concat(i)
+      );
+      newArr[i].answerOptions[idx].answerText = blankAnswer_Element.value;
+    }
+    newArr[i].answerOptions.splice(idx, 1);
+    newArr[i].questionText = newArr[i].questionText.replaceAll(
+      `&lt;blank id="${idx}"&gt;...&lt;/blank&gt;`,
+      ""
+    );
+    for (let k = idx; k < newArr[i].answerOptions.length; k++) {
+      let blankAnswer_Element = document.getElementById(
+        "blankAnswer"
+          .concat(k)
+          .concat("in")
+          .concat(i)
+      );
+      blankAnswer_Element.value = newArr[i].answerOptions[k].answerText;
+    }
+    for (let k = idx + 1; k < tempAnswerOptions.length + 1; k++) {
+      newArr[i].questionText = newArr[i].questionText.replaceAll(
+        `&lt;blank id="${k}"`,
+        `&lt;blank id="${k - 1}"`
+      );
+    }
+    let questionText_Element = document.getElementById(
+      "questionText".concat(i)
+    );
+    questionText_Element.innerHTML = newArr[i].questionText;
+    setQuestionList(newArr);
+  };
   return (
     <Container sx={{ maxWidth: { xl: 1280 } }}>
       <Grid container justifyContent="space-between" spacing={2}>
@@ -1299,6 +1339,18 @@ export function PostEdit() {
                                       question.answerOptions[idx].answerText
                                     }
                                   />
+                                  <IconButton
+                                    aria-label="delete"
+                                    sx={{
+                                      color: red[500],
+                                    }}
+                                    onClick={() => {
+                                      handleQuestionTextChange(i);
+                                      handleRemoveBlank(i, idx);
+                                    }}
+                                  >
+                                    <RemoveCircleOutlineIcon />
+                                  </IconButton>
                                 </div>
                               );
                             })}
