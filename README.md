@@ -4,6 +4,8 @@ This project provides users with a unique opportunity to create tests in a wide 
 
 To further assist users in their exam preparation, we also incorporate various helpful tools, such as a note-taking facility and keyword highlighting, which allows users to take notes and highlight important information while they are taking the test. These features make the studying and practicing process more efficient and help users focus on what they are doing.
 
+**Tech stack**: ReactJS, React-admin, Django, PostgreSQL. 
+
 ## Run Backend
 
 > Install modules via `VENV` (windows)
