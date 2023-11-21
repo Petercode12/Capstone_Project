@@ -1,4 +1,8 @@
 # Capstone-Project
+## Project Overview
+This project provides users with a unique opportunity to create tests in a wide variety of subjects, including math, physics, history, geography, English, IELTS, and more in the format of multiple-choice questions, constructive questions, and fill-in-blank questions. Not only can users practice the topic they have created, but they can also share it with other users, thereby expanding their knowledge and helping others in the process. Our platform is particularly useful for those who wish to review lessons and prepare for important examinations, for teachers and lecturers who need a test-taking system for their students, or for those who simply want to absorb new knowledge.
+
+To further assist users in their exam preparation, we also incorporate various helpful tools, such as a note-taking facility and keyword highlighting. These features significantly increase the efficiency and effectiveness of learning and practicing processes.
 
 ## Run Backend
 
